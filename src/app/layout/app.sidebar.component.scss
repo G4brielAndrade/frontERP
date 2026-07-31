@@ -1,0 +1,84 @@
+:host {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-secondary: #6b7280;
+    --text-primary: #1a1a2e;
+    --border: rgba(0, 0, 0, 0.09);
+    --accent: #4f46e5;
+    --accent-light: #eef2ff;
+    --radius-md: 8px;
+}
+
+.icon-sidebar {
+    position: fixed;
+    top: 5rem;              /* logo abaixo do topbar (altura 5rem) */
+    left: 0;
+    bottom: 0;
+    width: 64px;
+    z-index: 900;
+    background: var(--bg-primary);
+    border-right: 0.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.nav-items {
+    display: flex; flex-direction: column;
+    gap: 2px; width: 100%; align-items: center;
+}
+
+.nav-item {
+    position: relative;
+    width: 38px; height: 38px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary);
+    transition: background 0.15s, color 0.15s;
+    font-size: 19px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.nav-item.active { background: var(--accent-light); color: var(--accent); }
+.nav-item.disabled { opacity: 0.4; }
+.nav-item.disabled:hover { background: transparent; color: var(--text-secondary); }
+
+/* ── Tooltip com o nome do módulo (só aparece no hover) ────────── */
+.nav-tooltip {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translate(-6px, -50%);
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 11px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 950;
+}
+.nav-tooltip::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #1a1a2e;
+}
+.nav-item:hover .nav-tooltip {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.nav-sep { width: 28px; height: 0.5px; background: var(--border); margin: 5px 0; }
+.nav-bottom { margin-top: auto; }

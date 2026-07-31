@@ -1,0 +1,59 @@
+<!--<p-dialog [closeOnEscape]="false"
+          [(visible)]="visible"
+          [draggable]="false"
+          [style]="{width: '450px'}"
+          header="Banco"
+          [modal]="true"
+          class="p-fluid"
+          (onHide)="hideDialog()">
+    <ng-template pTemplate="content">
+        <div class="p-fluid p-formgrid grid">
+
+            <div class="field col-12 md:col-12">
+                <label for="nome">Nome</label>
+                <input type="text"
+                       pInputText
+                       id="nome"
+                       [(ngModel)]="banco.nome"
+                       autocomplete="off"
+                       [class.ng-invalid]="submitted && (!banco.nome || !banco.nome.trim())"
+                       [class.ng-dirty]="submitted" />                
+            </div>
+            <div class="field col-12 md:col-8">
+                <label for="numeroBanco">Número do banco</label>
+                <input type="text"
+                       pInputText
+                       id="numeroBanco"
+                       [(ngModel)]="banco.numeroBanco"
+                       autocomplete="off"
+                       (input)="validateNumbers($event)"/>
+            </div>
+            <div class="field-checkbox col-12 md:col-4" style="margin-top: 20px">
+                <p-checkbox name="group1"
+                            value="naoSomar"
+                            [(ngModel)]="valCheck"
+                            id="naoSomar"
+                            autocomplete="off">
+                </p-checkbox>
+                <label for="naoSomar">Não Somar</label>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-text"
+                (click)="hideDialog()">
+        </button>
+        <button pButton
+                pRipple
+                label="Salvar"
+                icon="pi pi-check"
+                class="p-button-text"
+                (click)="saveBanco()">
+        </button>
+    </ng-template>
+</p-dialog>-->

@@ -1,0 +1,97 @@
+<div class="dashboard-page">
+
+    <!-- Filtros: empresa + período -->
+    <div class="filtros-bar">
+        <div class="filtro-field">
+            <label class="filtro-label">Empresa</label>
+            <select [(ngModel)]="empresaSelecionada" (ngModelChange)="onEmpresaChange()">
+                <option [value]="TODAS_EMPRESAS">Todas as empresas</option>
+                <option *ngFor="let e of empresas" [value]="e.id">{{ e.nome }}</option>
+            </select>
+        </div>
+
+        <div class="filtro-field">
+            <label class="filtro-label">Período</label>
+            <select [(ngModel)]="periodoSelecionado" (ngModelChange)="onPeriodoChange()">
+                <option *ngFor="let p of periodos" [value]="p.value">{{ p.label }}</option>
+            </select>
+        </div>
+
+        <ng-container *ngIf="periodoSelecionado === 'personalizado'">
+            <div class="filtro-field">
+                <label class="filtro-label">De</label>
+                <input type="date" [(ngModel)]="dataInicioPersonalizado" (ngModelChange)="onPeriodoPersonalizadoChange()">
+            </div>
+            <div class="filtro-field">
+                <label class="filtro-label">Até</label>
+                <input type="date" [(ngModel)]="dataFimPersonalizado" (ngModelChange)="onPeriodoPersonalizadoChange()">
+            </div>
+        </ng-container>
+    </div>
+
+    <!-- Cards de indicadores (total acumulado + comparativo do período) -->
+    <div class="lembretes">
+        <div class="lembrete-card" *ngFor="let c of cards">
+            <div class="lembrete-top">
+                <span class="lembrete-label">{{ c.label }}</span>
+                <div class="lembrete-icon" [ngClass]="'icon-' + c.cor">
+                    <i class="pi" [ngClass]="c.icon"></i>
+                </div>
+            </div>
+            <div class="lembrete-valor" [ngClass]="'val-' + c.cor">{{ formatarNumero(c.total) }}</div>
+            <div class="lembrete-delta">
+                <span>{{ c.deltaLabel }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <!-- Gráfico de pedidos / NF-e -->
+        <div class="panel panel-chart">
+            <div class="panel-header">
+                <span class="panel-title">Pedidos x NF-e emitidas — {{ periodoAtualLabel() }}</span>
+            </div>
+            <div class="panel-body chart-box">
+                <p-chart type="line" [data]="vendasChartData" [options]="vendasChartOptions" height="280px"></p-chart>
+            </div>
+        </div>
+
+        <!-- Distribuição por marketplace -->
+        <div class="panel panel-donut">
+            <div class="panel-header">
+                <span class="panel-title">Distribuição por marketplace</span>
+            </div>
+            <div class="panel-body chart-box">
+                <p-chart type="doughnut" [data]="distribuicaoChartData" [options]="distribuicaoChartOptions" height="280px"></p-chart>
+            </div>
+        </div>
+
+        <!-- Pedidos que precisam de atenção -->
+        <div class="panel panel-wide">
+            <div class="panel-header">
+                <span class="panel-title">Pedidos que precisam de atenção</span>
+                <a routerLink="/pedidos" class="panel-link">Ver todos <i class="pi pi-arrow-right"></i></a>
+            </div>
+            <div class="panel-body">
+                <div class="atencao-row" *ngFor="let p of pedidosAtencao">
+                    <span class="atencao-badge" [ngClass]="p.status === 'erro' ? 'badge-red' : 'badge-amber'">
+                        <i class="pi" [ngClass]="p.status === 'erro' ? 'pi-exclamation-triangle' : 'pi-clock'"></i>
+                    </span>
+                    <div class="atencao-info">
+                        <div class="atencao-id">{{ p.id }} <span class="atencao-mkt">· {{ p.mkt }}</span></div>
+                        <div class="atencao-motivo">{{ p.motivo }}</div>
+                    </div>
+                    <div class="atencao-buyer">{{ p.buyer }}</div>
+                    <div class="atencao-val">{{ p.val }}</div>
+                </div>
+
+                <div class="atencao-empty" *ngIf="pedidosAtencao.length === 0">
+                    <i class="pi pi-check-circle"></i>
+                    <span>Nenhum pedido precisa de atenção agora.</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

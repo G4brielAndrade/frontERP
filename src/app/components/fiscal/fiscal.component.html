@@ -1,0 +1,259 @@
+<p-toast></p-toast>
+
+<div class="fiscal-page">
+
+    <!-- ═══════════════ LISTA DE CONTAS DE NF ═══════════════ -->
+    <ng-container *ngIf="view === 'list'">
+        <div class="fiscal-list-header">
+            <div>
+                <div class="fiscal-title">Contas de NF</div>
+                <div class="fiscal-subtitle">
+                    {{ contasNF.length }} conta{{ contasNF.length !== 1 ? 's' : '' }} cadastrada{{ contasNF.length !== 1 ? 's' : '' }}
+                </div>
+            </div>
+            <button class="btn btn-primary" (click)="novaConta()">
+                <i class="pi pi-plus"></i> Nova conta de NF
+            </button>
+        </div>
+
+        <div class="fiscal-cards">
+
+            <div class="fiscal-empty" *ngIf="contasNF.length === 0">
+                <i class="pi pi-building"></i>
+                <span>Nenhuma conta de NF cadastrada</span>
+                <p>Crie uma conta de NF para vincular as suas lojas e começar a emitir notas fiscais.</p>
+            </div>
+
+            <div class="conta-nf-card" *ngFor="let c of contasNF">
+                <div class="conta-nf-card-header">
+                    <div class="conta-nf-card-info">
+                        <div class="conta-nf-razao">{{ c.razaoSocial || '—' }}</div>
+                        <div class="conta-nf-cnpj">{{ c.cnpj || '—' }} · {{ regimeLabel(c.tipoTributacao) }}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <span class="badge badge-green" *ngIf="isContaCompleta(c)"><i class="pi pi-check-circle"></i> Completo</span>
+                        <span class="badge badge-amber" *ngIf="!isContaCompleta(c)"><i class="pi pi-exclamation-triangle"></i> Pendente</span>
+                        <button class="btn btn-secondary" style="flex:none;font-size:11px" (click)="editarConta(c)">
+                            <i class="pi pi-pencil"></i> Editar
+                        </button>
+                        <button class="btn btn-secondary" style="flex:none;font-size:11px;color:var(--danger)" (click)="removerConta(c)">
+                            <i class="pi pi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="conta-nf-card-body">
+                    <div class="conta-nf-meta">
+                        <span><i class="pi pi-map-marker"></i> {{ c.cidade || '—' }}{{ c.uf ? ', ' + c.uf : '' }}</span>
+                        <span><i class="pi pi-file"></i> Série {{ c.serieNFe || '—' }} · Próx. nº {{ c.proximoNumero || '—' }}</span>
+                        <span>
+                            <i class="pi pi-shield" [style.color]="c.certificado.fileName ? 'var(--success)' : 'var(--warning)'"></i>
+                            {{ c.certificado.fileName ? ('Certificado: ' + c.certificado.fileName) : 'Sem certificado' }}
+                        </span>
+                    </div>
+                    <div class="conta-nf-lojas">
+                        <span class="conta-nf-lojas-label">Lojas vinculadas:</span>
+                        <div class="conta-nf-lojas-pills">
+                            <span style="font-size:11px;color:var(--text-muted)" *ngIf="c.lojasVinculadas.length === 0">Nenhuma loja vinculada</span>
+                            <ng-container *ngFor="let lid of c.lojasVinculadas">
+                                <span class="loja-pill" *ngIf="lojaNome(lid) as l">
+                                    <span class="mkt-dot" [ngClass]="MKT_DOT_CLASS[l.marketplace]"></span>
+                                    {{ l.nome }}
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- ═══════════════ FORMULÁRIO DE CRIAÇÃO / EDIÇÃO ═══════════════ -->
+    <ng-container *ngIf="view === 'form'">
+        <div class="fiscal-list-header">
+            <div style="display:flex;align-items:center;gap:10px">
+                <button class="btn btn-secondary" style="flex:none" (click)="voltarLista()">
+                    <i class="pi pi-arrow-left"></i>
+                </button>
+                <div>
+                    <div class="fiscal-title">{{ editingId ? 'Editar conta de NF' : 'Nova conta de NF' }}</div>
+                    <div class="fiscal-subtitle">Preencha os dados do CNPJ emitente e vincule as lojas</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" (click)="salvarConta()">
+                <i class="pi pi-save"></i> Salvar conta
+            </button>
+        </div>
+
+        <div class="fiscal-form-body">
+
+            <!-- DADOS DA EMPRESA -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-building"></i> Dados da empresa</div>
+                <div class="form-grid">
+                    <label class="form-field span-2">
+                        <span class="form-label">Razão Social</span>
+                        <input type="text" [(ngModel)]="form.razaoSocial" placeholder="Ex: Comércio de Eletrônicos LTDA">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">CNPJ</span>
+                        <input type="text" [ngModel]="form.cnpj" (ngModelChange)="onCnpjInput($event)" placeholder="00.000.000/0000-00" maxlength="18">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Inscrição Estadual</span>
+                        <input type="text" [(ngModel)]="form.inscricaoEstadual" placeholder="000.000.000.000">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Tipo de tributação</span>
+                        <select [(ngModel)]="form.tipoTributacao">
+                            <option value="">Selecione…</option>
+                            <option value="mei">MEI</option>
+                            <option value="simples">Simples Nacional</option>
+                            <option value="normal">Regime Normal</option>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Tipo de unidade</span>
+                        <select [(ngModel)]="form.tipoUnidade">
+                            <option value="">Selecione…</option>
+                            <option value="matriz">Matriz</option>
+                            <option value="filial">Filial</option>
+                        </select>
+                    </label>
+                    <label class="form-field span-2">
+                        <span class="form-label">E-mail</span>
+                        <input type="email" [(ngModel)]="form.email" placeholder="contato@empresa.com.br">
+                    </label>
+                </div>
+            </div>
+
+            <!-- ENDEREÇO -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-map-marker"></i> Endereço</div>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span class="form-label">CEP</span>
+                        <input type="text" [ngModel]="form.cep" (ngModelChange)="onCepInput($event)" placeholder="00000-000" maxlength="9">
+                    </label>
+                    <label class="form-field span-2">
+                        <span class="form-label">Logradouro</span>
+                        <input type="text" [(ngModel)]="form.logradouro" placeholder="Rua, Avenida...">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Número</span>
+                        <input type="text" [(ngModel)]="form.numero" placeholder="123">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Complemento</span>
+                        <input type="text" [(ngModel)]="form.complemento" placeholder="Opcional">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Bairro</span>
+                        <input type="text" [(ngModel)]="form.bairro" placeholder="Centro">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Cidade</span>
+                        <input type="text" [(ngModel)]="form.cidade" placeholder="São Paulo">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">UF</span>
+                        <select [(ngModel)]="form.uf">
+                            <option value="">Selecione…</option>
+                            <option *ngFor="let uf of UFS" [value]="uf">{{ uf }}</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <!-- NUMERAÇÃO NF-e -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-file"></i> Numeração da NF-e</div>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span class="form-label">Série da NF-e</span>
+                        <input type="text" [(ngModel)]="form.serieNFe" placeholder="Ex: 1" maxlength="3">
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Próximo número de nota</span>
+                        <input type="text" [(ngModel)]="form.proximoNumero" placeholder="Ex: 1001" inputmode="numeric">
+                    </label>
+                </div>
+                <div class="form-warning">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    <span>Altere o <strong>próximo número</strong> apenas na configuração inicial. Um número menor que o último emitido causa rejeição por duplicidade na SEFAZ.</span>
+                </div>
+            </div>
+
+            <!-- CERTIFICADO A1 -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-shield"></i> Certificado Digital A1</div>
+
+                <div class="cert-file-info" *ngIf="form.certificado?.fileName as fileName; else certDropzone">
+                    <div class="cert-file-icon"><i class="pi pi-verified"></i></div>
+                    <div class="cert-file-meta">
+                        <div class="cert-file-name">{{ fileName }}</div>
+                        <div class="cert-file-sub">Enviado em {{ form.certificado?.uploadedAt ?? '—' }}</div>
+                    </div>
+                    <button class="btn btn-secondary" style="flex:none;font-size:11px" (click)="removerCertificado()">
+                        <i class="pi pi-trash"></i> Remover
+                    </button>
+                </div>
+                <ng-template #certDropzone>
+                    <label class="cert-dropzone" for="f-cert-file">
+                        <i class="pi pi-upload"></i>
+                        <span><strong>Clique para enviar</strong> ou arraste o arquivo</span>
+                        <span class="cert-dropzone-hint">.pfx ou .p12 — até 5MB</span>
+                        <input type="file" id="f-cert-file" accept=".pfx,.p12" style="display:none" (change)="onCertificadoSelecionado($event)">
+                    </label>
+                </ng-template>
+
+                <div class="form-grid" style="margin-top:12px">
+                    <label class="form-field span-2">
+                        <span class="form-label">Senha do certificado</span>
+                        <div class="password-field">
+                            <input [type]="mostrarSenhaCertificado ? 'text' : 'password'" [(ngModel)]="form.certificado!.senha" placeholder="••••••••" autocomplete="new-password">
+                            <button class="password-toggle" type="button" (click)="mostrarSenhaCertificado = !mostrarSenhaCertificado" tabindex="-1">
+                                <i class="pi" [ngClass]="mostrarSenhaCertificado ? 'pi-eye-slash' : 'pi-eye'"></i>
+                            </button>
+                        </div>
+                    </label>
+                </div>
+                <div class="form-security-note">
+                    <i class="pi pi-lock"></i>
+                    <span>Certificado e senha são criptografados em repouso. Apenas o serviço de emissão tem acesso no momento da assinatura.</span>
+                </div>
+            </div>
+
+            <!-- LOJAS VINCULADAS -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-sitemap"></i> Lojas vinculadas</div>
+                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
+                    Selecione as lojas que emitirão NF-e com este CNPJ.
+                    Uma loja só pode estar vinculada a uma conta de NF por vez.
+                </p>
+
+                <div class="form-warning" style="margin-top:0" *ngIf="lojasForm.length === 0">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    <span>Nenhuma loja integrada disponível. Integre uma loja primeiro na aba <strong>Integrações</strong>.</span>
+                </div>
+
+                <div class="lojas-checkboxes" *ngIf="lojasForm.length > 0">
+                    <label class="loja-checkbox-item" *ngFor="let l of lojasForm">
+                        <input type="checkbox" [checked]="l.vinculada" (change)="toggleLoja(l.id)">
+                        <span class="mkt-dot" [ngClass]="MKT_DOT_CLASS[l.marketplace]"></span>
+                        <span class="loja-checkbox-nome">{{ l.nome }}</span>
+                        <span class="loja-checkbox-mkt">{{ MKT_LABELS[l.marketplace] }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="fiscal-save-bar">
+                <button class="btn btn-secondary" (click)="voltarLista()">Cancelar</button>
+                <button class="btn btn-primary" (click)="salvarConta()">
+                    <i class="pi pi-save"></i> Salvar conta de NF
+                </button>
+            </div>
+
+        </div>
+    </ng-container>
+
+</div>

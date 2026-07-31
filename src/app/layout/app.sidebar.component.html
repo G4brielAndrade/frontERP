@@ -1,0 +1,65 @@
+<p-toast position="bottom-left"></p-toast>
+
+<aside class="icon-sidebar">
+    <nav class="nav-items">
+
+        <a *ngFor="let item of navItemsPrincipal"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label }}</span>
+        </a>
+
+        <div class="nav-sep"></div>
+
+        <a *ngFor="let item of navItems"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label }}</span>
+        </a>
+
+        <div class="nav-sep"></div>
+
+        <a *ngFor="let item of navItemsSecundario"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label }}</span>
+        </a>
+
+        <div class="nav-sep"></div>
+
+        <a *ngFor="let item of navItemsIntegracoes"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label }}</span>
+        </a>
+    </nav>
+
+    <a class="nav-item nav-bottom" aria-label="Configurações" (click)="abrirConfiguracoes()">
+        <i class="pi pi-cog"></i>
+        <span class="nav-tooltip">Configurações</span>
+    </a>
+</aside>

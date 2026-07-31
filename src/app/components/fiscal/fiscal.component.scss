@@ -1,0 +1,216 @@
+:host {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #f1f3f5;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: rgba(0, 0, 0, 0.09);
+    --border-md: rgba(0, 0, 0, 0.16);
+    --accent: #4f46e5;
+    --accent-dark: #4338ca;
+    --accent-light: #eef2ff;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --warning: #d97706;
+    --warning-bg: #fef3c7;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --info: #2563eb;
+    --info-bg: #eff6ff;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+
+    display: block;
+    height: 100%;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+button { cursor: pointer; font-family: inherit; }
+
+.fiscal-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* ── Botões / badges (mesma base do resto do app) ─────────────── */
+.btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-md); background: transparent;
+    font-size: 12px; font-weight: 500; color: var(--text-primary);
+    transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { background: var(--bg-secondary); }
+.btn:active { transform: scale(0.98); }
+.btn i { font-size: 14px; }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-secondary { justify-content: center; }
+
+.badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+}
+.badge i { font-size: 12px; }
+.badge-green { background: var(--success-bg); color: var(--success); }
+.badge-amber { background: var(--warning-bg); color: var(--warning); }
+
+/* ── Cabeçalho (lista e formulário) ───────────────────────────── */
+.fiscal-list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 4px 12px; border-bottom: 0.5px solid var(--border);
+    flex-shrink: 0;
+}
+.fiscal-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.fiscal-subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+.fiscal-cards { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 16px 4px 40px; }
+.fiscal-form-body { flex: 1; overflow-y: auto; padding: 16px 4px 60px; display: flex; flex-direction: column; gap: 10px; }
+
+/* ── Empty state ───────────────────────────────────────────────── */
+.fiscal-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 20px; text-align: center; color: var(--text-muted); gap: 10px;
+}
+.fiscal-empty i { font-size: 48px; opacity: 0.2; }
+.fiscal-empty span { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+.fiscal-empty p { font-size: 12px; max-width: 320px; line-height: 1.6; }
+
+/* ── Card de conta de NF ───────────────────────────────────────── */
+.conta-nf-card {
+    background: var(--bg-primary); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm); transition: box-shadow 0.15s;
+}
+.conta-nf-card:hover { box-shadow: var(--shadow-md); }
+.conta-nf-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 16px; border-bottom: 0.5px solid var(--border); gap: 12px;
+}
+.conta-nf-card-info { flex: 1; min-width: 0; }
+.conta-nf-razao { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conta-nf-cnpj { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.conta-nf-card-body { padding: 12px 16px; }
+.conta-nf-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.conta-nf-meta span { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }
+.conta-nf-meta i { font-size: 13px; }
+.conta-nf-lojas { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.conta-nf-lojas-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); flex-shrink: 0; margin-top: 2px; }
+.conta-nf-lojas-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.loja-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; background: var(--bg-secondary); border: 0.5px solid var(--border-md);
+    border-radius: 20px; font-size: 11px; font-weight: 500; color: var(--text-primary);
+}
+.mkt-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.dot-ml { background: #ffe600; border: 0.5px solid #bbb; }
+.dot-sh { background: #f35b2b; }
+.dot-az { background: #ff9900; }
+.dot-nv { background: #00bcd4; }
+
+/* ── Seções tipo "detail-section" (reaproveitado do Pedidos) ──── */
+.detail-section {
+    background: var(--bg-primary); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+}
+.detail-section-title {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 5px;
+}
+.detail-section-title i { font-size: 13px; }
+
+/* ── Formulário ────────────────────────────────────────────────── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field.span-2 { grid-column: span 2; }
+.form-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+.form-field input, .form-field select {
+    font-size: 13px; padding: 8px 10px; border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary);
+    outline: none; transition: border-color 0.15s, background 0.15s; width: 100%;
+}
+.form-field input:focus, .form-field select:focus { border-color: var(--accent); background: var(--bg-primary); }
+.form-field input::placeholder { color: var(--text-muted); }
+.form-field select { cursor: pointer; }
+
+.form-warning {
+    display: flex; gap: 8px; align-items: flex-start; margin-top: 12px;
+    padding: 10px 12px; background: var(--warning-bg); border: 0.5px solid rgba(217, 119, 6, 0.25);
+    border-radius: var(--radius-md); font-size: 11px; color: #92400e; line-height: 1.5;
+}
+.form-warning i { font-size: 15px; flex-shrink: 0; margin-top: 1px; color: var(--warning); }
+
+.form-security-note {
+    display: flex; gap: 8px; align-items: flex-start; margin-top: 12px;
+    padding: 10px 12px; background: var(--bg-secondary); border-radius: var(--radius-md);
+    font-size: 11px; color: var(--text-secondary); line-height: 1.5;
+}
+.form-security-note i { font-size: 14px; flex-shrink: 0; margin-top: 1px; color: var(--text-muted); }
+
+/* ── Upload de certificado ─────────────────────────────────────── */
+.cert-dropzone {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding: 28px 16px; border: 1.5px dashed var(--border-md); border-radius: var(--radius-lg);
+    background: var(--bg-secondary); cursor: pointer; text-align: center;
+    transition: border-color 0.15s, background 0.15s;
+}
+.cert-dropzone:hover { border-color: var(--accent); background: var(--accent-light); }
+.cert-dropzone i { font-size: 28px; color: var(--text-muted); margin-bottom: 4px; }
+.cert-dropzone span { font-size: 12px; color: var(--text-secondary); }
+.cert-dropzone-hint { font-size: 10px; color: var(--text-muted); }
+
+.cert-file-info {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: var(--success-bg); border: 0.5px solid rgba(22, 163, 74, 0.25); border-radius: var(--radius-lg);
+}
+.cert-file-icon {
+    width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--bg-primary);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.cert-file-icon i { font-size: 18px; color: var(--success); }
+.cert-file-meta { flex: 1; min-width: 0; }
+.cert-file-name { font-size: 12px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cert-file-sub { font-size: 11px; color: var(--text-secondary); }
+
+.password-field { position: relative; display: flex; }
+.password-field input { padding-right: 36px; }
+.password-toggle {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    width: 28px; height: 28px; border: none; background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); cursor: pointer; border-radius: var(--radius-sm);
+}
+.password-toggle:hover { background: var(--bg-tertiary); color: var(--text-secondary); }
+.password-toggle i { font-size: 16px; }
+
+.fiscal-save-bar { display: flex; justify-content: flex-end; gap: 8px; padding-top: 6px; }
+
+/* ── Checkboxes de lojas ───────────────────────────────────────── */
+.lojas-checkboxes { display: flex; flex-direction: column; gap: 6px; }
+.loja-checkbox-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border: 0.5px solid var(--border); border-radius: var(--radius-md);
+    cursor: pointer; transition: background 0.12s, border-color 0.12s; user-select: none;
+}
+.loja-checkbox-item:hover { background: var(--bg-secondary); border-color: var(--border-md); }
+.loja-checkbox-item input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+.loja-checkbox-nome { flex: 1; font-size: 12px; font-weight: 500; color: var(--text-primary); }
+.loja-checkbox-mkt { font-size: 11px; color: var(--text-secondary); }
+
+@media (max-width: 900px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-field.span-2 { grid-column: span 1; }
+}
