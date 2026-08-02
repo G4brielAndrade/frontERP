@@ -1,12 +1,16 @@
 .layout-main-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    justify-content: space-between;
-    padding: 7rem 2rem 2rem 4rem;
+    height: 100vh;
+    padding: 5.5rem 1.25rem 1.25rem 1.25rem;
     transition: margin-left $transitionDuration;
+    overflow: hidden;
 }
 
 .layout-main {
     flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
