@@ -303,12 +303,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const base = this.SERIES_POR_PERIODO[this.periodoSelecionado];
         const fatorTotal = this.obterFatoresEmpresas().reduce((acc, f) => acc + f, 0);
 
+        const pedidosSerie = base.pedidos.map(v => Math.round(v * fatorTotal));
+        const emitidasSerie = base.nfe.map(v => Math.round(v * fatorTotal));
+
+        // Canceladas/CC-e/Inutilizadas derivadas proporcionalmente das emitidas
+        // (mesma proporção observada nos totais do INDICADORES_MOCK).
+        // TODO: quando existir DashboardService, cada uma vira uma série agregada real.
+        const canceladasSerie = emitidasSerie.map(v => Math.round(v * 0.06));
+        const cceSerie = emitidasSerie.map(v => Math.round(v * 0.02));
+        const inutilizadasSerie = emitidasSerie.map(v => Math.round(v * 0.01));
+
         this.vendasChartData = {
             labels: base.labels,
             datasets: [
                 {
-                    label: 'Pedidos recebidos',
-                    data: base.pedidos.map(v => Math.round(v * fatorTotal)),
+                    label: 'Pedidos',
+                    data: pedidosSerie,
                     fill: true,
                     tension: 0.4,
                     borderColor: '#4f46e5',
@@ -316,13 +326,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     pointBackgroundColor: '#4f46e5',
                 },
                 {
-                    label: 'NF-e emitidas',
-                    data: base.nfe.map(v => Math.round(v * fatorTotal)),
+                    label: 'Emitidas',
+                    data: emitidasSerie,
                     fill: true,
                     tension: 0.4,
                     borderColor: '#16a34a',
                     backgroundColor: 'rgba(22, 163, 74, 0.10)',
                     pointBackgroundColor: '#16a34a',
+                },
+                {
+                    label: 'Canceladas',
+                    data: canceladasSerie,
+                    fill: false,
+                    tension: 0.4,
+                    borderColor: '#dc2626',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#dc2626',
+                },
+                {
+                    label: 'CC-e',
+                    data: cceSerie,
+                    fill: false,
+                    tension: 0.4,
+                    borderColor: '#9333ea',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#9333ea',
+                },
+                {
+                    label: 'Inutilizadas',
+                    data: inutilizadasSerie,
+                    fill: false,
+                    tension: 0.4,
+                    borderColor: '#d97706',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#d97706',
                 },
             ],
         };
