@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content" [class.detail-active]="!!selectedOrder">
 
         <!-- Lista de pedidos -->
         <div class="order-list">
@@ -84,6 +84,9 @@
 
                 <!-- Barra de progresso NF-e -->
                 <div class="nfe-strip">
+                    <button class="back-to-list" (click)="fecharDetalhe()">
+                        <i class="pi pi-arrow-left"></i> Voltar à lista
+                    </button>
                     <div class="nfe-progress">
                         <ng-container *ngFor="let step of NFE_STEPS; let i = index">
                             <div class="nfe-line" [class.done]="i > 0 && statusDots(o.status)[i-1] === 'done' && statusDots(o.status)[i] === 'done'" *ngIf="i > 0"></div>

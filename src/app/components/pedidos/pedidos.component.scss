@@ -225,4 +225,24 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 900px) {
     .order-list { width: 260px; }
     .metrics { grid-template-columns: repeat(2, 1fr); }
+    .metric-action { grid-column: span 2; }
+}
+
+/* ── Mobile: lista e detalhe viram "telas" alternadas, não colunas espremidas ── */
+.back-to-list {
+    display: none;
+    align-items: center; gap: 6px;
+    border: none; background: transparent; padding: 0 0 10px; margin: 0;
+    font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer;
+}
+.back-to-list i { font-size: 13px; }
+
+@media (max-width: 768px) {
+    .order-list { width: 100%; }
+    .detail { display: none; }
+
+    .content.detail-active .order-list { display: none; }
+    .content.detail-active .detail { display: flex; width: 100%; }
+
+    .back-to-list { display: inline-flex; }
 }
