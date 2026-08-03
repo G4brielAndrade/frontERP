@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { Order, OrderStatus, DayMetrics, EmissaoResult, Marketplace } from 'src/api/pedido.model';
+import { Order, OrderStatus, DayMetrics, EmissaoResult, Marketplace, NFeData } from 'src/api/pedido.model';
+import jsPDF, { GState } from 'jspdf';
+import * as JsBarcode from 'jsbarcode';
+import * as QRCode from 'qrcode';
 
 @Component({
     selector: 'app-pedidos',
@@ -98,7 +101,10 @@ export class PedidosComponent implements OnInit {
                 items: [
                     { name: 'Mousepad XL RGB 90x40cm', sku: 'MPS-XL-RGB', ncm: '8473.30.49', qty: 1, price: 'R$ 129,90' },
                 ],
-                nfe: { chNFe: '35240512345678901234550010000012341234567890', protocolo: '135240012345678', emitidaEm: '22/05/2026 09:14' },
+                nfe: {
+                    chNFe: '35240512345678901234550010000012341234567890', protocolo: '135240012345678', emitidaEm: '22/05/2026 09:14',
+                    serie: '5', numero: '82588', vencimento: '25/05/2026 20:59:59',
+                },
             },
             {
                 id: '#SH-9910234', mkt: 'shopee',
@@ -128,7 +134,10 @@ export class PedidosComponent implements OnInit {
                 items: [
                     { name: 'Película Vidro iPhone 15 (pack 3)', sku: 'PEL-IPH-15', ncm: '7007.19.00', qty: 3, price: 'R$ 26,00' },
                 ],
-                nfe: { chNFe: '35240512345678901234550010000012351234567891', protocolo: '135240012345679', emitidaEm: '22/05/2026 08:52' },
+                nfe: {
+                    chNFe: '35240512345678901234550010000012351234567891', protocolo: '135240012345679', emitidaEm: '22/05/2026 08:52',
+                    serie: '5', numero: '82579', vencimento: '25/05/2026 20:59:59',
+                },
             },
             {
                 id: '#NV-7710092', mkt: 'nuvemshop',
@@ -275,6 +284,191 @@ export class PedidosComponent implements OnInit {
         });
     }
 
+    // ════════════════════════════════════════════════════════════
+    // IMPRESSÃO DE ETIQUETA — DANFE SIMPLIFICADA
+    // Gera só a 2ª página do par de etiquetas (a que o próprio ERP
+    // produz, com os dados do pedido/NF-e). A 1ª página — a etiqueta
+    // de envio do marketplace — chega pronta em PDF via API e será
+    // mesclada com esta quando o back-end do Danilo estiver pronto.
+    // TODO: quando existir PedidoService, buscar série/número/
+    // vencimento e o payload real do QR-code fiscal via API em vez
+    // do mock abaixo.
+    // ════════════════════════════════════════════════════════════
+    async imprimirEtiqueta(order: Order): Promise<void> {
+        if (order.status !== 'emitida' || !order.nfe) {
+            this.aviso('Emita a NF-e antes de imprimir a etiqueta.');
+            return;
+        }
+
+        this.info('Gerando etiqueta…');
+
+        try {
+            const pdfUrl = await this.gerarDanfeSimplificada(order, order.nfe);
+            window.open(pdfUrl, '_blank');
+        } catch {
+            this.erro('Não foi possível gerar a etiqueta.');
+        }
+    }
+
+    private async gerarDanfeSimplificada(order: Order, nfe: NFeData): Promise<string> {
+        // Etiqueta térmica 10cm x 15cm — mesmo padrão da etiqueta de envio do marketplace
+        const doc = new jsPDF({ unit: 'mm', format: [100, 150] });
+
+        const marginX = 5;
+        const pageW = 100;
+        const pageH = 150;
+        const contentW = pageW - marginX * 2; // 90mm
+        let y = 8;
+
+        // Marca d'água — logo UltraERP centralizada, bem apagada, atrás de todo o resto
+        try {
+            const logoDataUrl = await this.carregarLogoDataUrl();
+            const wmW = 65;
+            const wmH = wmW * (577 / 2126); // mantém a proporção original da logo
+            doc.saveGraphicsState();
+            doc.setGState(new GState({ opacity: 0.06 }));
+            doc.addImage(logoDataUrl, 'PNG', (pageW - wmW) / 2, (pageH - wmH) / 2, wmW, wmH);
+            doc.restoreGraphicsState();
+        } catch {
+            // Sem a logo, a etiqueta ainda é gerada normalmente — marca d'água é só um extra visual
+        }
+
+        // Moldura externa
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.3);
+        doc.rect(2, 2, pageW - 4, 146);
+
+        // Título
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        const titulo = 'DANFE SIMPLIFICADA - ETIQUETA';
+        const tituloW = doc.getTextWidth(titulo);
+        doc.text(titulo, pageW / 2, y, { align: 'center' });
+        doc.setLineWidth(0.2);
+        doc.line(pageW / 2 - tituloW / 2, y + 1, pageW / 2 + tituloW / 2, y + 1);
+        y += 6;
+
+        // Meta: vencimento (label + valor na mesma linha)
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text('Horário de vencimento', marginX, y);
+        doc.text(nfe.vencimento, pageW - marginX, y, { align: 'right' });
+        y += 4.5;
+
+        doc.text(`Impresso em: ${this.agora()}`, marginX, y);
+        y += 4.5;
+
+        doc.text(`Nome:${order.buyer}`, marginX, y);
+        y += 4.5;
+
+        doc.text(`Série:${nfe.serie} | Número:${nfe.numero} |1- Saída |`, marginX, y);
+        y += 3;
+
+        doc.setLineWidth(0.2);
+        doc.line(marginX, y, pageW - marginX, y);
+        y += 4;
+
+        // Código de barras (chave de acesso) + QR code
+        const barcodeDataUrl = this.gerarBarcodeDataUrl(nfe.chNFe);
+        const barcodeW = 62, barcodeH = 16;
+        const barcodeCenterX = marginX + barcodeW / 2; // centro do código de barras, não da página
+        doc.addImage(barcodeDataUrl, 'PNG', marginX, y, barcodeW, barcodeH);
+
+        // QR menor e um pouco mais acima, pra não invadir o texto da chave de acesso logo abaixo do código de barras
+        const qrSize = 13;
+        const qrY = y - 2;
+        const qrDataUrl = await QRCode.toDataURL(nfe.chNFe, { margin: 0, width: 200 });
+        doc.addImage(qrDataUrl, 'PNG', pageW - marginX - qrSize, qrY, qrSize, qrSize);
+
+        y += barcodeH + 3;
+        doc.setFont('courier', 'normal');
+        doc.setFontSize(6.5);
+        doc.text(nfe.chNFe, barcodeCenterX, y, { align: 'center' });
+        y += 4;
+
+        doc.setLineWidth(0.2);
+        doc.line(marginX, y, pageW - marginX, y);
+        y += 1;
+
+        // Tabela de conteúdo
+        const colN = marginX;
+        const colNW = 9;
+        const colConteudo = colN + colNW;
+        const colQtd = pageW - marginX - 14;
+        const colConteudoW = colQtd - colConteudo;
+        const qtdCenterX = (colQtd + (pageW - marginX)) / 2; // centro da célula QTD
+        const tableTop = y;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        y += 4;
+        doc.text('N', colN + 1, y);
+        doc.text('CONTEÚDO', colConteudo + 1, y);
+        doc.text('QTD.', qtdCenterX, y, { align: 'center' });
+        y += 1.5;
+        doc.line(marginX, y, pageW - marginX, y);
+        y += 4;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        let totalQtd = 0;
+        order.items.forEach((item, i) => {
+            totalQtd += item.qty;
+            const linhas: string[] = doc.splitTextToSize(item.name, colConteudoW - 2);
+            doc.text(`No${i + 1}`, colN + 1, y);
+            doc.text(linhas, colConteudo + 1, y);
+            doc.text(String(item.qty), qtdCenterX, y, { align: 'center' });
+            y += linhas.length * 3.2 + 2;
+        });
+
+        doc.line(marginX, y, pageW - marginX, y);
+        y += 4;
+        doc.setFont('helvetica', 'bold');
+        doc.text('Total', colConteudo + 1, y);
+        doc.text(String(totalQtd), qtdCenterX, y, { align: 'center' });
+        y += 2;
+
+        // Moldura da tabela
+        doc.setLineWidth(0.2);
+        doc.rect(marginX, tableTop, contentW, y - tableTop);
+        doc.line(colConteudo, tableTop, colConteudo, y);
+        doc.line(colQtd, tableTop, colQtd, y);
+
+        // Rodapé — "2/2": esta etiqueta sempre acompanha a página do marketplace (mescladas quando o back existir)
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.text('2/2', pageW - marginX, 146, { align: 'right' });
+
+        return doc.output('bloburl') as unknown as string;
+    }
+
+    // Converte a logo (assets/images) em data URL — jsPDF precisa da imagem já embutida, não de uma URL de rede
+    private logoDataUrlCache: string | null = null;
+    private async carregarLogoDataUrl(): Promise<string> {
+        if (this.logoDataUrlCache) return this.logoDataUrlCache;
+        const resp = await fetch('assets/images/ultraerp-logo.png');
+        const blob = await resp.blob();
+        this.logoDataUrlCache = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+        return this.logoDataUrlCache;
+    }
+
+    private gerarBarcodeDataUrl(valor: string): string {
+        const canvas = document.createElement('canvas');
+        JsBarcode(canvas, valor, {
+            format: 'CODE128',
+            displayValue: false,
+            margin: 0,
+            height: 60,
+            width: 2,
+        });
+        return canvas.toDataURL('image/png');
+    }
+
     private atualizarPedido(id: string, patch: Partial<Order>): void {
         const idx = this.orders.findIndex(o => o.id === id);
         if (idx === -1) return;
@@ -303,6 +497,10 @@ export class PedidosComponent implements OnInit {
                 chNFe: this.gerarChaveAcesso(),
                 protocolo: this.gerarProtocolo(),
                 emitidaEm: this.agora(),
+                serie: '5',
+                numero: this.gerarNumeroNFe(),
+                // Mock: vencimento = emissão + 3 dias, às 20:59:59 (regra real fica com o backend)
+                vencimento: this.agora(3, '20:59:59'),
                 danfeUrl: `/danfe/${order.id}.pdf`,
                 xmlUrl: `/xml/${order.id}.xml`,
             },
@@ -318,10 +516,18 @@ export class PedidosComponent implements OnInit {
         return `13524${Math.floor(Math.random() * 1e10).toString().padStart(10, '0')}`;
     }
 
-    private agora(): string {
+    private gerarNumeroNFe(): string {
+        return String(Math.floor(80000 + Math.random() * 9999));
+    }
+
+    // diasSoma/horaFixa: usados só pra mockar o vencimento (emissão + N dias); sem efeito quando chamado sem args (retorna "agora")
+    private agora(diasSoma: number = 0, horaFixa?: string): string {
         const now = new Date();
+        if (diasSoma) now.setDate(now.getDate() + diasSoma);
         const p = (n: number) => String(n).padStart(2, '0');
-        return `${p(now.getDate())}/${p(now.getMonth() + 1)}/${now.getFullYear()} ${p(now.getHours())}:${p(now.getMinutes())}`;
+        const dataStr = `${p(now.getDate())}/${p(now.getMonth() + 1)}/${now.getFullYear()}`;
+        const horaStr = horaFixa ?? `${p(now.getHours())}:${p(now.getMinutes())}`;
+        return `${dataStr} ${horaStr}`;
     }
 
     private delay(ms: number): Promise<void> {

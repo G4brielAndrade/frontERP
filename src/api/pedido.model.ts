@@ -21,6 +21,11 @@ export interface NFeData {
     chNFe: string;
     protocolo: string;
     emitidaEm: string;
+    serie: string;
+    numero: string;
+    // Prazo de validade pra retirada/postagem, exibido na etiqueta DANFE simplificada.
+    // TODO: hoje calculado no front (emissão + N dias); no backend deve vir pronto da regra fiscal/logística.
+    vencimento: string;
     danfeUrl?: string;
     xmlUrl?: string;
 }

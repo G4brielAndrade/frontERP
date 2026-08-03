@@ -173,7 +173,7 @@
                         <i class="pi" [ngClass]="o.status === 'emitindo' ? 'pi-spin pi-spinner' : (o.status === 'emitida' ? 'pi-check' : 'pi-file')"></i>
                         {{ o.status === 'emitindo' ? 'Emitindo…' : (o.status === 'emitida' ? 'NF-e emitida' : 'Emitir NF-e') }}
                     </button>
-                    <button class="btn btn-secondary" [disabled]="o.status !== 'emitida'">
+                    <button class="btn btn-secondary" [disabled]="o.status !== 'emitida'" (click)="imprimirEtiqueta(o)">
                         <i class="pi pi-print"></i> Etiqueta
                     </button>
                     <button class="btn btn-secondary" [disabled]="o.status !== 'emitida'" (click)="cancelarNFe(o.id)">
