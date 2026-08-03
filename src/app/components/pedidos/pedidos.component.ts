@@ -380,7 +380,7 @@ export class PedidosComponent implements OnInit {
         const qrDataUrl = await QRCode.toDataURL(nfe.chNFe, { margin: 0, width: 200 });
         doc.addImage(qrDataUrl, 'PNG', pageW - marginX - qrSize, qrY, qrSize, qrSize);
 
-        y += barcodeH + 3;
+        y += barcodeH + 1;
         doc.setFont('courier', 'normal');
         doc.setFontSize(6.5);
         doc.text(nfe.chNFe, barcodeCenterX, y, { align: 'center' });
