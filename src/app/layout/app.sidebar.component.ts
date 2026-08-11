@@ -29,7 +29,7 @@ export class AppSidebarComponent {
     ];
 
     readonly navItemsSecundario: NavItem[] = [
-        { label: 'Produtos', icon: 'pi-box', disponivel: false },
+        { label: 'Produtos', icon: 'pi-box', route: '/produtos', disponivel: true },
         { label: 'Estoque', icon: 'pi-warehouse', disponivel: false },
     ];
 

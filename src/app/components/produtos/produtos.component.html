@@ -1,0 +1,438 @@
+<div class="produtos-page">
+
+    <!-- ═══════════════════════ LISTAGEM ═══════════════════════ -->
+    <ng-container *ngIf="view === 'list'">
+        <div class="produtos-list-header">
+            <div>
+                <div class="produtos-title">{{ abaAtiva === 'produtos' ? 'Produtos' : 'Produto Combinado' }}</div>
+                <div class="produtos-subtitle" *ngIf="abaAtiva === 'produtos'">{{ produtosFiltrados.length }} de {{ produtos.length }} produtos</div>
+                <div class="produtos-subtitle" *ngIf="abaAtiva === 'kits'">{{ kitsFiltrados.length }} kits cadastrados</div>
+            </div>
+            <button class="btn btn-primary" *ngIf="abaAtiva === 'produtos'" (click)="novoProduto()">
+                <i class="pi pi-plus"></i> Novo produto
+            </button>
+            <button class="btn btn-primary" *ngIf="abaAtiva === 'kits'" (click)="novoKit()">
+                <i class="pi pi-plus"></i> Novo produto combinado
+            </button>
+        </div>
+
+        <div class="produtos-tabs">
+            <button class="tab-btn" [class.active]="abaAtiva === 'produtos'" (click)="abaAtiva = 'produtos'">Produtos</button>
+            <button class="tab-btn" [class.active]="abaAtiva === 'kits'" (click)="abaAtiva = 'kits'">Produto Combinado</button>
+        </div>
+
+        <div class="produtos-filtros">
+            <div class="search-box">
+                <i class="pi pi-search"></i>
+                <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="busca">
+            </div>
+            <select [(ngModel)]="filtroStatus">
+                <option value="todos">Todos os status</option>
+                <option value="ativo">Ativo</option>
+                <option value="pausado">Pausado</option>
+                <option value="interrompido">Interrompido</option>
+            </select>
+            <select *ngIf="abaAtiva === 'produtos'" [(ngModel)]="filtroEmparelhamento">
+                <option value="todos">Emparelhamento: todos</option>
+                <option value="emparelhado">Emparelhado</option>
+                <option value="nao-emparelhado">Não emparelhado</option>
+            </select>
+        </div>
+
+        <!-- ── Tabela de produtos avulsos ── -->
+        <div class="produtos-scroll" *ngIf="abaAtiva === 'produtos'">
+            <table class="produtos-table" *ngIf="produtosFiltrados.length; else emptyProdutos">
+                <thead>
+                    <tr>
+                        <th class="col-img"></th>
+                        <th>SKU / Nome</th>
+                        <th>NCM</th>
+                        <th>Emparelhamento</th>
+                        <th>Estoque</th>
+                        <th>Status</th>
+                        <th class="col-actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of produtosFiltrados">
+                        <td class="col-img">
+                            <div class="produto-thumb">
+                                <img *ngIf="p.imagemUrl" [src]="p.imagemUrl" [alt]="p.nome">
+                                <i *ngIf="!p.imagemUrl" class="pi pi-image"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="produto-nome">{{ p.nome }}</div>
+                            <div class="produto-sku">{{ p.sku }}</div>
+                        </td>
+                        <td>
+                            <span class="ncm-value" *ngIf="p.ncm">{{ p.ncm }}</span>
+                            <span class="ncm-missing" *ngIf="!p.ncm"><i class="pi pi-exclamation-triangle"></i> Pendente</span>
+                        </td>
+                        <td>
+                            <span class="badge" [class.badge-green]="p.emparelhado" [class.badge-amber]="!p.emparelhado">
+                                <i class="pi" [class.pi-link]="p.emparelhado" [class.pi-ban]="!p.emparelhado"></i>
+                                {{ p.emparelhado ? p.lojaEmparelhada : 'Não emparelhado' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="estoque-value" [class.estoque-zero]="p.estoque === 0">{{ p.estoque }}</span>
+                        </td>
+                        <td>
+                            <span class="badge" [ngClass]="statusClass(p.status)">{{ statusLabel(p.status) }}</span>
+                        </td>
+                        <td class="col-actions">
+                            <button class="btn btn-secondary" (click)="editarProduto(p)"><i class="pi pi-pencil"></i> Editar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ng-template #emptyProdutos>
+                <div class="produtos-empty">
+                    <i class="pi pi-box"></i>
+                    <span>Nenhum produto encontrado</span>
+                    <p>Ajuste os filtros de busca, ou sincronize seu catálogo pra ver os produtos aqui.</p>
+                </div>
+            </ng-template>
+        </div>
+
+        <!-- ── Cards de produto combinado (kits) ── -->
+        <div class="produtos-scroll kits-grid" *ngIf="abaAtiva === 'kits'">
+            <ng-container *ngIf="kitsFiltrados.length; else emptyKits">
+                <div class="kit-card" *ngFor="let k of kitsFiltrados">
+                    <div class="kit-card-header">
+                        <div class="kit-card-info">
+                            <div class="kit-nome">{{ k.nome }}</div>
+                            <div class="kit-sku">{{ k.skuCombinado }}</div>
+                        </div>
+                        <span class="badge" [ngClass]="statusClass(k.status)">{{ statusLabel(k.status) }}</span>
+                    </div>
+                    <div class="kit-card-body">
+                        <div class="kit-meta">
+                            <span><i class="pi pi-truck"></i> {{ k.modoEnvio === 'combinado' ? 'Envio Combinado' : 'Envio Aleatório' }}</span>
+                            <span><i class="pi pi-box"></i> {{ k.itens.length }} produto(s)</span>
+                            <span *ngIf="k.emparelhado"><i class="pi pi-link"></i> {{ k.lojaEmparelhada }}</span>
+                            <span *ngIf="!k.emparelhado" class="text-muted"><i class="pi pi-ban"></i> Não emparelhado</span>
+                        </div>
+                        <div class="kit-itens-preview">
+                            <span class="kit-item-pill" *ngFor="let it of k.itens">{{ it.qtd }}x {{ it.sku }}</span>
+                        </div>
+                    </div>
+                    <div class="kit-card-footer">
+                        <button class="btn btn-secondary" (click)="editarKit(k)"><i class="pi pi-pencil"></i> Editar</button>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #emptyKits>
+                <div class="produtos-empty span-full">
+                    <i class="pi pi-th-large"></i>
+                    <span>Nenhum produto combinado cadastrado</span>
+                    <p>Crie um kit combinando produtos avulsos do seu catálogo.</p>
+                </div>
+            </ng-template>
+        </div>
+    </ng-container>
+
+    <!-- ═══════════════════════ FORM: PRODUTO ═══════════════════════ -->
+    <ng-container *ngIf="view === 'form-produto'">
+        <div class="form-header">
+            <button class="btn-back" (click)="voltarLista()"><i class="pi pi-arrow-left"></i></button>
+            <div class="form-header-info">
+                <div class="form-title">{{ editingProdutoId ? 'Editar produto' : 'Novo produto' }}</div>
+                <div class="form-subtitle">{{ produtoForm.sku || 'Preencha os dados do produto' }}</div>
+            </div>
+            <button class="btn btn-primary" (click)="salvarProduto()"><i class="pi pi-save"></i> Salvar produto</button>
+        </div>
+
+        <div class="form-body-with-tabs">
+            <div class="form-side-tabs">
+                <button [class.active]="tabProduto==='basicas'" (click)="tabProduto='basicas'"><i class="pi pi-info-circle"></i> Informações básicas</button>
+                <button [class.active]="tabProduto==='nfe'" (click)="tabProduto='nfe'"><i class="pi pi-file"></i> Informações da NF-e</button>
+                <button [class.active]="tabProduto==='emparelhar'" (click)="tabProduto='emparelhar'"><i class="pi pi-link"></i> Emparelhar produtos</button>
+            </div>
+
+            <div class="form-side-content">
+                <!-- BÁSICAS -->
+                <ng-container *ngIf="tabProduto==='basicas'">
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-box"></i> DADOS DO PRODUTO</div>
+                        <div class="form-grid">
+                            <label class="form-field span-2">
+                                <span class="form-label">Nome do produto</span>
+                                <input type="text" [(ngModel)]="produtoForm.nome" placeholder="Ex: Cabo USB-C 2m Nylon Trançado">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">SKU</span>
+                                <input type="text" [(ngModel)]="produtoForm.sku" placeholder="Ex: CBL-USC-2M-NY">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">EAN/GTIN</span>
+                                <input type="text" [(ngModel)]="produtoForm.ean" placeholder="Opcional">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">SKU Pai</span>
+                                <input type="text" [(ngModel)]="produtoForm.skuPai" placeholder="Opcional — pra variações">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Grupo</span>
+                                <input type="text" [(ngModel)]="produtoForm.grupo" placeholder="Ex: Acessórios">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Fornecedor</span>
+                                <input type="text" [(ngModel)]="produtoForm.fornecedor" placeholder="Opcional">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Status</span>
+                                <select [(ngModel)]="produtoForm.status">
+                                    <option value="ativo">Ativo</option>
+                                    <option value="pausado">Pausado</option>
+                                    <option value="interrompido">Interrompido</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-warehouse"></i> ESTOQUE</div>
+                        <div class="form-grid">
+                            <label class="form-field">
+                                <span class="form-label">Quantidade em estoque</span>
+                                <input type="number" min="0" [(ngModel)]="produtoForm.estoque">
+                            </label>
+                        </div>
+                        <div class="form-security-note">
+                            <i class="pi pi-info-circle"></i>
+                            Esse número é abatido automaticamente a cada pedido emitido.
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-arrows-alt"></i> PESO E TAMANHO</div>
+                        <div class="form-grid">
+                            <label class="form-field">
+                                <span class="form-label">Peso (kg)</span>
+                                <input type="number" min="0" step="0.01" [(ngModel)]="produtoForm.pesoKg">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Comprimento (cm)</span>
+                                <input type="number" min="0" [(ngModel)]="produtoForm.compCm">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Largura (cm)</span>
+                                <input type="number" min="0" [(ngModel)]="produtoForm.largCm">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Altura (cm)</span>
+                                <input type="number" min="0" [(ngModel)]="produtoForm.altCm">
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- NF-E -->
+                <ng-container *ngIf="tabProduto==='nfe'">
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-file"></i> INFORMAÇÕES DA NF-E</div>
+                        <div class="form-grid">
+                            <label class="form-field">
+                                <span class="form-label">NCM *</span>
+                                <input type="text" [(ngModel)]="produtoForm.ncm" placeholder="Ex: 8544.42.00">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Origem do produto *</span>
+                                <select [(ngModel)]="produtoForm.origem">
+                                    <option value="">Selecione…</option>
+                                    <option *ngFor="let o of ORIGENS_PRODUTO" [value]="o.codigo">{{ o.label }}</option>
+                                </select>
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Unidade *</span>
+                                <select [(ngModel)]="produtoForm.unidade">
+                                    <option value="">Selecione…</option>
+                                    <option *ngFor="let u of UNIDADES_PRODUTO" [value]="u">{{ u }}</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="form-warning" *ngIf="!produtoForm.ncm">
+                            <i class="pi pi-exclamation-triangle"></i>
+                            Produto sem NCM não pode ter NF-e emitida — preencha antes de vincular a um pedido.
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-building"></i> CLASSE DE IMPOSTO — VÍNCULO COM CNPJ</div>
+                        <p class="section-hint">Selecione a(s) empresa(s) cadastrada(s) em "Empresas" que emitem nota fiscal por esse produto.</p>
+
+                        <div class="conta-fiscal-list" *ngIf="contasFiscais.length; else semContas">
+                            <div class="conta-fiscal-item" *ngFor="let c of contasFiscais">
+                                <label class="conta-fiscal-check">
+                                    <input type="checkbox" [checked]="!!contaVinculada(c.id)" (change)="toggleContaFiscal(c.id)">
+                                    <div>
+                                        <div class="conta-fiscal-nome">{{ c.razaoSocial }}</div>
+                                        <div class="conta-fiscal-cnpj">{{ c.cnpj }}</div>
+                                    </div>
+                                </label>
+                                <div class="tipo-saida-options" *ngIf="contaVinculada(c.id) as vinc">
+                                    <label class="radio-inline">
+                                        <input type="radio" [name]="'saida-' + c.id" [checked]="vinc.tipoSaida === 'revenda'" (change)="definirTipoSaida(c.id, 'revenda')">
+                                        Saída de produtos de revenda
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" [name]="'saida-' + c.id" [checked]="vinc.tipoSaida === 'fabricacao_propria'" (change)="definirTipoSaida(c.id, 'fabricacao_propria')">
+                                        Saída de fabricação própria
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #semContas>
+                            <div class="produtos-empty produtos-empty-inline">
+                                <i class="pi pi-building"></i>
+                                <span>Nenhuma conta fiscal cadastrada</span>
+                                <p>Cadastre uma empresa em "Empresas" antes de vincular produtos.</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </ng-container>
+
+                <!-- EMPARELHAR -->
+                <ng-container *ngIf="tabProduto==='emparelhar'">
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-link"></i> EMPARELHAMENTO COM O MARKETPLACE</div>
+                        <div class="emparelhamento-status" [class.ok]="produtoForm.emparelhado">
+                            <i class="pi" [class.pi-check-circle]="produtoForm.emparelhado" [class.pi-times-circle]="!produtoForm.emparelhado"></i>
+                            <div>
+                                <div class="emp-title">{{ produtoForm.emparelhado ? 'Emparelhado' : 'Não emparelhado' }}</div>
+                                <div class="emp-sub" *ngIf="produtoForm.emparelhado">
+                                    Loja: {{ produtoForm.lojaEmparelhada }} · ID online: {{ produtoForm.idProdutoOnline }} · desde {{ produtoForm.horaEmparelhamento }}
+                                </div>
+                                <div class="emp-sub" *ngIf="!produtoForm.emparelhado">
+                                    Esse produto ainda não foi vinculado a nenhum anúncio.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-security-note">
+                            <i class="pi pi-info-circle"></i>
+                            O emparelhamento é feito automaticamente na sincronização com o marketplace (via Integrações). Esse painel é só leitura por enquanto.
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- ═══════════════════════ FORM: PRODUTO COMBINADO (KIT) ═══════════════════════ -->
+    <ng-container *ngIf="view === 'form-kit'">
+        <div class="form-header">
+            <button class="btn-back" (click)="voltarLista()"><i class="pi pi-arrow-left"></i></button>
+            <div class="form-header-info">
+                <div class="form-title">{{ editingKitId ? 'Editar produto combinado' : 'Novo produto combinado' }}</div>
+                <div class="form-subtitle">{{ kitForm.skuCombinado || 'Combine produtos avulsos num kit' }}</div>
+            </div>
+            <button class="btn btn-primary" (click)="salvarKit()"><i class="pi pi-save"></i> Salvar produto combinado</button>
+        </div>
+
+        <div class="form-body-with-tabs">
+            <div class="form-side-tabs">
+                <button [class.active]="tabKit==='basicas'" (click)="tabKit='basicas'"><i class="pi pi-info-circle"></i> Informações básicas</button>
+                <button [class.active]="tabKit==='associar'" (click)="tabKit='associar'"><i class="pi pi-sitemap"></i> Associar produtos</button>
+                <button [class.active]="tabKit==='emparelhar'" (click)="tabKit='emparelhar'"><i class="pi pi-link"></i> Emparelhar produtos</button>
+            </div>
+
+            <div class="form-side-content">
+                <ng-container *ngIf="tabKit==='basicas'">
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-th-large"></i> DADOS DO KIT</div>
+                        <div class="form-grid">
+                            <label class="form-field span-2">
+                                <span class="form-label">Nome do produto combinado</span>
+                                <input type="text" [(ngModel)]="kitForm.nome" placeholder="Ex: Kit Skincare Básico 5 Produtos">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">SKU combinado</span>
+                                <input type="text" [(ngModel)]="kitForm.skuCombinado" placeholder="Ex: KIT-SKC-BSC">
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Modo de envio</span>
+                                <select [(ngModel)]="kitForm.modoEnvio">
+                                    <option value="combinado">Envio Combinado</option>
+                                    <option value="aleatorio">Envio Aleatório</option>
+                                </select>
+                            </label>
+                            <label class="form-field">
+                                <span class="form-label">Status</span>
+                                <select [(ngModel)]="kitForm.status">
+                                    <option value="ativo">Ativo</option>
+                                    <option value="pausado">Pausado</option>
+                                    <option value="interrompido">Interrompido</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="tabKit==='associar'">
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-check-square"></i> PRODUTOS ASSOCIADOS ({{ kitForm.itens?.length || 0 }})</div>
+                        <div class="kit-lista-vazia" *ngIf="!kitForm.itens?.length">
+                            Nenhum produto associado ainda. Busque abaixo e adicione ao kit.
+                        </div>
+                        <div class="kit-associado-item" *ngFor="let it of kitForm.itens; let i = index">
+                            <div class="kit-associado-info">
+                                <div class="kit-associado-nome">{{ it.nome }}</div>
+                                <div class="kit-associado-sku">{{ it.sku }}</div>
+                            </div>
+                            <div class="qtd-stepper">
+                                <button (click)="alterarQtdKit(i, -1)"><i class="pi pi-minus"></i></button>
+                                <span>{{ it.qtd }}</span>
+                                <button (click)="alterarQtdKit(i, 1)"><i class="pi pi-plus"></i></button>
+                            </div>
+                            <button class="btn-remove" (click)="removerDoKit(i)"><i class="pi pi-times"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-search"></i> ADICIONAR PRODUTOS</div>
+                        <div class="search-box">
+                            <i class="pi pi-search"></i>
+                            <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="buscaAssociar">
+                        </div>
+                        <div class="kit-disponivel-item" *ngFor="let p of produtosParaAssociar | slice:0:8">
+                            <div class="kit-associado-info">
+                                <div class="kit-associado-nome">{{ p.nome }}</div>
+                                <div class="kit-associado-sku">{{ p.sku }}</div>
+                            </div>
+                            <button class="btn btn-secondary" (click)="adicionarAoKit(p)"><i class="pi pi-plus"></i> Adicionar</button>
+                        </div>
+                        <div class="kit-lista-vazia" *ngIf="!produtosParaAssociar.length">
+                            Nenhum produto encontrado.
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="tabKit==='emparelhar'">
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-link"></i> EMPARELHAMENTO COM O MARKETPLACE</div>
+                        <div class="emparelhamento-status" [class.ok]="kitForm.emparelhado">
+                            <i class="pi" [class.pi-check-circle]="kitForm.emparelhado" [class.pi-times-circle]="!kitForm.emparelhado"></i>
+                            <div>
+                                <div class="emp-title">{{ kitForm.emparelhado ? 'Emparelhado' : 'Não emparelhado' }}</div>
+                                <div class="emp-sub" *ngIf="kitForm.emparelhado">
+                                    Loja: {{ kitForm.lojaEmparelhada }} · ID online: {{ kitForm.idProdutoOnline }}
+                                </div>
+                                <div class="emp-sub" *ngIf="!kitForm.emparelhado">
+                                    Esse kit ainda não foi vinculado a nenhum anúncio.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-security-note">
+                            <i class="pi pi-info-circle"></i>
+                            O emparelhamento é feito automaticamente na sincronização com o marketplace (via Integrações). Esse painel é só leitura por enquanto.
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+
+    <p-toast></p-toast>
+</div>
