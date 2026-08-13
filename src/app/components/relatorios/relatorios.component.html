@@ -1,0 +1,140 @@
+<div class="relatorios-page">
+
+    <div class="relatorios-header">
+        <div>
+            <div class="relatorios-title">Relatórios</div>
+            <div class="relatorios-subtitle">Desempenho de vendas por período e loja</div>
+        </div>
+        <button class="btn btn-primary" (click)="exportarXLSX()" [disabled]="exportando || !linhas.length">
+            <i class="pi pi-download"></i> Exportar XLSX
+        </button>
+    </div>
+
+    <div class="relatorios-filtros">
+        <div class="filtro-periodo">
+            <button *ngFor="let p of periodos" class="periodo-btn" [class.active]="periodoSelecionado === p.value"
+                (click)="periodoSelecionado = p.value; aplicarFiltros()">
+                {{ p.label }}
+            </button>
+        </div>
+        <div class="filtro-datas" *ngIf="periodoSelecionado === 'personalizado'">
+            <input type="date" [(ngModel)]="dataInicioPersonalizado" (change)="aplicarFiltros()">
+            <span>até</span>
+            <input type="date" [(ngModel)]="dataFimPersonalizado" (change)="aplicarFiltros()">
+        </div>
+        <select class="filtro-loja" [(ngModel)]="lojaSelecionada" (change)="aplicarFiltros()">
+            <option [value]="TODAS_LOJAS">Todas as lojas</option>
+            <option *ngFor="let l of lojas" [value]="l.id">{{ l.nome }} ({{ MKT_LABELS[l.marketplace] }})</option>
+        </select>
+    </div>
+
+    <div class="relatorios-scroll">
+
+        <!-- ── KPIs com tendência ── -->
+        <div class="kpi-grid" *ngIf="resumo">
+            <div class="kpi-card">
+                <div class="kpi-label">Receita Líquida</div>
+                <div class="kpi-valor">{{ formatarMoeda(resumo.receitaLiquida.valor) }}</div>
+                <div class="kpi-trend" [ngClass]="trendClass(resumo.receitaLiquida.deltaPercentual)">
+                    <i class="pi" [ngClass]="trendIcon(resumo.receitaLiquida.deltaPercentual)"></i>
+                    {{ resumo.receitaLiquida.deltaPercentual > 0 ? '+' : '' }}{{ resumo.receitaLiquida.deltaPercentual }}% vs período anterior
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Qtd. de Pedidos</div>
+                <div class="kpi-valor">{{ formatarNumero(resumo.qtdPedidos.valor) }}</div>
+                <div class="kpi-trend" [ngClass]="trendClass(resumo.qtdPedidos.deltaPercentual)">
+                    <i class="pi" [ngClass]="trendIcon(resumo.qtdPedidos.deltaPercentual)"></i>
+                    {{ resumo.qtdPedidos.deltaPercentual > 0 ? '+' : '' }}{{ resumo.qtdPedidos.deltaPercentual }}% vs período anterior
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Ticket Médio</div>
+                <div class="kpi-valor">{{ formatarMoeda(resumo.ticketMedio.valor) }}</div>
+                <div class="kpi-trend" [ngClass]="trendClass(resumo.ticketMedio.deltaPercentual)">
+                    <i class="pi" [ngClass]="trendIcon(resumo.ticketMedio.deltaPercentual)"></i>
+                    {{ resumo.ticketMedio.deltaPercentual > 0 ? '+' : '' }}{{ resumo.ticketMedio.deltaPercentual }}% vs período anterior
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Margem de Lucro</div>
+                <div class="kpi-valor">{{ resumo.margemLucro.valor }}%</div>
+                <div class="kpi-trend" [ngClass]="trendClass(resumo.margemLucro.deltaPercentual)">
+                    <i class="pi" [ngClass]="trendIcon(resumo.margemLucro.deltaPercentual)"></i>
+                    {{ resumo.margemLucro.deltaPercentual > 0 ? '+' : '' }}{{ resumo.margemLucro.deltaPercentual }} p.p. vs período anterior
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Gráficos ── -->
+        <div class="charts-row">
+            <div class="chart-card chart-combo">
+                <div class="chart-card-title">Receita Líquida × Qtd. de Pedidos</div>
+                <div class="chart-wrap">
+                    <p-chart type="bar" [data]="comboChartData" [options]="comboChartOptions" height="300px"></p-chart>
+                </div>
+            </div>
+            <div class="chart-card chart-doughnut">
+                <div class="chart-card-title">Receita por loja</div>
+                <div class="chart-wrap chart-wrap-donut">
+                    <p-chart type="doughnut" [data]="doughnutChartData" [options]="doughnutChartOptions" height="180px"></p-chart>
+                </div>
+                <div class="loja-legend">
+                    <div class="loja-legend-item" *ngFor="let f of fatiasPorLoja" [class.selected]="lojaSelecionada === f.lojaId">
+                        <span class="mkt-dot" [ngClass]="MKT_DOT_CLASS[f.marketplace]"></span>
+                        <span class="loja-legend-nome">{{ f.nome }}</span>
+                        <span class="loja-legend-pct">{{ f.percentual }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tabela detalhada ── -->
+        <div class="tabela-card">
+            <div class="chart-card-title">Detalhamento {{ periodoSelecionado === '12m' ? '(por mês)' : '(por dia)' }}</div>
+            <div class="tabela-wrap">
+                <table class="relatorio-table" *ngIf="linhas.length; else semDados">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Pedidos</th>
+                            <th>Produtos</th>
+                            <th>Receita Líquida</th>
+                            <th>Despesas</th>
+                            <th>Outras Receitas</th>
+                            <th>Margem</th>
+                            <th>Lucro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let l of linhas; let i = index">
+                            <td>{{ l.dataLabel }}</td>
+                            <td>{{ l.pedidos }}</td>
+                            <td>{{ l.produtos }}</td>
+                            <td class="col-money">{{ formatarMoeda(l.receitaLiquida) }}</td>
+                            <td class="col-money col-despesa">{{ formatarMoeda(l.despesas) }}</td>
+                            <td class="col-money">{{ formatarMoeda(l.outrasReceitas) }}</td>
+                            <td>
+                                <span class="margem-pill" [class.margem-boa]="l.margemLucro >= 80" [class.margem-media]="l.margemLucro >= 50 && l.margemLucro < 80" [class.margem-baixa]="l.margemLucro < 50">
+                                    {{ l.margemLucro }}%
+                                </span>
+                            </td>
+                            <td class="col-money col-lucro" [class.lucro-negativo]="l.lucro < 0">
+                                {{ formatarMoeda(l.lucro) }}
+                                <i class="pi trend-mini"
+                                   *ngIf="i < linhas.length - 1"
+                                   [ngClass]="l.lucro >= linhas[i+1].lucro ? 'pi-arrow-up-right trend-up' : 'pi-arrow-down-right trend-down'"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #semDados>
+                    <div class="relatorios-empty">
+                        <i class="pi pi-chart-line"></i>
+                        <span>Sem dados pro período/loja selecionados</span>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

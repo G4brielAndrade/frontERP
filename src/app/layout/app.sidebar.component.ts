@@ -25,7 +25,7 @@ export class AppSidebarComponent {
     readonly navItems: NavItem[] = [
         { label: 'Pedidos', icon: 'pi-shopping-cart', route: '/pedidos', disponivel: true },
         { label: 'Empresas', icon: 'pi-building', route: '/fiscal', disponivel: true },
-        { label: 'Etiquetas', icon: 'pi-print', disponivel: false },
+        { label: 'Relatórios', icon: 'pi-chart-line', route: '/relatorios', disponivel: true },
     ];
 
     readonly navItemsSecundario: NavItem[] = [

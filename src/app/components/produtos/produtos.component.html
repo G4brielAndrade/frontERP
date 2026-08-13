@@ -32,11 +32,6 @@
                 <option value="pausado">Pausado</option>
                 <option value="interrompido">Interrompido</option>
             </select>
-            <select *ngIf="abaAtiva === 'produtos'" [(ngModel)]="filtroEmparelhamento">
-                <option value="todos">Emparelhamento: todos</option>
-                <option value="emparelhado">Emparelhado</option>
-                <option value="nao-emparelhado">Não emparelhado</option>
-            </select>
         </div>
 
         <!-- ── Tabela de produtos avulsos ── -->
@@ -47,7 +42,6 @@
                         <th class="col-img"></th>
                         <th>SKU / Nome</th>
                         <th>NCM</th>
-                        <th>Emparelhamento</th>
                         <th>Estoque</th>
                         <th>Status</th>
                         <th class="col-actions"></th>
@@ -68,12 +62,6 @@
                         <td>
                             <span class="ncm-value" *ngIf="p.ncm">{{ p.ncm }}</span>
                             <span class="ncm-missing" *ngIf="!p.ncm"><i class="pi pi-exclamation-triangle"></i> Pendente</span>
-                        </td>
-                        <td>
-                            <span class="badge" [class.badge-green]="p.emparelhado" [class.badge-amber]="!p.emparelhado">
-                                <i class="pi" [class.pi-link]="p.emparelhado" [class.pi-ban]="!p.emparelhado"></i>
-                                {{ p.emparelhado ? p.lojaEmparelhada : 'Não emparelhado' }}
-                            </span>
                         </td>
                         <td>
                             <span class="estoque-value" [class.estoque-zero]="p.estoque === 0">{{ p.estoque }}</span>
@@ -111,8 +99,6 @@
                         <div class="kit-meta">
                             <span><i class="pi pi-truck"></i> {{ k.modoEnvio === 'combinado' ? 'Envio Combinado' : 'Envio Aleatório' }}</span>
                             <span><i class="pi pi-box"></i> {{ k.itens.length }} produto(s)</span>
-                            <span *ngIf="k.emparelhado"><i class="pi pi-link"></i> {{ k.lojaEmparelhada }}</span>
-                            <span *ngIf="!k.emparelhado" class="text-muted"><i class="pi pi-ban"></i> Não emparelhado</span>
                         </div>
                         <div class="kit-itens-preview">
                             <span class="kit-item-pill" *ngFor="let it of k.itens">{{ it.qtd }}x {{ it.sku }}</span>
@@ -148,7 +134,6 @@
             <div class="form-side-tabs">
                 <button [class.active]="tabProduto==='basicas'" (click)="tabProduto='basicas'"><i class="pi pi-info-circle"></i> Informações básicas</button>
                 <button [class.active]="tabProduto==='nfe'" (click)="tabProduto='nfe'"><i class="pi pi-file"></i> Informações da NF-e</button>
-                <button [class.active]="tabProduto==='emparelhar'" (click)="tabProduto='emparelhar'"><i class="pi pi-link"></i> Emparelhar produtos</button>
             </div>
 
             <div class="form-side-content">
@@ -293,29 +278,6 @@
                         </ng-template>
                     </div>
                 </ng-container>
-
-                <!-- EMPARELHAR -->
-                <ng-container *ngIf="tabProduto==='emparelhar'">
-                    <div class="detail-section">
-                        <div class="detail-section-title"><i class="pi pi-link"></i> EMPARELHAMENTO COM O MARKETPLACE</div>
-                        <div class="emparelhamento-status" [class.ok]="produtoForm.emparelhado">
-                            <i class="pi" [class.pi-check-circle]="produtoForm.emparelhado" [class.pi-times-circle]="!produtoForm.emparelhado"></i>
-                            <div>
-                                <div class="emp-title">{{ produtoForm.emparelhado ? 'Emparelhado' : 'Não emparelhado' }}</div>
-                                <div class="emp-sub" *ngIf="produtoForm.emparelhado">
-                                    Loja: {{ produtoForm.lojaEmparelhada }} · ID online: {{ produtoForm.idProdutoOnline }} · desde {{ produtoForm.horaEmparelhamento }}
-                                </div>
-                                <div class="emp-sub" *ngIf="!produtoForm.emparelhado">
-                                    Esse produto ainda não foi vinculado a nenhum anúncio.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-security-note">
-                            <i class="pi pi-info-circle"></i>
-                            O emparelhamento é feito automaticamente na sincronização com o marketplace (via Integrações). Esse painel é só leitura por enquanto.
-                        </div>
-                    </div>
-                </ng-container>
             </div>
         </div>
     </ng-container>
@@ -335,7 +297,6 @@
             <div class="form-side-tabs">
                 <button [class.active]="tabKit==='basicas'" (click)="tabKit='basicas'"><i class="pi pi-info-circle"></i> Informações básicas</button>
                 <button [class.active]="tabKit==='associar'" (click)="tabKit='associar'"><i class="pi pi-sitemap"></i> Associar produtos</button>
-                <button [class.active]="tabKit==='emparelhar'" (click)="tabKit='emparelhar'"><i class="pi pi-link"></i> Emparelhar produtos</button>
             </div>
 
             <div class="form-side-content">
@@ -405,28 +366,6 @@
                         </div>
                         <div class="kit-lista-vazia" *ngIf="!produtosParaAssociar.length">
                             Nenhum produto encontrado.
-                        </div>
-                    </div>
-                </ng-container>
-
-                <ng-container *ngIf="tabKit==='emparelhar'">
-                    <div class="detail-section">
-                        <div class="detail-section-title"><i class="pi pi-link"></i> EMPARELHAMENTO COM O MARKETPLACE</div>
-                        <div class="emparelhamento-status" [class.ok]="kitForm.emparelhado">
-                            <i class="pi" [class.pi-check-circle]="kitForm.emparelhado" [class.pi-times-circle]="!kitForm.emparelhado"></i>
-                            <div>
-                                <div class="emp-title">{{ kitForm.emparelhado ? 'Emparelhado' : 'Não emparelhado' }}</div>
-                                <div class="emp-sub" *ngIf="kitForm.emparelhado">
-                                    Loja: {{ kitForm.lojaEmparelhada }} · ID online: {{ kitForm.idProdutoOnline }}
-                                </div>
-                                <div class="emp-sub" *ngIf="!kitForm.emparelhado">
-                                    Esse kit ainda não foi vinculado a nenhum anúncio.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-security-note">
-                            <i class="pi pi-info-circle"></i>
-                            O emparelhamento é feito automaticamente na sincronização com o marketplace (via Integrações). Esse painel é só leitura por enquanto.
                         </div>
                     </div>
                 </ng-container>

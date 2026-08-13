@@ -7,9 +7,8 @@ import {
 
 type Aba = 'produtos' | 'kits';
 type View = 'list' | 'form-produto' | 'form-kit';
-type TabProduto = 'basicas' | 'nfe' | 'emparelhar';
-type TabKit = 'basicas' | 'associar' | 'emparelhar';
-type FiltroEmparelhamento = 'todos' | 'emparelhado' | 'nao-emparelhado';
+type TabProduto = 'basicas' | 'nfe';
+type TabKit = 'basicas' | 'associar';
 
 function uuid(): string {
     return (crypto as any).randomUUID
@@ -39,7 +38,6 @@ export class ProdutosComponent implements OnInit {
     // ── Filtros da listagem ────────────────────────────────────
     busca = '';
     filtroStatus: 'todos' | StatusProduto = 'todos';
-    filtroEmparelhamento: FiltroEmparelhamento = 'todos';
 
     // ── Form: produto único ────────────────────────────────────
     tabProduto: TabProduto = 'basicas';
@@ -178,8 +176,6 @@ export class ProdutosComponent implements OnInit {
         const termo = this.busca.trim().toLowerCase();
         return this.produtos.filter(p => {
             if (this.filtroStatus !== 'todos' && p.status !== this.filtroStatus) return false;
-            if (this.filtroEmparelhamento === 'emparelhado' && !p.emparelhado) return false;
-            if (this.filtroEmparelhamento === 'nao-emparelhado' && p.emparelhado) return false;
             if (termo && !p.sku.toLowerCase().includes(termo) && !p.nome.toLowerCase().includes(termo)) return false;
             return true;
         });
