@@ -18,7 +18,8 @@ import { LoginComponent } from './components/auth/login/login.component';
                     { path: 'pedidos', loadChildren: () => import('./components/pedidos/pedidos.module').then(m => m.PedidosModule), canActivate: [AuthGuard] },
                     { path: 'fiscal', loadChildren: () => import('./components/fiscal/fiscal.module').then(m => m.FiscalModule), canActivate: [AuthGuard] },
                     { path: 'produtos', loadChildren: () => import('./components/produtos/produtos.module').then(m => m.ProdutosModule), canActivate: [AuthGuard] },
-                    { path: 'relatorios', loadChildren: () => import('./components/relatorios/relatorios.module').then(m => m.RelatoriosModule), canActivate: [AuthGuard] }
+                    { path: 'relatorios', loadChildren: () => import('./components/relatorios/relatorios.module').then(m => m.RelatoriosModule), canActivate: [AuthGuard] },
+                    { path: 'estoque', loadChildren: () => import('./components/estoque/estoque.module').then(m => m.EstoqueModule), canActivate: [AuthGuard] }
                 ]
             },
             { path: 'auth/login', component: LoginComponent },

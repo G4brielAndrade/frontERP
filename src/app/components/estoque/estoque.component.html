@@ -1,0 +1,241 @@
+<div class="estoque-page">
+
+    <div class="estoque-header">
+        <div>
+            <div class="estoque-title">Estoque</div>
+            <div class="estoque-subtitle">Controle de níveis, movimentações e curva ABC</div>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">SKUs ativos</div>
+            <div class="kpi-valor">{{ totalSkus }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Valor em estoque</div>
+            <div class="kpi-valor">{{ formatarMoeda(valorTotalEstoque) }}</div>
+        </div>
+        <div class="kpi-card" [class.kpi-danger]="qtdRuptura > 0">
+            <div class="kpi-label">Em ruptura</div>
+            <div class="kpi-valor">{{ qtdRuptura }}</div>
+        </div>
+        <div class="kpi-card" [class.kpi-warning]="qtdBaixo > 0">
+            <div class="kpi-label">Estoque baixo</div>
+            <div class="kpi-valor">{{ qtdBaixo }}</div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ LISTAGEM (abas) ═══════════════════════ -->
+    <ng-container *ngIf="view === 'list'">
+        <div class="estoque-tabs">
+            <button class="tab-btn" [class.active]="abaAtiva==='niveis'" (click)="abaAtiva='niveis'">Níveis de Estoque</button>
+            <button class="tab-btn" [class.active]="abaAtiva==='movimentacoes'" (click)="abaAtiva='movimentacoes'">Movimentações</button>
+            <button class="tab-btn" [class.active]="abaAtiva==='curva-abc'" (click)="abaAtiva='curva-abc'">Curva ABC</button>
+        </div>
+
+        <!-- ── Níveis de estoque ── -->
+        <ng-container *ngIf="abaAtiva==='niveis'">
+            <div class="estoque-filtros">
+                <div class="search-box">
+                    <i class="pi pi-search"></i>
+                    <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="busca">
+                </div>
+                <select [(ngModel)]="filtroStatus">
+                    <option value="todos">Todos os status</option>
+                    <option value="ok">OK</option>
+                    <option value="baixo">Estoque baixo</option>
+                    <option value="zerado">Em ruptura</option>
+                </select>
+            </div>
+
+            <div class="estoque-scroll">
+                <table class="estoque-table" *ngIf="niveisFiltrados.length; else vazioNiveis">
+                    <thead>
+                        <tr>
+                            <th class="col-img"></th>
+                            <th>SKU / Nome</th>
+                            <th>Estoque atual</th>
+                            <th>Reservado</th>
+                            <th>Disponível</th>
+                            <th>Mínimo</th>
+                            <th>Valor em estoque</th>
+                            <th>Status</th>
+                            <th class="col-actions"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let n of niveisFiltrados">
+                            <td class="col-img"><div class="produto-thumb"><i class="pi pi-box"></i></div></td>
+                            <td>
+                                <div class="produto-nome">{{ n.nome }}</div>
+                                <div class="produto-sku">{{ n.sku }}</div>
+                            </td>
+                            <td class="col-num"><strong>{{ n.estoqueAtual }}</strong></td>
+                            <td class="col-num text-muted">{{ n.reservado }}</td>
+                            <td class="col-num">{{ n.disponivel }}</td>
+                            <td class="col-num text-muted">{{ n.estoqueMinimo }}</td>
+                            <td class="col-money">{{ formatarMoeda(n.valorEmEstoque) }}</td>
+                            <td><span class="badge" [ngClass]="statusClass(n.status)">{{ statusLabel(n.status) }}</span></td>
+                            <td class="col-actions">
+                                <button class="btn btn-secondary" (click)="abrirAjuste(n)"><i class="pi pi-pencil"></i> Ajustar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #vazioNiveis>
+                    <div class="estoque-empty"><i class="pi pi-box"></i><span>Nenhum produto encontrado</span></div>
+                </ng-template>
+            </div>
+        </ng-container>
+
+        <!-- ── Movimentações ── -->
+        <ng-container *ngIf="abaAtiva==='movimentacoes'">
+            <div class="estoque-filtros">
+                <div class="search-box">
+                    <i class="pi pi-search"></i>
+                    <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="busca">
+                </div>
+                <select [(ngModel)]="filtroTipoMov">
+                    <option value="todos">Todos os tipos</option>
+                    <option value="entrada">Entradas</option>
+                    <option value="saida">Saídas</option>
+                    <option value="ajuste">Ajustes</option>
+                </select>
+            </div>
+
+            <div class="estoque-scroll">
+                <table class="estoque-table" *ngIf="movimentacoesFiltradas.length; else vazioMov">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Produto</th>
+                            <th>Tipo</th>
+                            <th>Qtd.</th>
+                            <th>Motivo</th>
+                            <th>Saldo resultante</th>
+                            <th>Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let m of movimentacoesFiltradas">
+                            <td>{{ m.data }}</td>
+                            <td>
+                                <div class="produto-nome">{{ m.nomeProduto }}</div>
+                                <div class="produto-sku">{{ m.sku }}<span *ngIf="m.referenciaPedido"> · {{ m.referenciaPedido }}</span></div>
+                            </td>
+                            <td><span class="badge" [ngClass]="tipoMovClass(m.tipo)">{{ tipoMovLabel(m.tipo) }}</span></td>
+                            <td class="col-num" [class.text-danger]="m.tipo === 'saida'" [class.text-success]="m.tipo !== 'saida'">
+                                {{ m.tipo === 'saida' ? '−' : '+' }}{{ m.quantidade }}
+                            </td>
+                            <td>
+                                {{ MOTIVOS_MOVIMENTACAO[m.motivo] }}
+                                <div class="mov-obs" *ngIf="m.observacao">{{ m.observacao }}</div>
+                            </td>
+                            <td class="col-num">{{ m.saldoResultante }}</td>
+                            <td>{{ m.usuario }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #vazioMov>
+                    <div class="estoque-empty"><i class="pi pi-history"></i><span>Nenhuma movimentação encontrada</span></div>
+                </ng-template>
+            </div>
+        </ng-container>
+
+        <!-- ── Curva ABC ── -->
+        <ng-container *ngIf="abaAtiva==='curva-abc'">
+            <div class="abc-hint">
+                Classificação pela participação na receita dos últimos 30 dias — <strong>A</strong> = produtos que somam até 80% da receita, <strong>B</strong> até 95%, <strong>C</strong> o restante.
+            </div>
+            <div class="estoque-scroll">
+                <table class="estoque-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>SKU / Nome</th>
+                            <th>Receita (30d)</th>
+                            <th>Participação</th>
+                            <th>Acumulado</th>
+                            <th>Classe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let f of faixasABC; let i = index">
+                            <td class="text-muted">{{ i + 1 }}</td>
+                            <td>
+                                <div class="produto-nome">{{ f.nome }}</div>
+                                <div class="produto-sku">{{ f.sku }}</div>
+                            </td>
+                            <td class="col-money">{{ formatarMoeda(f.receita30d) }}</td>
+                            <td class="col-num">{{ f.participacao }}%</td>
+                            <td class="col-num">{{ f.participacaoAcumulada }}%</td>
+                            <td><span class="badge-abc" [ngClass]="classeABCClass(f.classe)">{{ f.classe }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <!-- ═══════════════════════ AJUSTE MANUAL ═══════════════════════ -->
+    <ng-container *ngIf="view === 'ajuste' && ajusteAlvo as alvo">
+        <div class="form-header">
+            <button class="btn-back" (click)="voltarLista()"><i class="pi pi-arrow-left"></i></button>
+            <div class="form-header-info">
+                <div class="form-title">Ajustar estoque</div>
+                <div class="form-subtitle">{{ alvo.nome }} · {{ alvo.sku }}</div>
+            </div>
+        </div>
+
+        <div class="ajuste-scroll">
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-box"></i> ESTOQUE ATUAL</div>
+                <div class="ajuste-atual">
+                    <span class="ajuste-atual-valor">{{ alvo.estoqueAtual }}</span>
+                    <span class="ajuste-atual-label">unidades disponíveis: {{ alvo.disponivel }} · reservadas: {{ alvo.reservado }}</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-pencil"></i> NOVO MOVIMENTO</div>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span class="form-label">Tipo</span>
+                        <select [(ngModel)]="ajusteForm.tipo">
+                            <option value="entrada">Entrada (soma ao estoque)</option>
+                            <option value="saida">Saída (retira do estoque)</option>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">Quantidade</span>
+                        <input type="number" min="1" [(ngModel)]="ajusteForm.quantidade">
+                    </label>
+                    <label class="form-field span-2">
+                        <span class="form-label">Motivo</span>
+                        <select [(ngModel)]="ajusteForm.motivo">
+                            <option *ngFor="let m of MOTIVOS_LIST" [value]="m[0]">{{ m[1] }}</option>
+                        </select>
+                    </label>
+                    <label class="form-field span-2">
+                        <span class="form-label">Observação (opcional)</span>
+                        <input type="text" [(ngModel)]="ajusteForm.observacao" placeholder="Ex: nota fiscal de compra nº 1234">
+                    </label>
+                </div>
+
+                <div class="ajuste-preview">
+                    <span>Estoque após o ajuste:</span>
+                    <strong>
+                        {{ ajusteForm.tipo === 'saida' ? (alvo.estoqueAtual - (ajusteForm.quantidade || 0)) : (alvo.estoqueAtual + (ajusteForm.quantidade || 0)) }} unidades
+                    </strong>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" (click)="confirmarAjuste()"><i class="pi pi-check"></i> Confirmar ajuste</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <p-toast></p-toast>
+</div>
