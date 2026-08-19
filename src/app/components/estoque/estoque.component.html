@@ -55,12 +55,12 @@
                         <tr>
                             <th class="col-img"></th>
                             <th>SKU / Nome</th>
-                            <th>Estoque atual</th>
-                            <th>Reservado</th>
-                            <th>Disponível</th>
-                            <th>Mínimo</th>
-                            <th>Valor em estoque</th>
-                            <th>Status</th>
+                            <th class="col-num">Estoque atual</th>
+                            <th class="col-num">Reservado</th>
+                            <th class="col-num">Disponível</th>
+                            <th class="col-num">Mínimo</th>
+                            <th class="col-money">Valor em estoque</th>
+                            <th class="col-status">Status</th>
                             <th class="col-actions"></th>
                         </tr>
                     </thead>
@@ -76,7 +76,7 @@
                             <td class="col-num">{{ n.disponivel }}</td>
                             <td class="col-num text-muted">{{ n.estoqueMinimo }}</td>
                             <td class="col-money">{{ formatarMoeda(n.valorEmEstoque) }}</td>
-                            <td><span class="badge" [ngClass]="statusClass(n.status)">{{ statusLabel(n.status) }}</span></td>
+                            <td class="col-status"><span class="badge" [ngClass]="statusClass(n.status)">{{ statusLabel(n.status) }}</span></td>
                             <td class="col-actions">
                                 <button class="btn btn-secondary" (click)="abrirAjuste(n)"><i class="pi pi-pencil"></i> Ajustar</button>
                             </td>
@@ -110,10 +110,10 @@
                         <tr>
                             <th>Data</th>
                             <th>Produto</th>
-                            <th>Tipo</th>
-                            <th>Qtd.</th>
+                            <th class="col-status">Tipo</th>
+                            <th class="col-num">Qtd.</th>
                             <th>Motivo</th>
-                            <th>Saldo resultante</th>
+                            <th class="col-num">Saldo resultante</th>
                             <th>Usuário</th>
                         </tr>
                     </thead>
@@ -124,7 +124,7 @@
                                 <div class="produto-nome">{{ m.nomeProduto }}</div>
                                 <div class="produto-sku">{{ m.sku }}<span *ngIf="m.referenciaPedido"> · {{ m.referenciaPedido }}</span></div>
                             </td>
-                            <td><span class="badge" [ngClass]="tipoMovClass(m.tipo)">{{ tipoMovLabel(m.tipo) }}</span></td>
+                            <td class="col-status"><span class="badge" [ngClass]="tipoMovClass(m.tipo)">{{ tipoMovLabel(m.tipo) }}</span></td>
                             <td class="col-num" [class.text-danger]="m.tipo === 'saida'" [class.text-success]="m.tipo !== 'saida'">
                                 {{ m.tipo === 'saida' ? '−' : '+' }}{{ m.quantidade }}
                             </td>
@@ -152,17 +152,17 @@
                 <table class="estoque-table">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th class="col-num">#</th>
                             <th>SKU / Nome</th>
-                            <th>Receita (30d)</th>
-                            <th>Participação</th>
-                            <th>Acumulado</th>
-                            <th>Classe</th>
+                            <th class="col-money">Receita (30d)</th>
+                            <th class="col-num">Participação</th>
+                            <th class="col-num">Acumulado</th>
+                            <th class="col-status">Classe</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let f of faixasABC; let i = index">
-                            <td class="text-muted">{{ i + 1 }}</td>
+                            <td class="col-num text-muted">{{ i + 1 }}</td>
                             <td>
                                 <div class="produto-nome">{{ f.nome }}</div>
                                 <div class="produto-sku">{{ f.sku }}</div>
@@ -170,7 +170,7 @@
                             <td class="col-money">{{ formatarMoeda(f.receita30d) }}</td>
                             <td class="col-num">{{ f.participacao }}%</td>
                             <td class="col-num">{{ f.participacaoAcumulada }}%</td>
-                            <td><span class="badge-abc" [ngClass]="classeABCClass(f.classe)">{{ f.classe }}</span></td>
+                            <td class="col-status"><span class="badge-abc" [ngClass]="classeABCClass(f.classe)">{{ f.classe }}</span></td>
                         </tr>
                     </tbody>
                 </table>
