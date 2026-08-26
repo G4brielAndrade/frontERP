@@ -128,18 +128,17 @@ body {
     z-index: 0;
     border-radius: 50%;
     pointer-events: none;
-    filter: blur(150px);
-    mix-blend-mode: screen;
+    filter: blur(100px);
 }
 .layout-wrapper.layout-theme-dark::after {
-    width: 700px; height: 700px;
-    top: -200px; left: -100px;
-    background: rgba(79, 70, 229, 0.20); /* índigo — foco principal */
+    width: 900px; height: 900px;
+    top: -480px; left: -280px;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.16) 0%, rgba(79, 70, 229, 0) 65%);
 }
 .layout-wrapper.layout-theme-dark .aurora-1 {
-    width: 600px; height: 600px;
-    bottom: -150px; right: -100px;
-    background: rgba(147, 51, 234, 0.10); /* púrpura — insights de IA */
+    width: 800px; height: 800px;
+    bottom: -420px; right: -260px;
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.09) 0%, rgba(147, 51, 234, 0) 65%);
 }
 
 /* Todo o conteúdo real fica acima das auroras/ruído (z-index 0 delas) */
