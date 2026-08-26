@@ -295,10 +295,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // filtros de empresa/período usados nos cards.
     // ════════════════════════════════════════════════════════════
     private montarGraficos(): void {
-        const style = getComputedStyle(document.documentElement);
-        const textColor = style.getPropertyValue('--text-color');
-        const textColorSecondary = style.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = style.getPropertyValue('--surface-border');
+        const escuro = this.layoutService.config().colorScheme === 'dark';
+        const textColorSecondary = escuro ? '#a1a1aa' : '#6b7280';
+        const surfaceBorder = escuro ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)';
 
         const base = this.SERIES_POR_PERIODO[this.periodoSelecionado];
         const fatorTotal = this.obterFatoresEmpresas().reduce((acc, f) => acc + f, 0);
@@ -321,57 +320,83 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     data: pedidosSerie,
                     fill: true,
                     tension: 0.4,
-                    borderColor: '#4f46e5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.10)',
-                    pointBackgroundColor: '#4f46e5',
+                    borderColor: '#6366f1',
+                    backgroundColor: (ctx: any) => this.gradienteArea(ctx, 99, 102, 241),
+                    pointBackgroundColor: '#6366f1',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                 },
                 {
                     label: 'Emitidas',
                     data: emitidasSerie,
                     fill: true,
                     tension: 0.4,
-                    borderColor: '#16a34a',
-                    backgroundColor: 'rgba(22, 163, 74, 0.10)',
-                    pointBackgroundColor: '#16a34a',
+                    borderColor: '#34d399',
+                    backgroundColor: (ctx: any) => this.gradienteArea(ctx, 52, 211, 153),
+                    pointBackgroundColor: '#34d399',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                 },
                 {
                     label: 'Canceladas',
                     data: canceladasSerie,
                     fill: false,
                     tension: 0.4,
-                    borderColor: '#dc2626',
+                    borderColor: '#fb7185',
                     borderWidth: 2,
-                    pointBackgroundColor: '#dc2626',
+                    pointBackgroundColor: '#fb7185',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                 },
                 {
                     label: 'CC-e',
                     data: cceSerie,
                     fill: false,
                     tension: 0.4,
-                    borderColor: '#9333ea',
+                    borderColor: '#a78bfa',
                     borderWidth: 2,
-                    pointBackgroundColor: '#9333ea',
+                    pointBackgroundColor: '#a78bfa',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                 },
                 {
                     label: 'Inutilizadas',
                     data: inutilizadasSerie,
                     fill: false,
                     tension: 0.4,
-                    borderColor: '#d97706',
+                    borderColor: '#fbbf24',
                     borderWidth: 2,
-                    pointBackgroundColor: '#d97706',
+                    pointBackgroundColor: '#fbbf24',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                 },
             ],
         };
 
         this.vendasChartOptions = {
             maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { labels: { color: textColor } }
+                legend: { labels: { color: textColorSecondary, usePointStyle: true, boxWidth: 8 } },
+                tooltip: {
+                    backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d4d4d8',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 10,
+                    displayColors: true,
+                    usePointStyle: true,
+                },
             },
             scales: {
                 x: { ticks: { color: textColorSecondary }, grid: { display: false } },
-                y: { ticks: { color: textColorSecondary }, grid: { color: surfaceBorder, drawBorder: false }, beginAtZero: true },
+                y: {
+                    ticks: { color: textColorSecondary },
+                    grid: { color: surfaceBorder, drawBorder: false, borderDash: [4, 4] },
+                    beginAtZero: true,
+                },
             },
         };
 
@@ -379,7 +404,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             labels: ['Mercado Livre', 'Shopee', 'Amazon', 'Nuvemshop'],
             datasets: [{
                 data: this.obterDistribuicaoMkt(),
-                backgroundColor: ['#ffd400', '#f35b2b', '#ff9900', '#00bcd4'],
+                backgroundColor: ['#facc15', '#fb7185', '#fb923c', '#22d3ee'],
                 borderWidth: 0,
                 hoverOffset: 4,
             }],
@@ -391,10 +416,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { color: textColor, usePointStyle: true, boxWidth: 8, padding: 16 }
-                }
+                    labels: { color: textColorSecondary, usePointStyle: true, boxWidth: 8, padding: 16 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d4d4d8',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 10,
+                },
             },
         };
+    }
+
+    // Gradiente vertical (50% de opacidade → 0%) pra área preenchida dos gráficos de linha
+    private gradienteArea(context: any, r: number, g: number, b: number): any {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return `rgba(${r}, ${g}, ${b}, 0.1)`;
+        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.5)`);
+        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        return gradient;
     }
 
     // Fator de cada empresa envolvida no filtro atual (uma só, ou todas somadas)

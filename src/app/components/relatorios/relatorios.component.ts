@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { Marketplace } from 'src/api/pedido.model';
 import { PeriodoRelatorio, LojaResumo, LinhaRelatorioDiario, ResumoRelatorio, FatiaPorLoja } from 'src/api/relatorio.model';
+import { LayoutService } from 'src/app/layout/service/app.layout.service';
 
 interface DiaBruto { pedidos: number; receita: number; despesas: number; }
 
@@ -62,6 +63,23 @@ export class RelatoriosComponent implements OnInit {
 
     exportando = false;
 
+    // Guarda a última série gerada só pra poder reconstruir os gráficos
+    // (cores) quando o usuário troca de tema, sem precisar remockar os dados.
+    private ultimasLinhasChart: LinhaRelatorioDiario[] = [];
+    private ultimosDias = 30;
+
+    constructor(private layoutService: LayoutService) {
+        // Chart.js não é reativo a CSS — se o usuário alternar claro/escuro
+        // com a tela já aberta, precisamos remontar os gráficos na mão.
+        effect(() => {
+            this.layoutService.config().colorScheme;
+            if (this.ultimasLinhasChart.length) {
+                this.montarGraficoCombo(this.ultimasLinhasChart);
+                this.montarFatiasPorLoja(this.ultimosDias);
+            }
+        });
+    }
+
     ngOnInit(): void {
         this.obterLojas();
         this.aplicarFiltros();
@@ -112,6 +130,8 @@ export class RelatoriosComponent implements OnInit {
         this.linhas = [...linhasExibicao].reverse(); // mais recente primeiro, como no relatório de referência
 
         this.montarResumo(dias);
+        this.ultimasLinhasChart = linhasExibicao;
+        this.ultimosDias = dias;
         this.montarGraficoCombo(linhasExibicao);
         this.montarFatiasPorLoja(dias);
     }
@@ -226,9 +246,9 @@ export class RelatoriosComponent implements OnInit {
     // GRÁFICOS (Chart.js via primeng/chart — mesma lib do Dashboard)
     // ════════════════════════════════════════════════════════════
     private montarGraficoCombo(linhas: LinhaRelatorioDiario[]): void {
-        const style = getComputedStyle(document.documentElement);
-        const textColorSecondary = style.getPropertyValue('--text-color-secondary') || '#6b7280';
-        const surfaceBorder = style.getPropertyValue('--surface-border') || 'rgba(0,0,0,0.08)';
+        const escuro = this.layoutService.config().colorScheme === 'dark';
+        const textColorSecondary = escuro ? '#a1a1aa' : '#6b7280';
+        const gridColor = escuro ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)';
 
         this.comboChartData = {
             labels: linhas.map(l => l.dataLabel),
@@ -237,7 +257,7 @@ export class RelatoriosComponent implements OnInit {
                     type: 'bar',
                     label: 'Qtd. de Pedidos',
                     data: linhas.map(l => l.pedidos),
-                    backgroundColor: 'rgba(79, 70, 229, 0.55)',
+                    backgroundColor: 'rgba(99, 102, 241, 0.55)',
                     borderRadius: 4,
                     yAxisID: 'y1',
                     order: 2,
@@ -246,9 +266,11 @@ export class RelatoriosComponent implements OnInit {
                     type: 'line',
                     label: 'Receita Líquida',
                     data: linhas.map(l => l.receitaLiquida),
-                    borderColor: '#16a34a',
-                    backgroundColor: 'rgba(22, 163, 74, 0.10)',
-                    pointBackgroundColor: '#16a34a',
+                    borderColor: '#34d399',
+                    backgroundColor: (ctx: any) => this.gradienteArea(ctx, 52, 211, 153),
+                    pointBackgroundColor: '#34d399',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                     tension: 0.4,
                     fill: true,
                     yAxisID: 'y',
@@ -259,11 +281,25 @@ export class RelatoriosComponent implements OnInit {
 
         this.comboChartOptions = {
             maintainAspectRatio: false,
-            plugins: { legend: { position: 'top', labels: { color: textColorSecondary, usePointStyle: true } } },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { position: 'top', labels: { color: textColorSecondary, usePointStyle: true, boxWidth: 8 } },
+                tooltip: {
+                    backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d4d4d8',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 10,
+                    usePointStyle: true,
+                },
+            },
             scales: {
                 x: { ticks: { color: textColorSecondary, maxRotation: 0 }, grid: { display: false } },
                 y: {
-                    position: 'left', ticks: { color: textColorSecondary }, grid: { color: surfaceBorder },
+                    position: 'left', ticks: { color: textColorSecondary },
+                    grid: { color: gridColor, borderDash: [4, 4], drawBorder: false },
                     title: { display: true, text: 'Receita (R$)', color: textColorSecondary, font: { size: 11 } },
                 },
                 y1: {
@@ -272,6 +308,17 @@ export class RelatoriosComponent implements OnInit {
                 },
             },
         };
+    }
+
+    // Gradiente vertical (50% de opacidade → 0%) pra área preenchida — mesmo tratamento do Dashboard
+    private gradienteArea(context: any, r: number, g: number, b: number): any {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return `rgba(${r}, ${g}, ${b}, 0.1)`;
+        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.5)`);
+        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        return gradient;
     }
 
     private montarFatiasPorLoja(dias: number): void {
@@ -286,9 +333,6 @@ export class RelatoriosComponent implements OnInit {
             .map(t => ({ ...t, percentual: totalGeral > 0 ? Math.round((t.receita / totalGeral) * 1000) / 10 : 0 }))
             .sort((a, b) => b.receita - a.receita);
 
-        const style = getComputedStyle(document.documentElement);
-        const textColorSecondary = style.getPropertyValue('--text-color-secondary') || '#6b7280';
-
         this.doughnutChartData = {
             labels: this.fatiasPorLoja.map(f => f.nome),
             datasets: [{
@@ -301,7 +345,18 @@ export class RelatoriosComponent implements OnInit {
         this.doughnutChartOptions = {
             maintainAspectRatio: false,
             cutout: '68%',
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d4d4d8',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 10,
+                },
+            },
         };
     }
 

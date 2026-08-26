@@ -1,26 +1,5 @@
+/* As variáveis de cor vêm de _nexus-theme.scss (.layout-theme-dark/light) */
 :host {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-tertiary: #f1f3f5;
-    --text-primary: #1a1a2e;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --border: rgba(0, 0, 0, 0.09);
-    --border-md: rgba(0, 0, 0, 0.16);
-    --accent: #4f46e5;
-    --accent-dark: #4338ca;
-    --accent-light: #eef2ff;
-    --success: #16a34a;
-    --success-bg: #f0fdf4;
-    --warning: #d97706;
-    --warning-bg: #fef3c7;
-    --danger: #dc2626;
-    --danger-bg: #fef2f2;
-    --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-
     display: block;
     height: 100%;
     font-size: 14px;
@@ -77,7 +56,7 @@ button { cursor: pointer; font-family: inherit; }
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; padding: 0 4px 14px; flex-shrink: 0; }
 .kpi-card {
     background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg);
-    padding: 14px 16px; box-shadow: var(--shadow-sm);
+    padding: 14px 16px; box-shadow: var(--shadow-sm); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .kpi-card.kpi-danger { border-color: rgba(220, 38, 38, 0.3); background: var(--danger-bg); }
 .kpi-card.kpi-warning { border-color: rgba(217, 119, 6, 0.3); background: var(--warning-bg); }
@@ -164,7 +143,7 @@ button { cursor: pointer; font-family: inherit; }
 
 .detail-section {
     background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg);
-    padding: 16px 18px; margin-bottom: 12px; box-shadow: var(--shadow-sm);
+    padding: 16px 18px; margin-bottom: 12px; box-shadow: var(--shadow-sm); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .detail-section-title {
     font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;

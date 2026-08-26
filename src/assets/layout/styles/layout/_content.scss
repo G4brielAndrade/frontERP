@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    margin-left: 64px; // largura fixa da .icon-sidebar — ela é sempre visível, em qualquer tela ou modo
-    padding: 5.5rem 1.25rem 1.25rem 1.25rem;
+    margin-left: 6.5rem; // reserva espaço pro floating dock (left:1.5rem + ~80px de largura do pill)
+    padding: 6rem 1.5rem 1.5rem 1rem;
     transition: margin-left $transitionDuration;
     overflow: hidden;
 }

@@ -20,3 +20,10 @@
         overflow: hidden;
     }
 }
+
+@media (max-width: 768px) {
+    .layout-main-container {
+        margin-left: 0;
+        padding: 5.5rem 1rem 5.5rem 1rem; // espaço embaixo pro dock horizontal flutuante
+    }
+}

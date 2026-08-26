@@ -21,6 +21,18 @@ export class AppTopBarComponent {
         private authService: AuthService
     ) { }
 
+    // Alterna entre os temas lara-dark-indigo / lara-light-indigo, reaproveitando
+    // o mesmo mecanismo de troca de theme.css que o painel de Configurações usa.
+    toggleColorScheme(): void {
+        const novoEsquema = this.layoutService.config().colorScheme === 'dark' ? 'light' : 'dark';
+        const novoTema = novoEsquema === 'dark' ? 'lara-dark-indigo' : 'lara-light-indigo';
+        this.layoutService.config.update((config) => ({
+            ...config,
+            colorScheme: novoEsquema,
+            theme: novoTema,
+        }));
+    }
+
     logout() {
         const observer = {
             next: () => {

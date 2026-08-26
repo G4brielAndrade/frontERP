@@ -31,7 +31,7 @@
     <div class="relatorios-scroll">
 
         <!-- ── KPIs com tendência ── -->
-        <div class="kpi-grid" *ngIf="resumo">
+        <div class="kpi-grid fade-in-stagger" *ngIf="resumo">
             <div class="kpi-card">
                 <div class="kpi-label">Receita Líquida</div>
                 <div class="kpi-valor">{{ formatarMoeda(resumo.receitaLiquida.valor) }}</div>

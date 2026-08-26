@@ -6,11 +6,15 @@
     top: 0;
     width: 100%;
     padding: 0 2rem;
-    background-color: var(--surface-card);
+    background-color: var(--shell-bg);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--shell-border);
     transition: left $transitionDuration;
     display: flex;
     align-items: center;
-    box-shadow: 0px 3px 5px rgba(0,0,0,.02), 0px 0px 2px rgba(0,0,0,.05), 0px 1px 4px rgba(0,0,0,.08);
+    gap: 1.5rem;
+    box-shadow: none;
 
     .layout-topbar-logo {
         display: flex;
@@ -18,11 +22,12 @@
         color: var(--surface-900);
         font-size: 1.5rem;
         font-weight: 500;
-        width: 300px;
+        width: 200px;
+        flex-shrink: 0;
         border-radius: 12px;
 
         img {
-            height: 2.5rem;
+            height: 2rem;
             margin-right: .5rem;
         }
 
@@ -66,6 +71,55 @@
         margin-left: 2rem;
     }
 
+    /* ── Command Bar — input central estilo IA, com glow reagindo ao hover ── */
+    .command-bar {
+        flex: 1;
+        max-width: 620px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 16px;
+        height: 44px;
+        border-radius: 22px;
+        background: var(--shell-bg-hover);
+        border: 1px solid var(--shell-border);
+        box-shadow: 0 0 0 rgba(99, 102, 241, 0);
+        transition: background 0.3s, box-shadow 0.5s, border-color 0.3s;
+    }
+    .command-bar:hover, .command-bar:focus-within {
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 0 32px rgba(99, 102, 241, 0.18);
+    }
+    .command-bar-icon {
+        font-size: 13px;
+        color: #a78bfa;
+        animation: nexusPulse 2.4s ease-in-out infinite;
+        flex-shrink: 0;
+    }
+    .command-bar input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--shell-text);
+        font-family: 'Inter', sans-serif;
+        font-size: 13.5px;
+    }
+    .command-bar input::placeholder { color: var(--shell-text-muted); }
+    .command-bar-shortcut {
+        font-size: 11px;
+        color: var(--shell-text-muted);
+        border: 1px solid var(--shell-border);
+        border-radius: 6px;
+        padding: 2px 6px;
+        flex-shrink: 0;
+    }
+    @keyframes nexusPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
     .layout-topbar-menu-button {
         display: none;
 
@@ -83,6 +137,42 @@
         .layout-topbar-button {
             margin-left: 1rem;
         }
+    }
+}
+
+@media (max-width: 991px) {
+    .layout-topbar {
+        .command-bar-shortcut { display: none; }
+    }
+}
+
+@media (max-width: 600px) {
+    .layout-topbar {
+        padding: 0 1rem;
+        gap: 0.5rem;
+
+        .layout-topbar-logo {
+            width: auto;
+            img { height: 1.6rem; }
+        }
+
+        .command-bar {
+            max-width: none;
+            min-width: 0;
+            padding: 0 10px;
+            height: 38px;
+        }
+        .command-bar input {
+            font-size: 12.5px;
+            min-width: 0;
+            text-overflow: ellipsis;
+        }
+
+        .layout-topbar-button {
+            width: 2.2rem; height: 2.2rem;
+            i { font-size: 1.15rem; }
+        }
+        .layout-topbar-menu .layout-topbar-button { margin-left: 0.25rem; }
     }
 }
 

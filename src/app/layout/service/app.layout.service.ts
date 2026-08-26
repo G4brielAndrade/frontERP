@@ -23,13 +23,25 @@ interface LayoutState {
     providedIn: 'root',
 })
 export class LayoutService {
+    private static readonly STORAGE_KEY = 'ultraerp-theme-preference';
+
+    private static lerPreferenciaSalva(): { colorScheme: string; theme: string } | null {
+        try {
+            const raw = localStorage.getItem(LayoutService.STORAGE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch {
+            return null;
+        }
+    }
+
     _config: AppConfig = {
         ripple: false,
         inputStyle: 'outlined',
         menuMode: 'static',
-        colorScheme: 'light',
-        theme: 'lara-light-indigo',
+        colorScheme: 'dark',
+        theme: 'lara-dark-indigo',
         scale: 14,
+        ...(LayoutService.lerPreferenciaSalva() ?? {}),
     };
 
     config = signal<AppConfig>(this._config);
@@ -59,7 +71,21 @@ export class LayoutService {
             }
             this.changeScale(config.scale);
             this.onConfigUpdate();
+
+            try {
+                localStorage.setItem(LayoutService.STORAGE_KEY, JSON.stringify({
+                    colorScheme: config.colorScheme,
+                    theme: config.theme,
+                }));
+            } catch {
+                // localStorage indisponível (modo privado etc.) — a troca de tema
+                // ainda funciona na sessão atual, só não persiste entre recargas.
+            }
         });
+
+        // Garante que o <link id="theme-css"> (fixo no index.html) já nasça
+        // alinhado com a preferência salva, mesmo quando ela difere do padrão.
+        this.changeTheme();
     }
 
     updateStyle(config: AppConfig) {
@@ -121,18 +147,11 @@ export class LayoutService {
     changeTheme() {
         const config = this.config();
         const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
-        const themeLinkHref = themeLink.getAttribute('href')!;
-        const newHref = themeLinkHref
-            .split('/')
-            .map((el) =>
-                el == this._config.theme
-                    ? (el = config.theme)
-                    : el == `theme-${this._config.colorScheme}`
-                    ? (el = `theme-${config.colorScheme}`)
-                    : el
-            )
-            .join('/');
-
+        const currentHref = themeLink.getAttribute('href')!;
+        // Substitui só o segmento do nome do tema no caminho — não depende de saber
+        // qual era o tema anterior, então funciona também pra sincronizar o <link>
+        // fixo do index.html com uma preferência já salva no localStorage.
+        const newHref = currentHref.replace(/theme\/[^/]+\/theme\.css/, `theme/${config.theme}/theme.css`);
         this.replaceThemeLink(newHref);
     }
     replaceThemeLink(href: string) {

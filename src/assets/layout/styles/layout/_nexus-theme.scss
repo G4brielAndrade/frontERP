@@ -1,0 +1,161 @@
+/* ════════════════════════════════════════════════════════════════
+   TEMA "NEXUS" — Dark Mode Premium / Glassmorphism (+ variante clara)
+   Baseado no design system do Tson. Isolado num partial próprio pra
+   ficar fácil desligar/reverter se decidirmos não seguir com isso.
+
+   As variáveis abaixo são o "superset" de tudo que os componentes
+   (Dashboard, Pedidos, Fiscal, Produtos, Relatórios, Estoque, e o
+   shell — topbar/dock) usam. Cada componente só referencia var(--x);
+   quem decide o VALOR de --x é este arquivo, de acordo com a classe
+   .layout-theme-dark / .layout-theme-light já aplicada em .layout-wrapper
+   (ver app.layout.component.ts).
+   ════════════════════════════════════════════════════════════════ */
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    transition: background-color 0.25s ease;
+}
+
+/* ── Paleta ESCURA ──────────────────────────────────────────────── */
+.layout-wrapper.layout-theme-dark {
+    --bg-primary: rgba(255, 255, 255, 0.03);
+    --bg-secondary: rgba(255, 255, 255, 0.05);
+    --bg-tertiary: rgba(255, 255, 255, 0.08);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-md: rgba(255, 255, 255, 0.14);
+    --accent: #6366f1;
+    --accent-dark: #4338ca;
+    --accent-light: rgba(99, 102, 241, 0.16);
+    --success: #34d399;
+    --success-bg: rgba(52, 211, 153, 0.12);
+    --warning: #fbbf24;
+    --warning-bg: rgba(251, 191, 36, 0.12);
+    --danger: #fb7185;
+    --danger-bg: rgba(251, 113, 133, 0.12);
+    --info: #60a5fa;
+    --info-bg: rgba(96, 165, 250, 0.12);
+    --purple: #a78bfa;
+    --purple-bg: rgba(147, 51, 234, 0.12);
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 24px;
+    --font-mono: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.45);
+    --glass-blur: blur(40px);
+
+    /* tokens do "shell" (topbar / floating dock) */
+    --shell-bg: rgba(20, 20, 30, 0.55);
+    --shell-bg-hover: rgba(255, 255, 255, 0.08);
+    --shell-text: #ffffff;
+    --shell-text-muted: #a1a1aa;
+    --shell-border: rgba(255, 255, 255, 0.08);
+    --shell-accent: #6366f1;
+    --shell-accent-bg: rgba(99, 102, 241, 0.20);
+    --shell-tooltip-bg: rgba(20, 20, 30, 0.92);
+
+    background-color: #05050a;
+    color: var(--text-primary);
+}
+
+/* ── Paleta CLARA ───────────────────────────────────────────────── */
+.layout-wrapper.layout-theme-light {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #f1f3f5;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: rgba(0, 0, 0, 0.09);
+    --border-md: rgba(0, 0, 0, 0.16);
+    --accent: #4f46e5;
+    --accent-dark: #4338ca;
+    --accent-light: #eef2ff;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --warning: #d97706;
+    --warning-bg: #fef3c7;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --info: #2563eb;
+    --info-bg: #eff6ff;
+    --purple: #9333ea;
+    --purple-bg: #faf5ff;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 24px;
+    --font-mono: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.09);
+    --glass-blur: blur(20px);
+
+    /* tokens do "shell" (topbar / floating dock) */
+    --shell-bg: rgba(255, 255, 255, 0.70);
+    --shell-bg-hover: rgba(0, 0, 0, 0.05);
+    --shell-text: #1a1a2e;
+    --shell-text-muted: #6b7280;
+    --shell-border: rgba(0, 0, 0, 0.08);
+    --shell-accent: #4f46e5;
+    --shell-accent-bg: rgba(79, 70, 229, 0.10);
+    --shell-tooltip-bg: rgba(26, 26, 46, 0.92);
+
+    background-color: #f4f5f9;
+    color: var(--text-primary);
+}
+
+/* Textura de ruído sutil sobre todo o fundo — só no escuro (no claro fica sujeira visível) */
+.layout-wrapper.layout-theme-dark::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.015;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Auroras — luzes de fundo desfocadas, exclusivas do modo escuro (em fundo claro ficam manchas feias) */
+.layout-wrapper { position: relative; overflow: hidden; }
+.layout-wrapper.layout-theme-dark::after,
+.layout-wrapper.layout-theme-dark .aurora-1,
+.layout-wrapper.layout-theme-dark .aurora-2 {
+    content: '';
+    position: fixed;
+    z-index: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(150px);
+    mix-blend-mode: screen;
+}
+.layout-wrapper.layout-theme-dark::after {
+    width: 700px; height: 700px;
+    top: -200px; left: -100px;
+    background: rgba(79, 70, 229, 0.20); /* índigo — foco principal */
+}
+.layout-wrapper.layout-theme-dark .aurora-1 {
+    width: 600px; height: 600px;
+    bottom: -150px; right: -100px;
+    background: rgba(147, 51, 234, 0.10); /* púrpura — insights de IA */
+}
+
+/* Todo o conteúdo real fica acima das auroras/ruído (z-index 0 delas) */
+.layout-topbar, .icon-sidebar, .layout-main-container, .layout-config { position: relative; z-index: 1; }
+
+/* ── Animação de entrada progressiva (staggered fade-in) ── */
+@keyframes nexusFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-stagger > * {
+    animation: nexusFadeIn 0.5s ease-out both;
+}
+.fade-in-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.fade-in-stagger > *:nth-child(2) { animation-delay: 80ms; }
+.fade-in-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.fade-in-stagger > *:nth-child(4) { animation-delay: 240ms; }
+.fade-in-stagger > *:nth-child(5) { animation-delay: 320ms; }
+.fade-in-stagger > *:nth-child(6) { animation-delay: 400ms; }

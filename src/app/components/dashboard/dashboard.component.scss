@@ -1,27 +1,7 @@
+/* As variáveis de cor (--bg-primary, --accent etc.) vêm de _nexus-theme.scss,
+   escopadas em .layout-wrapper.layout-theme-dark / .layout-theme-light —
+   assim claro/escuro reagem em cascata sem duplicar valores aqui. */
 :host {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --text-primary: #1a1a2e;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --border: rgba(0, 0, 0, 0.09);
-    --border-md: rgba(0, 0, 0, 0.16);
-    --accent: #4f46e5;
-    --success: #16a34a;
-    --success-bg: #f0fdf4;
-    --warning: #d97706;
-    --warning-bg: #fef3c7;
-    --danger: #dc2626;
-    --danger-bg: #fef2f2;
-    --info: #2563eb;
-    --info-bg: #eff6ff;
-    --purple: #9333ea;
-    --purple-bg: #faf5ff;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
-
     display: block;
     font-size: 14px;
     color: var(--text-primary);
@@ -34,7 +14,7 @@
     display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px;
     background: var(--bg-primary); border: 0.5px solid var(--border);
     border-radius: var(--radius-lg); padding: 12px 16px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .filtro-field { display: flex; flex-direction: column; gap: 5px; min-width: 160px; }
 .filtro-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
@@ -54,7 +34,7 @@
 .lembrete-card {
     background: var(--bg-primary); border: 0.5px solid var(--border);
     border-radius: var(--radius-lg); padding: 14px 16px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .lembrete-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
 .lembrete-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
@@ -69,7 +49,7 @@
 .icon-red { background: var(--danger-bg); } .icon-red i { color: var(--danger); }
 .icon-purple { background: var(--purple-bg); } .icon-purple i { color: var(--purple); }
 
-.lembrete-valor { font-size: 24px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.lembrete-valor { font-size: 28px; font-weight: 300; line-height: 1; margin-bottom: 6px; letter-spacing: -0.01em; }
 .val-blue { color: var(--info); } .val-green { color: var(--success); }
 .val-amber { color: var(--warning); } .val-red { color: var(--danger); } .val-purple { color: var(--purple); }
 
@@ -77,17 +57,20 @@
     font-size: 11px; color: var(--text-secondary); font-weight: 500;
 }
 
-/* ── Grid de painéis ───────────────────────────────────────────── */
+/* ── Grid de painéis — Bento Box (4 colunas no desktop) ─────────── */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(150px, auto);
     gap: 16px;
 }
+.panel-chart { grid-column: span 2; grid-row: span 2; }
+.panel-donut { grid-column: span 2; grid-row: span 2; }
 .panel-wide { grid-column: 1 / -1; }
 
 .panel {
     background: var(--bg-primary); border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden;
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); overflow: hidden;
 }
 .panel-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -128,4 +111,5 @@
 
 @media (max-width: 992px) {
     .dashboard-grid { grid-template-columns: 1fr; }
+    .panel-chart, .panel-donut { grid-column: span 1; grid-row: span 1; }
 }
