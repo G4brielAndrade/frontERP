@@ -141,8 +141,16 @@ body {
     background: radial-gradient(circle, rgba(147, 51, 234, 0.09) 0%, rgba(147, 51, 234, 0) 65%);
 }
 
-/* Todo o conteúdo real fica acima das auroras/ruído (z-index 0 delas) */
-.layout-topbar, .icon-sidebar, .layout-main-container, .layout-config { position: relative; z-index: 1; }
+/* Todo o conteúdo real fica acima das auroras/ruído (z-index 0 delas).
+   Importante: topbar/dock/config já são position:fixed nos seus
+   próprios arquivos — só precisam do z-index aqui. Sobrescrever pra
+   "relative" faria eles ocuparem espaço real no fluxo da página,
+   duplicando com o padding que já compensa um topbar fixo. */
+.layout-main-container { position: relative; z-index: 1; }
+/* topbar / dock / config NÃO entram aqui — já têm z-index próprio e mais alto
+   (997 / 900) nos seus arquivos originais. Sobrescrever pra "1" foi o que
+   causou o topbar ficar coberto pelo conteúdo da página (mesmo z-index do
+   .layout-main-container, empate resolvido pela ordem no HTML). */
 
 /* ── Animação de entrada progressiva (staggered fade-in) ── */
 @keyframes nexusFadeIn {

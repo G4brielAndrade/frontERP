@@ -22,11 +22,7 @@
     padding: 14px 10px;
     gap: 2px;
     flex-shrink: 0;
-    max-height: calc(100vh - 3rem);
-    overflow-y: auto;
-    scrollbar-width: none;
 }
-.icon-sidebar::-webkit-scrollbar { display: none; }
 
 .nav-items {
     display: flex; flex-direction: column;
