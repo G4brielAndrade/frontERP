@@ -10,29 +10,14 @@
         <span class="command-bar-shortcut">⌘K</span>
     </div>
 
-    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
-        <i class="pi pi-ellipsis-v"></i>
-    </button>
-
-    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button class="p-link layout-topbar-button theme-toggle" (click)="toggleColorScheme()" title="Alternar tema claro/escuro">
-            <i class="pi" [ngClass]="layoutService.config().colorScheme === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
-        </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-calendar"></i>
-            <span>Calendário</span>
-        </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'cadastro/alterarSenha'">
+    <div class="layout-topbar-avatar-menu">
+        <button #topbarmenubutton class="p-link layout-topbar-button layout-topbar-avatar-button" (click)="layoutService.showProfileSidebar()" title="Conta">
             <i class="pi pi-user"></i>
-            <span>Perfil</span>
-        </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
-            <i class="pi pi-cog"></i>
-            <span>Configurações</span>
-        </button>
-        <button class="p-link layout-topbar-button" (click)="logout()">
-            <i class="pi pi-power-off"></i>
-            <span>Sair</span>
         </button>
     </div>
+    <!-- A caixa com Tema/Perfil/Sair não fica mais aqui dentro: um elemento com
+         backdrop-filter (este .layout-topbar) some com a sombra/blur de um filho
+         posicionado (bug de composição do Chromium), fazendo "vazar" uma mancha
+         escura por cima do conteúdo da página logo abaixo do topbar. A caixa foi
+         movida pra fora do topbar, em app.layout.component.html. -->
 </div>

@@ -53,6 +53,4 @@ export class AppTopBarComponent {
     items!: MenuItem[];
 
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
-
-    @ViewChild('topbarmenu') menu!: ElementRef;
 }

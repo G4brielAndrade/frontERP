@@ -8,4 +8,22 @@
     </div>
     <app-config></app-config>
     <div class="layout-mask"></div>
+
+    <!-- Caixa do avatar (Tema/Perfil/Sair): fica fora do <app-topbar> de propósito,
+         pra não ser filha de um elemento com backdrop-filter (o topbar tem blur(30px)),
+         o que causava uma mancha escura vazando sobre o conteúdo da página ao abrir. -->
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button class="p-link layout-topbar-button theme-toggle" (click)="appTopbar.toggleColorScheme()" title="Alternar tema claro/escuro">
+            <i class="pi" [ngClass]="layoutService.config().colorScheme === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
+            <span>{{ layoutService.config().colorScheme === 'dark' ? 'Tema claro' : 'Tema escuro' }}</span>
+        </button>
+        <button class="p-link layout-topbar-button" [routerLink]="'cadastro/alterarSenha'">
+            <i class="pi pi-user"></i>
+            <span>Perfil</span>
+        </button>
+        <button class="p-link layout-topbar-button" (click)="appTopbar.logout()">
+            <i class="pi pi-power-off"></i>
+            <span>Sair</span>
+        </button>
+    </div>
 </div>

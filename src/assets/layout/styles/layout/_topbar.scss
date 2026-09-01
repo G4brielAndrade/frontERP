@@ -120,23 +120,92 @@
         50% { opacity: 0.4; }
     }
 
-    .layout-topbar-menu-button {
-        display: none;
+    /* ── Avatar unificado: tema + perfil + sair ficam numa caixa própria (ver
+       .layout-topbar-menu logo abaixo, fora deste bloco .layout-topbar) ── */
+    .layout-topbar-avatar-menu {
+        position: relative;
+        margin: 0 0 0 auto;
+
+        .layout-topbar-avatar-button {
+            margin: 0;
+        }
+    }
+}
+
+/* ── Caixa do avatar (Tema/Perfil/Sair) ──────────────────────────────────
+   Fica FORA de .layout-topbar de propósito: .layout-topbar tem
+   backdrop-filter (blur), e um filho posicionado com box-shadow/transform
+   dentro de um ancestral com backdrop-filter é um bug de composição
+   conhecido do Chromium — a sombra "vaza" como uma mancha escura sobre o
+   conteúdo da página logo abaixo do topbar. Por isso o elemento (marcado
+   #topbarmenu) foi movido pra app.layout.component.html, como irmão do
+   <app-topbar>, e aqui vira position:fixed relativo à viewport. */
+.layout-topbar-menu {
+    position: fixed;
+    top: calc(5rem + .6rem);
+    right: 2rem;
+    margin: 0;
+    padding: .5rem;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    min-width: 13rem;
+    /* Mesmos tokens "Nexus" que os cards do dashboard usam (--bg-primary etc,
+       de _nexus-theme.scss) — assim a caixa reage a claro/escuro igual ao
+       resto do ERP, em vez de ficar sempre escura como o tooltip do dock.
+       backdrop-filter aqui é seguro: esse elemento não é mais filho de um
+       ancestral com backdrop-filter (foi movido pra fora do topbar). */
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg, 14px);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+    z-index: 999;
+
+    .layout-topbar-button {
+        margin-left: 0;
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+        border-radius: 8px;
+        padding: .65rem .75rem;
+        color: var(--text-primary);
+
+        &:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-tertiary);
+        }
 
         i {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
+            margin-right: .6rem;
+        }
+
+        span {
+            display: inline-block;
+            font-size: .9rem;
         }
     }
 
-    .layout-topbar-menu {
-        margin: 0 0 0 auto;
-        padding: 0;
-        list-style: none;
-        display: flex;
+    /* Só abre no clique do avatar (layout-topbar-menu-mobile-active, via
+       showProfileSidebar()) — sem hover. */
+    &.layout-topbar-menu-mobile-active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+}
 
-        .layout-topbar-button {
-            margin-left: 1rem;
-        }
+@media (max-width: 600px) {
+    .layout-topbar-menu {
+        right: 1rem;
     }
 }
 
@@ -172,7 +241,6 @@
             width: 2.2rem; height: 2.2rem;
             i { font-size: 1.15rem; }
         }
-        .layout-topbar-menu .layout-topbar-button { margin-left: 0.25rem; }
     }
 }
 
@@ -190,50 +258,10 @@
             order: 1;
         }
 
-        .layout-topbar-menu-button {
-            display: inline-flex;
-            margin-left: 0;
+        /* .layout-topbar-menu (a caixa em si) é position:fixed e vive fora deste
+           bloco — não precisa de regra aqui, só ordenar o botão do avatar. */
+        .layout-topbar-avatar-menu {
             order: 3;
-        }
-
-        .layout-topbar-menu {
-            margin-left: 0;
-            position: absolute;
-            flex-direction: column;
-            background-color: var(--surface-overlay);
-            box-shadow: 0px 3px 5px rgba(0,0,0,.02), 0px 0px 2px rgba(0,0,0,.05), 0px 1px 4px rgba(0,0,0,.08);
-            border-radius: 12px;
-            padding: 1rem;
-            right: 2rem;
-            top: 5rem;
-            min-width: 15rem;
-            display: none;
-            -webkit-animation: scalein 0.15s linear;
-            animation: scalein 0.15s linear;
-
-            &.layout-topbar-menu-mobile-active {
-                display: block
-            }
-
-            .layout-topbar-button {
-                margin-left: 0;
-                display: flex;
-                width: 100%;
-                height: auto;
-                justify-content: flex-start;
-                border-radius: 12px;
-                padding: 1rem;
-
-                i {
-                    font-size: 1rem;
-                    margin-right: .5rem;
-                }
-
-                span {
-                    font-weight: medium;
-                    display: block;
-                }
-            }
         }
     }
 }
