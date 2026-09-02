@@ -133,13 +133,16 @@
 }
 
 /* ── Caixa do avatar (Tema/Perfil/Sair) ──────────────────────────────────
-   Fica FORA de .layout-topbar de propósito: .layout-topbar tem
-   backdrop-filter (blur), e um filho posicionado com box-shadow/transform
-   dentro de um ancestral com backdrop-filter é um bug de composição
-   conhecido do Chromium — a sombra "vaza" como uma mancha escura sobre o
-   conteúdo da página logo abaixo do topbar. Por isso o elemento (marcado
-   #topbarmenu) foi movido pra app.layout.component.html, como irmão do
-   <app-topbar>, e aqui vira position:fixed relativo à viewport. */
+   Fica FORA de .layout-topbar de propósito (ver app.layout.component.html):
+   um filho com box-shadow/transform dentro de um ancestral com
+   backdrop-filter vaza uma mancha escura por cima do conteúdo — bug de
+   composição conhecido do Chromium.
+   IMPORTANTE: mesmo como irmão do topbar, o mesmo bug volta se ESTE
+   elemento tiver seu próprio backdrop-filter e ficar sobreposto a outros
+   elementos que também usam backdrop-filter (a barra de filtros e os
+   cards de KPI usam var(--glass-blur)). Por isso aqui usamos um fundo
+   SÓLIDO (--menu-panel-bg, definido em _nexus-theme.scss) e nunca mais
+   backdrop-filter neste componente. */
 .layout-topbar-menu {
     position: fixed;
     top: calc(5rem + .6rem);
@@ -150,17 +153,10 @@
     display: flex;
     flex-direction: column;
     min-width: 13rem;
-    /* Mesmos tokens "Nexus" que os cards do dashboard usam (--bg-primary etc,
-       de _nexus-theme.scss) — assim a caixa reage a claro/escuro igual ao
-       resto do ERP, em vez de ficar sempre escura como o tooltip do dock.
-       backdrop-filter aqui é seguro: esse elemento não é mais filho de um
-       ancestral com backdrop-filter (foi movido pra fora do topbar). */
-    background: var(--bg-primary);
+    background: var(--menu-panel-bg);
     border: 0.5px solid var(--border);
     border-radius: var(--radius-lg, 14px);
     box-shadow: var(--shadow-md);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);

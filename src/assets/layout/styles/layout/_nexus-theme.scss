@@ -56,6 +56,10 @@ body {
     --shell-accent: #6366f1;
     --shell-accent-bg: rgba(99, 102, 241, 0.20);
     --shell-tooltip-bg: rgba(20, 20, 30, 0.92);
+    /* Sólido de propósito (sem depender de backdrop-filter) para painéis
+       flutuantes como o menu do avatar — ver comentário em _topbar.scss
+       sobre o bug de composição do Chromium com backdrop-filter sobreposto. */
+    --menu-panel-bg: #16161f;
 
     background-color: #05050a;
     color: var(--text-primary);
@@ -101,6 +105,9 @@ body {
     --shell-accent: #4f46e5;
     --shell-accent-bg: rgba(79, 70, 229, 0.10);
     --shell-tooltip-bg: rgba(26, 26, 46, 0.92);
+    /* Sólido de propósito (sem depender de backdrop-filter) para painéis
+       flutuantes como o menu do avatar. */
+    --menu-panel-bg: #ffffff;
 
     background-color: #f4f5f9;
     color: var(--text-primary);
