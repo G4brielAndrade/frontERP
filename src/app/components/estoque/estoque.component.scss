@@ -82,10 +82,8 @@ button { cursor: pointer; font-family: inherit; }
 }
 .search-box i { font-size: 13px; color: var(--text-muted); }
 .search-box input { border: none; background: transparent; outline: none; font-size: 13px; width: 100%; color: var(--text-primary); }
-.estoque-filtros select {
-    font-size: 12.5px; padding: 8px 10px; border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary); cursor: pointer;
-}
+/* .estoque-filtros .p-dropdown (filtros de status/tipo) tem o mesmo visual
+   pela regra global .filtro-dropdown, ver _pdropdown.scss */
 
 .estoque-scroll { flex: 1; overflow-y: auto; padding: 0 4px 40px; }
 
@@ -159,13 +157,13 @@ button { cursor: pointer; font-family: inherit; }
 .form-field { display: flex; flex-direction: column; gap: 5px; }
 .form-field.span-2 { grid-column: span 2; }
 .form-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
-.form-field input, .form-field select {
+.form-field input {
     font-size: 13px; padding: 8px 10px; border: 0.5px solid var(--border-md);
     border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary);
     outline: none; width: 100%;
 }
-.form-field input:focus, .form-field select:focus { border-color: var(--accent); background: var(--bg-primary); }
-.form-field select { cursor: pointer; }
+.form-field input:focus { border-color: var(--accent); background: var(--bg-primary); }
+/* .form-field .p-dropdown tem o mesmo visual pela regra global .filtro-dropdown */
 
 .ajuste-preview {
     display: flex; justify-content: space-between; align-items: center; margin-top: 14px;

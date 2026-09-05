@@ -21,6 +21,20 @@ export class FiscalComponent implements OnInit {
 
     readonly UFS = UFS;
 
+    // Opções { label, value } pros p-dropdown (PrimeNG) desta tela.
+    readonly TIPO_TRIBUTACAO_OPTIONS = [
+        { label: 'MEI', value: 'mei' },
+        { label: 'Simples Nacional', value: 'simples' },
+        { label: 'Regime Normal', value: 'normal' },
+    ];
+    readonly TIPO_UNIDADE_OPTIONS = [
+        { label: 'Matriz', value: 'matriz' },
+        { label: 'Filial', value: 'filial' },
+    ];
+    // Propriedade normal, calculada uma única vez (UFS é estático) — getter
+    // aqui recriaria o array a cada ciclo de detecção de mudanças e travava a aba.
+    readonly ufOptions: { label: string; value: string }[] = UFS.map(uf => ({ label: uf, value: uf }));
+
     // ── Estado ─────────────────────────────────────────────────
     contasNF: ContaNF[] = [];
     lojasIntegradas: LojaIntegrada[] = [];

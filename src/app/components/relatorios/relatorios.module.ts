@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { RelatoriosComponent } from './relatorios.component';
 import { RelatoriosRoutingModule } from './relatorios-routing.module';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     declarations: [RelatoriosComponent],
@@ -11,7 +12,8 @@ import { RelatoriosRoutingModule } from './relatorios-routing.module';
         CommonModule,
         FormsModule,
         ChartModule,
-        RelatoriosRoutingModule
+        RelatoriosRoutingModule,
+        DropdownModule
     ]
 })
 export class RelatoriosModule { }

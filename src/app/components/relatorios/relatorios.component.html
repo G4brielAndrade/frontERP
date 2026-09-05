@@ -22,10 +22,8 @@
             <span>até</span>
             <input type="date" [(ngModel)]="dataFimPersonalizado" (change)="aplicarFiltros()">
         </div>
-        <select class="filtro-loja" [(ngModel)]="lojaSelecionada" (change)="aplicarFiltros()">
-            <option [value]="TODAS_LOJAS">Todas as lojas</option>
-            <option *ngFor="let l of lojas" [value]="l.id">{{ l.nome }} ({{ MKT_LABELS[l.marketplace] }})</option>
-        </select>
+        <p-dropdown [options]="lojaOptions" [(ngModel)]="lojaSelecionada" (onChange)="aplicarFiltros()"
+            optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown filtro-loja"></p-dropdown>
     </div>
 
     <div class="relatorios-scroll">

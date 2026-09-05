@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { FiscalComponent } from './fiscal.component';
 import { FiscalRoutingModule } from './fiscal-routing.module';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     declarations: [FiscalComponent],
@@ -11,7 +12,8 @@ import { FiscalRoutingModule } from './fiscal-routing.module';
         CommonModule,
         FormsModule,
         ToastModule,
-        FiscalRoutingModule
+        FiscalRoutingModule,
+        DropdownModule
     ]
 })
 export class FiscalModule { }

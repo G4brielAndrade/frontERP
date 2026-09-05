@@ -55,9 +55,10 @@ button { cursor: pointer; font-family: inherit; }
 }
 .filtro-datas span { font-size: 12px; color: var(--text-muted); }
 
+/* Visual da caixa (fundo, borda, cor) vem da regra global .filtro-dropdown —
+   aqui só o posicionamento/tamanho específico desta tela. */
 .filtro-loja {
-    margin-left: auto; font-size: 12.5px; padding: 8px 10px; border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary); cursor: pointer;
+    margin-left: auto;
     min-width: 200px;
 }
 

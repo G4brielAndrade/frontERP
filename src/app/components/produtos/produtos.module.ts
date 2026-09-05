@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { ProdutosComponent } from './produtos.component';
 import { ProdutosRoutingModule } from './produtos-routing.module';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     declarations: [ProdutosComponent],
@@ -11,7 +12,8 @@ import { ProdutosRoutingModule } from './produtos-routing.module';
         CommonModule,
         FormsModule,
         ToastModule,
-        ProdutosRoutingModule
+        ProdutosRoutingModule,
+        DropdownModule
     ]
 })
 export class ProdutosModule { }

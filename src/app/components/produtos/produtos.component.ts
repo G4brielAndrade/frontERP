@@ -27,6 +27,23 @@ export class ProdutosComponent implements OnInit {
     readonly ORIGENS_PRODUTO = ORIGENS_PRODUTO;
     readonly UNIDADES_PRODUTO = UNIDADES_PRODUTO;
 
+    // Opções { label, value } pros p-dropdown (PrimeNG) desta tela.
+    readonly FILTRO_STATUS_OPTIONS = [
+        { label: 'Todos os status', value: 'todos' },
+        { label: 'Ativo', value: 'ativo' },
+        { label: 'Pausado', value: 'pausado' },
+        { label: 'Interrompido', value: 'interrompido' },
+    ];
+    readonly STATUS_OPTIONS = [
+        { label: 'Ativo', value: 'ativo' },
+        { label: 'Pausado', value: 'pausado' },
+        { label: 'Interrompido', value: 'interrompido' },
+    ];
+    readonly MODO_ENVIO_OPTIONS = [
+        { label: 'Envio Combinado', value: 'combinado' },
+        { label: 'Envio Aleatório', value: 'aleatorio' },
+    ];
+
     // ── Estado geral ───────────────────────────────────────────
     produtos: Produto[] = [];
     kits: ProdutoKit[] = [];

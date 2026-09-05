@@ -104,20 +104,15 @@
                     </label>
                     <label class="form-field">
                         <span class="form-label">Tipo de tributação</span>
-                        <select [(ngModel)]="form.tipoTributacao">
-                            <option value="">Selecione…</option>
-                            <option value="mei">MEI</option>
-                            <option value="simples">Simples Nacional</option>
-                            <option value="normal">Regime Normal</option>
-                        </select>
+                        <p-dropdown [options]="TIPO_TRIBUTACAO_OPTIONS" [(ngModel)]="form.tipoTributacao"
+                            optionLabel="label" optionValue="value" placeholder="Selecione…"
+                            appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                     </label>
                     <label class="form-field">
                         <span class="form-label">Tipo de unidade</span>
-                        <select [(ngModel)]="form.tipoUnidade">
-                            <option value="">Selecione…</option>
-                            <option value="matriz">Matriz</option>
-                            <option value="filial">Filial</option>
-                        </select>
+                        <p-dropdown [options]="TIPO_UNIDADE_OPTIONS" [(ngModel)]="form.tipoUnidade"
+                            optionLabel="label" optionValue="value" placeholder="Selecione…"
+                            appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                     </label>
                     <label class="form-field span-2">
                         <span class="form-label">E-mail</span>
@@ -156,10 +151,9 @@
                     </label>
                     <label class="form-field">
                         <span class="form-label">UF</span>
-                        <select [(ngModel)]="form.uf">
-                            <option value="">Selecione…</option>
-                            <option *ngFor="let uf of UFS" [value]="uf">{{ uf }}</option>
-                        </select>
+                        <p-dropdown [options]="ufOptions" [(ngModel)]="form.uf"
+                            optionLabel="label" optionValue="value" placeholder="Selecione…"
+                            appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                     </label>
                 </div>
             </div>

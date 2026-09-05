@@ -4,17 +4,14 @@
     <div class="filtros-bar">
         <div class="filtro-field">
             <label class="filtro-label">Empresa</label>
-            <select [(ngModel)]="empresaSelecionada" (ngModelChange)="onEmpresaChange()">
-                <option [value]="TODAS_EMPRESAS">Todas as empresas</option>
-                <option *ngFor="let e of empresas" [value]="e.id">{{ e.nome }}</option>
-            </select>
+            <p-dropdown [options]="empresaOptions" [(ngModel)]="empresaSelecionada" (onChange)="onEmpresaChange()"
+                optionLabel="label" optionValue="value" appendTo="body" [styleClass]="'filtro-dropdown'"></p-dropdown>
         </div>
 
         <div class="filtro-field">
             <label class="filtro-label">Período</label>
-            <select [(ngModel)]="periodoSelecionado" (ngModelChange)="onPeriodoChange()">
-                <option *ngFor="let p of periodos" [value]="p.value">{{ p.label }}</option>
-            </select>
+            <p-dropdown [options]="periodos" [(ngModel)]="periodoSelecionado" (onChange)="onPeriodoChange()"
+                optionLabel="label" optionValue="value" appendTo="body" [styleClass]="'filtro-dropdown'"></p-dropdown>
         </div>
 
         <ng-container *ngIf="periodoSelecionado === 'personalizado'">

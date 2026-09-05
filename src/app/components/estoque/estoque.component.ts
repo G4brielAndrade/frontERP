@@ -26,6 +26,29 @@ export class EstoqueComponent implements OnInit {
     readonly MOTIVOS_MOVIMENTACAO = MOTIVOS_MOVIMENTACAO;
     readonly MOTIVOS_LIST = Object.entries(MOTIVOS_MOVIMENTACAO) as [MotivoMovimentacao, string][];
 
+    // Opções { label, value } pros p-dropdown (PrimeNG) desta tela.
+    readonly STATUS_ESTOQUE_OPTIONS = [
+        { label: 'Todos os status', value: 'todos' },
+        { label: 'OK', value: 'ok' },
+        { label: 'Estoque baixo', value: 'baixo' },
+        { label: 'Em ruptura', value: 'zerado' },
+    ];
+    readonly TIPO_MOV_OPTIONS = [
+        { label: 'Todos os tipos', value: 'todos' },
+        { label: 'Entradas', value: 'entrada' },
+        { label: 'Saídas', value: 'saida' },
+        { label: 'Ajustes', value: 'ajuste' },
+    ];
+    readonly TIPO_AJUSTE_OPTIONS = [
+        { label: 'Entrada (soma ao estoque)', value: 'entrada' },
+        { label: 'Saída (retira do estoque)', value: 'saida' },
+    ];
+    // Propriedade normal, calculada uma única vez (MOTIVOS_LIST é estático) —
+    // getter aqui recriaria o array a cada ciclo de detecção de mudanças e
+    // travava a aba.
+    readonly motivoOptions: { label: string; value: MotivoMovimentacao }[] =
+        Object.entries(MOTIVOS_MOVIMENTACAO).map(([value, label]) => ({ value: value as MotivoMovimentacao, label }));
+
     abaAtiva: Aba = 'niveis';
     view: View = 'list';
 

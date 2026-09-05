@@ -17,7 +17,12 @@ body {
 }
 
 /* ── Paleta ESCURA ──────────────────────────────────────────────── */
-.layout-wrapper.layout-theme-dark {
+/* Duplicado em body.layout-theme-dark de propósito: painéis do PrimeNG
+   com appendTo="body" (dropdowns) viram filhos diretos de <body>, fora
+   de .layout-wrapper — sem isso, var(--menu-panel-bg) etc. não existiam
+   pra eles e a caixa ficava com fundo transparente. */
+.layout-wrapper.layout-theme-dark,
+body.layout-theme-dark {
     --bg-primary: rgba(255, 255, 255, 0.03);
     --bg-secondary: rgba(255, 255, 255, 0.05);
     --bg-tertiary: rgba(255, 255, 255, 0.08);
@@ -66,7 +71,8 @@ body {
 }
 
 /* ── Paleta CLARA ───────────────────────────────────────────────── */
-.layout-wrapper.layout-theme-light {
+.layout-wrapper.layout-theme-light,
+body.layout-theme-light {
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
     --bg-tertiary: #f1f3f5;

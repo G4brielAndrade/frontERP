@@ -56,6 +56,27 @@ import { InputTextModule } from 'primeng/inputtext';
     ],
     exports: [
         //BancoDialogComponent,
+        CommonModule,
+        FormsModule,
+        DialogModule,
+        InputTextModule,
+        CheckboxModule,
+        ButtonModule,
+
+        TableModule,
+        ToastModule,
+        ToolbarModule,
+        TabMenuModule,
+        StepsModule,
+        DropdownModule,
+        RadioButtonModule,
+        InputTextareaModule,
+        DividerModule,
+        InputNumberModule,
+        FieldsetModule,
+        InputMaskModule,
+        CalendarModule,
+        MultiSelectModule,
     ]
 })
 export class SharedModule { }

@@ -18,12 +18,14 @@
 }
 .filtro-field { display: flex; flex-direction: column; gap: 5px; min-width: 160px; }
 .filtro-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
-.filtro-field select, .filtro-field input[type="date"] {
+.filtro-field input[type="date"] {
     font-size: 13px; padding: 7px 10px; border: 0.5px solid var(--border-md);
     border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary);
     outline: none; cursor: pointer; transition: border-color 0.15s, background 0.15s;
 }
-.filtro-field select:focus, .filtro-field input[type="date"]:focus { border-color: var(--accent); background: var(--bg-primary); }
+.filtro-field input[type="date"]:focus { border-color: var(--accent); background: var(--bg-primary); }
+/* .p-dropdown (Empresa/Período) tem o mesmo visual pela regra global .filtro-dropdown,
+   ver src/assets/layout/styles/layout/_pdropdown.scss */
 
 /* ── Lembretes / métricas ─────────────────────────────────────── */
 .lembretes {

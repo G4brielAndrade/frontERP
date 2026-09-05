@@ -26,12 +26,8 @@
                 <i class="pi pi-search"></i>
                 <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="busca">
             </div>
-            <select [(ngModel)]="filtroStatus">
-                <option value="todos">Todos os status</option>
-                <option value="ativo">Ativo</option>
-                <option value="pausado">Pausado</option>
-                <option value="interrompido">Interrompido</option>
-            </select>
+            <p-dropdown [options]="FILTRO_STATUS_OPTIONS" [(ngModel)]="filtroStatus"
+                optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
         </div>
 
         <!-- ── Tabela de produtos avulsos ── -->
@@ -168,11 +164,8 @@
                             </label>
                             <label class="form-field">
                                 <span class="form-label">Status</span>
-                                <select [(ngModel)]="produtoForm.status">
-                                    <option value="ativo">Ativo</option>
-                                    <option value="pausado">Pausado</option>
-                                    <option value="interrompido">Interrompido</option>
-                                </select>
+                                <p-dropdown [options]="STATUS_OPTIONS" [(ngModel)]="produtoForm.status"
+                                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                             </label>
                         </div>
                     </div>
@@ -225,17 +218,14 @@
                             </label>
                             <label class="form-field">
                                 <span class="form-label">Origem do produto *</span>
-                                <select [(ngModel)]="produtoForm.origem">
-                                    <option value="">Selecione…</option>
-                                    <option *ngFor="let o of ORIGENS_PRODUTO" [value]="o.codigo">{{ o.label }}</option>
-                                </select>
+                                <p-dropdown [options]="ORIGENS_PRODUTO" [(ngModel)]="produtoForm.origem"
+                                    optionLabel="label" optionValue="codigo" placeholder="Selecione…"
+                                    appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                             </label>
                             <label class="form-field">
                                 <span class="form-label">Unidade *</span>
-                                <select [(ngModel)]="produtoForm.unidade">
-                                    <option value="">Selecione…</option>
-                                    <option *ngFor="let u of UNIDADES_PRODUTO" [value]="u">{{ u }}</option>
-                                </select>
+                                <p-dropdown [options]="UNIDADES_PRODUTO" [(ngModel)]="produtoForm.unidade"
+                                    placeholder="Selecione…" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                             </label>
                         </div>
                         <div class="form-warning" *ngIf="!produtoForm.ncm">
@@ -314,18 +304,13 @@
                             </label>
                             <label class="form-field">
                                 <span class="form-label">Modo de envio</span>
-                                <select [(ngModel)]="kitForm.modoEnvio">
-                                    <option value="combinado">Envio Combinado</option>
-                                    <option value="aleatorio">Envio Aleatório</option>
-                                </select>
+                                <p-dropdown [options]="MODO_ENVIO_OPTIONS" [(ngModel)]="kitForm.modoEnvio"
+                                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                             </label>
                             <label class="form-field">
                                 <span class="form-label">Status</span>
-                                <select [(ngModel)]="kitForm.status">
-                                    <option value="ativo">Ativo</option>
-                                    <option value="pausado">Pausado</option>
-                                    <option value="interrompido">Interrompido</option>
-                                </select>
+                                <p-dropdown [options]="STATUS_OPTIONS" [(ngModel)]="kitForm.status"
+                                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                             </label>
                         </div>
                     </div>

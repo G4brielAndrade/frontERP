@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { EstoqueComponent } from './estoque.component';
 import { EstoqueRoutingModule } from './estoque-routing.module';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     declarations: [EstoqueComponent],
@@ -11,7 +12,8 @@ import { EstoqueRoutingModule } from './estoque-routing.module';
         CommonModule,
         FormsModule,
         ToastModule,
-        EstoqueRoutingModule
+        EstoqueRoutingModule,
+        DropdownModule
     ]
 })
 export class EstoqueModule { }

@@ -41,12 +41,8 @@
                     <i class="pi pi-search"></i>
                     <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="busca">
                 </div>
-                <select [(ngModel)]="filtroStatus">
-                    <option value="todos">Todos os status</option>
-                    <option value="ok">OK</option>
-                    <option value="baixo">Estoque baixo</option>
-                    <option value="zerado">Em ruptura</option>
-                </select>
+                <p-dropdown [options]="STATUS_ESTOQUE_OPTIONS" [(ngModel)]="filtroStatus"
+                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
             </div>
 
             <div class="estoque-scroll">
@@ -96,12 +92,8 @@
                     <i class="pi pi-search"></i>
                     <input type="text" placeholder="Buscar por SKU ou nome..." [(ngModel)]="busca">
                 </div>
-                <select [(ngModel)]="filtroTipoMov">
-                    <option value="todos">Todos os tipos</option>
-                    <option value="entrada">Entradas</option>
-                    <option value="saida">Saídas</option>
-                    <option value="ajuste">Ajustes</option>
-                </select>
+                <p-dropdown [options]="TIPO_MOV_OPTIONS" [(ngModel)]="filtroTipoMov"
+                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
             </div>
 
             <div class="estoque-scroll">
@@ -202,10 +194,8 @@
                 <div class="form-grid">
                     <label class="form-field">
                         <span class="form-label">Tipo</span>
-                        <select [(ngModel)]="ajusteForm.tipo">
-                            <option value="entrada">Entrada (soma ao estoque)</option>
-                            <option value="saida">Saída (retira do estoque)</option>
-                        </select>
+                        <p-dropdown [options]="TIPO_AJUSTE_OPTIONS" [(ngModel)]="ajusteForm.tipo"
+                            optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                     </label>
                     <label class="form-field">
                         <span class="form-label">Quantidade</span>
@@ -213,9 +203,8 @@
                     </label>
                     <label class="form-field span-2">
                         <span class="form-label">Motivo</span>
-                        <select [(ngModel)]="ajusteForm.motivo">
-                            <option *ngFor="let m of MOTIVOS_LIST" [value]="m[0]">{{ m[1] }}</option>
-                        </select>
+                        <p-dropdown [options]="motivoOptions" [(ngModel)]="ajusteForm.motivo"
+                            optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown"></p-dropdown>
                     </label>
                     <label class="form-field span-2">
                         <span class="form-label">Observação (opcional)</span>

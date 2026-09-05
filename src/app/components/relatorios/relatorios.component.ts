@@ -40,6 +40,13 @@ export class RelatoriosComponent implements OnInit {
     lojas: LojaResumo[] = [];
     lojaSelecionada: string = this.TODAS_LOJAS;
 
+    // Formato { label, value } exigido pelo p-dropdown (PrimeNG) — label já
+    // inclui o marketplace entre parênteses, igual ao <option> original.
+    // Propriedade normal (não getter!): recalculada só em obterLojas(), uma
+    // vez — um getter recriaria o array a cada ciclo de detecção de mudanças
+    // do Angular e travava a aba.
+    lojaOptions: { label: string; value: string }[] = [];
+
     periodoSelecionado: PeriodoRelatorio = '30d';
     readonly periodos: { value: PeriodoRelatorio; label: string }[] = [
         { value: '7d', label: '7 dias' },
@@ -95,6 +102,10 @@ export class RelatoriosComponent implements OnInit {
             { id: 'loja-004', nome: 'Loja Abraham', marketplace: 'shopee' },
             { id: 'loja-005', nome: 'Tech Store', marketplace: 'mercadolivre' },
             { id: 'loja-006', nome: 'Mega Vendas', marketplace: 'amazon' },
+        ];
+        this.lojaOptions = [
+            { label: 'Todas as lojas', value: this.TODAS_LOJAS },
+            ...this.lojas.map(l => ({ label: `${l.nome} (${this.MKT_LABELS[l.marketplace]})`, value: l.id })),
         ];
     }
 

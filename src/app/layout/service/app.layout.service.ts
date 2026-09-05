@@ -72,6 +72,13 @@ export class LayoutService {
             this.changeScale(config.scale);
             this.onConfigUpdate();
 
+            // Espelha a classe de tema no <body> também: painéis do PrimeNG
+            // com appendTo="body" (os p-dropdown) viram filhos diretos do
+            // <body>, fora de .layout-wrapper — sem isso eles não enxergam
+            // as variáveis de cor do tema Nexus (ver _nexus-theme.scss).
+            document.body.classList.toggle('layout-theme-dark', config.colorScheme === 'dark');
+            document.body.classList.toggle('layout-theme-light', config.colorScheme === 'light');
+
             try {
                 localStorage.setItem(LayoutService.STORAGE_KEY, JSON.stringify({
                     colorScheme: config.colorScheme,

@@ -61,6 +61,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     empresas: Empresa[] = [];
     empresaSelecionada: string = this.TODAS_EMPRESAS;
 
+    // Formato { label, value } exigido pelo p-dropdown (PrimeNG) — "Todas as
+    // empresas" entra como primeira opção sintética, seguida das reais.
+    // Propriedade normal (não getter!): um getter aqui recalcularia (e criaria
+    // um array NOVO) a cada ciclo de detecção de mudanças do Angular, o que
+    // trava a aba — o p-dropdown reage a toda troca de referência de [options].
+    empresaOptions: { label: string; value: string }[] = [];
+
     periodoSelecionado: PeriodoFiltro = 'hoje';
     readonly periodos: { value: PeriodoFiltro; label: string }[] = [
         { value: 'hoje', label: 'Hoje' },
@@ -165,6 +172,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             { id: 'emp-1', nome: 'Comércio de Eletrônicos LTDA' },
             { id: 'emp-2', nome: 'Loja Abel Comércio Digital LTDA' },
             { id: 'emp-3', nome: 'Tech Store Distribuidora ME' },
+        ];
+        this.empresaOptions = [
+            { label: 'Todas as empresas', value: this.TODAS_EMPRESAS },
+            ...this.empresas.map(e => ({ label: e.nome, value: e.id })),
         ];
     }
 
