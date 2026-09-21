@@ -1,0 +1,405 @@
+{
+  "dashboard": {
+    "attention_orders": {
+      "empty": "Nenhum pedido precisa de atenção agora.",
+      "title": "Pedidos que precisam de atenção",
+      "view_all": "Ver todos"
+    },
+    "charts": {
+      "marketplace_distribution": "Distribuição por marketplace",
+      "timeline_title": "Indicadores ao longo do tempo"
+    },
+    "filters": {
+      "all_companies": "Todas as empresas",
+      "company": "Empresa",
+      "from": "De",
+      "period": "Período",
+      "period_custom": "Período personalizado",
+      "period_this_month": "Este mês",
+      "period_this_week": "Esta semana",
+      "period_this_year": "Este ano",
+      "period_today": "Hoje",
+      "select_period": "Selecione o período",
+      "to": "Até"
+    },
+    "kpi": {
+      "action": {
+        "cancelled": "canceladas",
+        "invalidated": "inutilizadas",
+        "issued": "emitidas",
+        "received": "recebidos"
+      },
+      "cce_issued": "CC-e emitidas",
+      "invalidated_notes": "Notas inutilizadas",
+      "nfe_cancelled": "NF-e canceladas",
+      "suffix": {
+        "selected_period": "no período selecionado",
+        "this_month": "este mês",
+        "this_week": "esta semana",
+        "this_year": "este ano",
+        "today": "hoje"
+      },
+      "total_nfe": "Total de NF-e",
+      "total_orders": "Total de pedidos"
+    }
+  },
+  "estoque": {
+    "abc": {
+      "class": "Classe",
+      "cumulative": "Acumulado",
+      "hint_a": "= produtos que somam até 80% da receita,",
+      "hint_b": "até 95%,",
+      "hint_c": "o restante.",
+      "hint_prefix": "Classificação pela participação na receita dos últimos 30 dias —",
+      "revenue_30d": "Receita (30d)",
+      "share": "Participação"
+    },
+    "actions": {
+      "adjust": "Ajustar"
+    },
+    "adjust": {
+      "confirm": "Confirmar ajuste",
+      "current_stock": "ESTOQUE ATUAL",
+      "new_movement": "NOVO MOVIMENTO",
+      "note_optional": "Observação (opcional)",
+      "note_placeholder": "Ex: nota fiscal de compra nº 1234",
+      "quantity": "Quantidade",
+      "stock_after": "Estoque após o ajuste",
+      "title": "Ajustar estoque",
+      "type_in": "Entrada (soma ao estoque)",
+      "type_out": "Saída (retira do estoque)",
+      "units": "unidades",
+      "units_available": "unidades disponíveis",
+      "units_reserved": "reservadas"
+    },
+    "empty": {
+      "no_movements": "Nenhuma movimentação encontrada",
+      "no_products": "Nenhum produto encontrado"
+    },
+    "filters": {
+      "search_placeholder": "Buscar por SKU ou nome...",
+      "status_all": "Todos os status",
+      "type_all": "Todos os tipos"
+    },
+    "kpi": {
+      "active_skus": "SKUs ativos",
+      "out_of_stock": "Em ruptura",
+      "stock_value": "Valor em estoque"
+    },
+    "motivo": {
+      "ajuste_manual": "Ajuste manual",
+      "cancelamento": "Cancelamento",
+      "compra": "Compra",
+      "devolucao": "Devolução",
+      "inventario": "Inventário",
+      "venda": "Venda"
+    },
+    "mov_type": {
+      "adjustment": "Ajuste",
+      "adjustment_plural": "Ajustes",
+      "in": "Entrada",
+      "in_plural": "Entradas",
+      "out": "Saída",
+      "out_plural": "Saídas"
+    },
+    "status": {
+      "low": "Estoque baixo",
+      "ok": "OK",
+      "out": "Em ruptura"
+    },
+    "subtitle": "Controle de níveis, movimentações e curva ABC",
+    "table": {
+      "available": "Disponível",
+      "current_stock": "Estoque atual",
+      "date": "Data",
+      "minimum": "Mínimo",
+      "product": "Produto",
+      "qty": "Qtd.",
+      "reason": "Motivo",
+      "reserved": "Reservado",
+      "resulting_balance": "Saldo resultante",
+      "sku_name": "SKU / Nome",
+      "status": "Status",
+      "type": "Tipo",
+      "user": "Usuário"
+    },
+    "tabs": {
+      "abc_curve": "Curva ABC",
+      "levels": "Níveis de Estoque",
+      "movements": "Movimentações"
+    },
+    "title": "Estoque"
+  },
+  "fiscal": {
+    "actions": {
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "remove": "Remover"
+    },
+    "form": {
+      "address": "Endereço",
+      "certificate": "Certificado Digital A1",
+      "certificate_password": "Senha do certificado",
+      "city": "Cidade",
+      "company_data": "Dados da empresa",
+      "company_name": "Razão Social",
+      "company_name_placeholder": "Ex: Comércio de Eletrônicos LTDA",
+      "complement": "Complemento",
+      "edit_title": "Editar conta de NF",
+      "email": "E-mail",
+      "linked_stores": "Lojas vinculadas",
+      "neighborhood": "Bairro",
+      "next_number": "Próximo número de nota",
+      "next_number_warning": "Altere o <strong>próximo número</strong> apenas na configuração inicial. Um número menor que o último emitido causa rejeição por duplicidade na SEFAZ.",
+      "nfe_numbering": "Numeração da NF-e",
+      "nfe_series": "Série da NF-e",
+      "no_stores_available": "Nenhuma loja integrada disponível. Integre uma loja primeiro na aba <strong>Integrações</strong>.",
+      "number": "Número",
+      "optional": "Opcional",
+      "save": "Salvar conta",
+      "save_full": "Salvar conta de NF",
+      "security_note": "Certificado e senha são criptografados em repouso. Apenas o serviço de emissão tem acesso no momento da assinatura.",
+      "select_placeholder": "Selecione…",
+      "state": "UF",
+      "state_registration": "Inscrição Estadual",
+      "stores_hint": "Selecione as lojas que emitirão NF-e com este CNPJ. Uma loja só pode estar vinculada a uma conta de NF por vez.",
+      "street": "Logradouro",
+      "street_placeholder": "Rua, Avenida...",
+      "subtitle": "Preencha os dados do CNPJ emitente e vincule as lojas",
+      "tax_regime": "Tipo de tributação",
+      "unit_branch": "Filial",
+      "unit_hq": "Matriz",
+      "unit_type": "Tipo de unidade",
+      "upload_click": "<strong>Clique para enviar</strong> ou arraste o arquivo",
+      "upload_hint": ".pfx ou .p12 — até 5MB",
+      "uploaded_at": "Enviado em",
+      "zip": "CEP"
+    },
+    "list": {
+      "certificate": "Certificado",
+      "complete": "Completo",
+      "count_plural": "contas cadastradas",
+      "count_singular": "conta cadastrada",
+      "empty_hint": "Crie uma conta de NF para vincular as suas lojas e começar a emitir notas fiscais.",
+      "empty_title": "Nenhuma conta de NF cadastrada",
+      "linked_stores": "Lojas vinculadas",
+      "new_account": "Nova conta de NF",
+      "next_number": "Próx. nº",
+      "no_certificate": "Sem certificado",
+      "no_stores_linked": "Nenhuma loja vinculada",
+      "pending": "Pendente",
+      "series": "Série"
+    },
+    "title": "Contas de NF"
+  },
+  "pedidos": {
+    "detail": {
+      "back_to_list": "Voltar à lista",
+      "cancel_nfe": "Cancelar NF-e",
+      "download_pdf": "Baixar PDF",
+      "error_code": "Código",
+      "error_title": "Erro",
+      "field_access_key": "Chave de acesso",
+      "field_buyer": "Comprador",
+      "field_city": "Cidade",
+      "field_cpf": "CPF",
+      "field_deadline": "Prazo",
+      "field_issued_at": "Emitida em",
+      "field_marketplace": "Marketplace",
+      "field_order": "Pedido",
+      "field_protocol": "Protocolo",
+      "field_shipping": "Frete",
+      "field_total": "Total",
+      "field_zip": "CEP",
+      "issue_nfe": "Emitir NF-e",
+      "items": "Itens",
+      "label": "Etiqueta",
+      "nfe_issued": "NF-e emitida",
+      "order_data": "Dados do pedido",
+      "print_danfe": "Imprimir DANFE",
+      "see_solution": "Ver solução",
+      "select_order": "Selecione um pedido",
+      "try_again": "Tentar novamente"
+    },
+    "list": {
+      "filter_all": "Todos",
+      "filter_errors": "Erros",
+      "filter_issued": "Emitidos",
+      "filter_pending": "Pendentes",
+      "no_orders_found": "Nenhum pedido encontrado",
+      "search_placeholder": "Buscar pedido, comprador…"
+    },
+    "metrics": {
+      "authorized": "autorizadas",
+      "errors": "Erros",
+      "issuance": "emissão",
+      "issue_pending": "Emitir pendentes",
+      "nfe_issued": "NF-e emitidas",
+      "orders": "pedidos",
+      "rejections": "rejeições",
+      "today": "Hoje",
+      "waiting": "Aguardando"
+    },
+    "nfe_steps": {
+      "authorized": "Autorizada",
+      "order": "Pedido",
+      "queue": "Fila",
+      "sefaz": "SEFAZ",
+      "xml": "XML"
+    },
+    "status": {
+      "cancelled": "Cancelada",
+      "error": "Erro",
+      "issuing": "Emitindo…",
+      "nfe_authorized": "NF-e autorizada",
+      "pending": "Pendente"
+    }
+  },
+  "produtos": {
+    "actions": {
+      "edit": "Editar"
+    },
+    "empty": {
+      "no_kits": "Nenhum produto combinado cadastrado",
+      "no_kits_hint": "Crie um kit combinando produtos avulsos do seu catálogo.",
+      "no_products": "Nenhum produto encontrado",
+      "no_products_hint": "Ajuste os filtros de busca, ou sincronize seu catálogo pra ver os produtos aqui."
+    },
+    "filters": {
+      "search_placeholder": "Buscar por SKU ou nome...",
+      "status_all": "Todos os status"
+    },
+    "form": {
+      "add": "Adicionar",
+      "add_products": "ADICIONAR PRODUTOS",
+      "associate_products": "Associar produtos",
+      "associated_products": "PRODUTOS ASSOCIADOS",
+      "basic_info": "Informações básicas",
+      "combine_products": "Combine produtos avulsos num kit",
+      "combined_sku": "SKU combinado",
+      "edit_kit": "Editar produto combinado",
+      "edit_product": "Editar produto",
+      "fill_product_data": "Preencha os dados do produto",
+      "group": "Grupo",
+      "group_placeholder": "Ex: Acessórios",
+      "height": "Altura (cm)",
+      "kit_data": "DADOS DO KIT",
+      "kit_name": "Nome do produto combinado",
+      "kit_name_placeholder": "Ex: Kit Skincare Básico 5 Produtos",
+      "length": "Comprimento (cm)",
+      "ncm_warning": "Produto sem NCM não pode ter NF-e emitida — preencha antes de vincular a um pedido.",
+      "new_product": "Novo produto",
+      "nfe_info": "Informações da NF-e",
+      "no_associated_products": "Nenhum produto associado ainda. Busque abaixo e adicione ao kit.",
+      "no_fiscal_account": "Nenhuma conta fiscal cadastrada",
+      "no_fiscal_account_hint": "Cadastre uma empresa em \"Empresas\" antes de vincular produtos.",
+      "optional": "Opcional",
+      "origin": "Origem do produto",
+      "output_own_manufacturing": "Saída de fabricação própria",
+      "output_resale": "Saída de produtos de revenda",
+      "parent_sku": "SKU Pai",
+      "parent_sku_placeholder": "Opcional — pra variações",
+      "product_data": "DADOS DO PRODUTO",
+      "product_name": "Nome do produto",
+      "product_name_placeholder": "Ex: Cabo USB-C 2m Nylon Trançado",
+      "save_kit": "Salvar produto combinado",
+      "save_product": "Salvar produto",
+      "shipping_mode": "Modo de envio",
+      "stock_hint": "Esse número é abatido automaticamente a cada pedido emitido.",
+      "stock_quantity": "Quantidade em estoque",
+      "supplier": "Fornecedor",
+      "tax_class_hint": "Selecione a(s) empresa(s) cadastrada(s) em \"Empresas\" que emitem nota fiscal por esse produto.",
+      "tax_class_title": "CLASSE DE IMPOSTO — VÍNCULO COM CNPJ",
+      "unit": "Unidade",
+      "weight": "Peso (kg)",
+      "weight_size": "PESO E TAMANHO",
+      "width": "Largura (cm)"
+    },
+    "kit": {
+      "products_count": "produto(s)",
+      "shipping_combined": "Envio Combinado",
+      "shipping_random": "Envio Aleatório"
+    },
+    "kit_title": "Produto Combinado",
+    "list": {
+      "kits_registered": "kits cadastrados",
+      "new_kit": "Novo produto combinado",
+      "new_product": "Novo produto",
+      "of": "de",
+      "products": "produtos"
+    },
+    "status": {
+      "active": "Ativo",
+      "interrupted": "Interrompido",
+      "paused": "Pausado"
+    },
+    "table": {
+      "pending": "Pendente",
+      "sku_name": "SKU / Nome",
+      "status": "Status",
+      "stock": "Estoque"
+    },
+    "title": "Produtos"
+  },
+  "relatorios": {
+    "charts": {
+      "revenue_by_store": "Receita por loja"
+    },
+    "empty": {
+      "no_data": "Sem dados pro período/loja selecionados"
+    },
+    "export_xlsx": "Exportar XLSX",
+    "filters": {
+      "all_stores": "Todas as lojas",
+      "period_12m": "12 meses",
+      "period_30d": "30 dias",
+      "period_7d": "7 dias",
+      "period_90d": "90 dias",
+      "period_custom": "Personalizado",
+      "to_lowercase": "até"
+    },
+    "kpi": {
+      "average_ticket": "Ticket Médio",
+      "net_revenue": "Receita Líquida",
+      "order_count": "Qtd. de Pedidos",
+      "profit_margin": "Margem de Lucro",
+      "vs_previous_period": "vs período anterior"
+    },
+    "subtitle": "Desempenho de vendas por período e loja",
+    "table": {
+      "breakdown": "Detalhamento",
+      "by_day": "(por dia)",
+      "by_month": "(por mês)",
+      "expenses": "Despesas",
+      "margin": "Margem",
+      "other_revenue": "Outras Receitas",
+      "profit": "Lucro"
+    },
+    "title": "Relatórios"
+  },
+  "shell": {
+    "avatar_menu": {
+      "language": "Idioma",
+      "logout": "Sair",
+      "profile": "Perfil",
+      "theme_dark": "Tema escuro",
+      "theme_light": "Tema claro",
+      "theme_toggle": "Alternar tema claro/escuro"
+    },
+    "sidebar": {
+      "companies": "Empresas",
+      "home": "Início",
+      "integrations": "Integrações",
+      "module_in_progress": "Módulo em desenvolvimento.",
+      "orders": "Pedidos",
+      "products": "Produtos",
+      "reports": "Relatórios",
+      "settings": "Configurações",
+      "stock": "Estoque"
+    },
+    "topbar": {
+      "account": "Conta",
+      "search_placeholder": "Pergunte algo, ou busque um pedido, produto, CNPJ..."
+    }
+  }
+}

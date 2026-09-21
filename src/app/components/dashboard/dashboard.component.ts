@@ -1,0 +1,480 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription, debounceTime } from 'rxjs';
+import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import { TranslateService } from '@ngx-translate/core';
+
+interface PedidoAtencao {
+    id: string;
+    mkt: string;
+    buyer: string;
+    val: string;
+    status: 'pendente' | 'erro';
+    motivo: string;
+}
+
+type PeriodoFiltro = 'hoje' | 'semana' | 'mes' | 'ano' | 'personalizado';
+
+interface ValoresPorPeriodo {
+    hoje: number;
+    semana: number;
+    mes: number;
+    ano: number;
+}
+
+interface IndicadorEmpresa {
+    total: number;
+    periodo: ValoresPorPeriodo;
+}
+
+interface EmpresaIndicadores {
+    totalPedidos: IndicadorEmpresa;
+    totalNFe: IndicadorEmpresa;
+    nfeCanceladas: IndicadorEmpresa;
+    cceEmitidas: IndicadorEmpresa;
+    notasInutilizadas: IndicadorEmpresa;
+}
+
+interface Empresa {
+    id: string;
+    nome: string;
+}
+
+interface CardIndicador {
+    labelKey: string;
+    icon: string;
+    cor: 'blue' | 'green' | 'red' | 'purple' | 'amber';
+    total: number;
+    delta: number;
+    acaoKey: string; // chave i18n da palavra usada no comparativo: "42 recebidos hoje"...
+}
+
+@Component({
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss']
+})
+export class DashboardComponent implements OnInit, OnDestroy {
+
+    // ── Filtros ────────────────────────────────────────────────────
+    readonly TODAS_EMPRESAS: string = 'todas';
+
+    empresas: Empresa[] = [];
+    empresaSelecionada: string = this.TODAS_EMPRESAS;
+
+    // Formato { label, value } exigido pelo p-dropdown (PrimeNG) — "Todas as
+    // empresas" entra como primeira opção sintética, seguida das reais.
+    // Propriedade normal (não getter!): um getter aqui recalcularia (e criaria
+    // um array NOVO) a cada ciclo de detecção de mudanças do Angular, o que
+    // trava a aba — o p-dropdown reage a toda troca de referência de [options].
+    empresaOptions: { label: string; value: string }[] = [];
+
+    periodoSelecionado: PeriodoFiltro = 'hoje';
+    readonly periodos: { value: PeriodoFiltro; label: string }[] = [
+        { value: 'hoje', label: 'dashboard.filters.period_today' },
+        { value: 'semana', label: 'dashboard.filters.period_this_week' },
+        { value: 'mes', label: 'dashboard.filters.period_this_month' },
+        { value: 'ano', label: 'dashboard.filters.period_this_year' },
+        { value: 'personalizado', label: 'dashboard.filters.period_custom' },
+    ];
+
+    dataInicioPersonalizado: string = '';
+    dataFimPersonalizado: string = '';
+
+    // ── Cards calculados ─────────────────────────────────────────
+    cards: CardIndicador[] = [];
+
+    pedidosAtencao: PedidoAtencao[] = [];
+
+    vendasChartData: any;
+    vendasChartOptions: any;
+    distribuicaoChartData: any;
+    distribuicaoChartOptions: any;
+
+    // Mock de indicadores por empresa (base + quebra por período)
+    // TODO: quando existir DashboardService, trocar por chamada real,
+    // agregando dados de Pedidos + Fiscal por conta de NF (empresa).
+    private readonly INDICADORES_MOCK: Record<string, EmpresaIndicadores> = {
+        'emp-1': {
+            totalPedidos: { total: 128430, periodo: { hoje: 42, semana: 312, mes: 1180, ano: 12840 } },
+            totalNFe: { total: 118920, periodo: { hoje: 38, semana: 289, mes: 1050, ano: 11720 } },
+            nfeCanceladas: { total: 512, periodo: { hoje: 1, semana: 6, mes: 22, ano: 210 } },
+            cceEmitidas: { total: 89, periodo: { hoje: 0, semana: 2, mes: 8, ano: 64 } },
+            notasInutilizadas: { total: 34, periodo: { hoje: 0, semana: 1, mes: 3, ano: 19 } },
+        },
+        'emp-2': {
+            totalPedidos: { total: 64210, periodo: { hoje: 15, semana: 140, mes: 610, ano: 6320 } },
+            totalNFe: { total: 59870, periodo: { hoje: 13, semana: 128, mes: 560, ano: 5890 } },
+            nfeCanceladas: { total: 201, periodo: { hoje: 0, semana: 2, mes: 9, ano: 88 } },
+            cceEmitidas: { total: 27, periodo: { hoje: 0, semana: 1, mes: 3, ano: 21 } },
+            notasInutilizadas: { total: 11, periodo: { hoje: 0, semana: 0, mes: 1, ano: 7 } },
+        },
+        'emp-3': {
+            totalPedidos: { total: 46381, periodo: { hoje: 8, semana: 61, mes: 260, ano: 4110 } },
+            totalNFe: { total: 42130, periodo: { hoje: 7, semana: 55, mes: 235, ano: 3780 } },
+            nfeCanceladas: { total: 178, periodo: { hoje: 0, semana: 1, mes: 5, ano: 61 } },
+            cceEmitidas: { total: 19, periodo: { hoje: 0, semana: 0, mes: 2, ano: 14 } },
+            notasInutilizadas: { total: 8, periodo: { hoje: 0, semana: 0, mes: 0, ano: 5 } },
+        },
+    };
+
+    // ── Mock dos gráficos ──────────────────────────────────────────
+    // Séries-base de Pedidos x NF-e, uma "forma" por granularidade de período.
+    // TODO: quando existir DashboardService, cada período vira uma agregação real.
+    private readonly SERIES_POR_PERIODO: Record<PeriodoFiltro, { labels: string[]; pedidos: number[]; nfe: number[] }> = {
+        hoje: { labels: ['06h', '09h', '12h', '15h', '18h', '21h'], pedidos: [2, 5, 8, 6, 9, 4], nfe: [1, 4, 6, 5, 7, 3] },
+        semana: { labels: ['24/07', '25/07', '26/07', '27/07', '28/07', '29/07', '30/07'], pedidos: [8, 11, 7, 14, 10, 6, 6], nfe: [6, 9, 6, 12, 8, 5, 2] },
+        mes: { labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'], pedidos: [58, 64, 49, 72], nfe: [50, 55, 44, 63] },
+        ano: { labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'], pedidos: [420, 380, 510, 460, 530, 600, 610], nfe: [390, 350, 470, 430, 500, 560, 570] },
+        personalizado: { labels: ['24/07', '25/07', '26/07', '27/07', '28/07', '29/07', '30/07'], pedidos: [8, 11, 7, 14, 10, 6, 6], nfe: [6, 9, 6, 12, 8, 5, 2] },
+    };
+
+    // Fator de escala por empresa sobre a série-base acima (simula empresas de portes diferentes)
+    private readonly EMPRESA_FATOR: Record<string, number> = {
+        'emp-1': 1,
+        'emp-2': 0.5,
+        'emp-3': 0.35,
+    };
+
+    // Distribuição por marketplace: [Mercado Livre, Shopee, Amazon, Nuvemshop], por empresa
+    private readonly MKT_POR_EMPRESA: Record<string, number[]> = {
+        'emp-1': [3, 1, 1, 1],
+        'emp-2': [1, 3, 0, 1],
+        'emp-3': [2, 0, 2, 0],
+    };
+
+    private subscription!: Subscription;
+
+    constructor(public layoutService: LayoutService, public translate: TranslateService) {
+        // Recalcula os gráficos quando o usuário troca o tema (cores dos textos/grid mudam)
+        this.subscription = this.layoutService.configUpdate$
+            .pipe(debounceTime(25))
+            .subscribe(() => this.montarGraficos());
+    }
+
+    ngOnInit(): void {
+        this.obterEmpresas();
+        this.recalcularCards();
+        this.obterPedidosQuePrecisamAtencao();
+        this.montarGraficos();
+    }
+
+    ngOnDestroy(): void {
+        this.subscription?.unsubscribe();
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // "BUSCAR NO BANCO" — hoje retorna dados fixos.
+    // TODO: quando existir FiscalService, trocar por chamada real
+    // que lista as Contas de NF cadastradas (mesma fonte do módulo Empresas).
+    // ════════════════════════════════════════════════════════════
+    obterEmpresas(): void {
+        this.empresas = [
+            { id: 'emp-1', nome: 'Comércio de Eletrônicos LTDA' },
+            { id: 'emp-2', nome: 'Loja Abel Comércio Digital LTDA' },
+            { id: 'emp-3', nome: 'Tech Store Distribuidora ME' },
+        ];
+        this.empresaOptions = [
+            { label: 'Todas as empresas', value: this.TODAS_EMPRESAS },
+            ...this.empresas.map(e => ({ label: e.nome, value: e.id })),
+        ];
+    }
+
+    obterPedidosQuePrecisamAtencao(): void {
+        this.pedidosAtencao = [
+            { id: '#AZ-1029384', mkt: 'Amazon', buyer: 'Fernanda Costa', val: 'R$ 512,00', status: 'erro', motivo: 'Rejeição 539 — CNPJ não cadastrado na SEFAZ' },
+            { id: '#ML-8842391', mkt: 'Mercado Livre', buyer: 'Carlos Souza', val: 'R$ 349,90', status: 'pendente', motivo: 'Aguardando emissão' },
+            { id: '#SH-9910234', mkt: 'Shopee', buyer: 'Roberto Alves', val: 'R$ 87,50', status: 'pendente', motivo: 'Aguardando emissão' },
+            { id: '#NV-7710092', mkt: 'Nuvemshop', buyer: 'Juliana Ramos', val: 'R$ 234,00', status: 'pendente', motivo: 'Aguardando emissão' },
+        ];
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // FILTROS — trocar empresa ou período recalcula os cards na hora
+    // ════════════════════════════════════════════════════════════
+    onEmpresaChange(): void {
+        this.recalcularCards();
+        this.montarGraficos();
+    }
+
+    onPeriodoChange(): void {
+        this.recalcularCards();
+        this.montarGraficos();
+    }
+
+    onPeriodoPersonalizadoChange(): void {
+        if (this.dataInicioPersonalizado && this.dataFimPersonalizado) {
+            this.recalcularCards();
+            this.montarGraficos();
+        }
+    }
+
+    private recalcularCards(): void {
+        const dados = this.obterIndicadoresConsolidados(this.empresaSelecionada);
+
+        this.cards = [
+            this.montarCard('dashboard.kpi.total_orders', 'pi-shopping-cart', 'blue', 'dashboard.kpi.action.received', dados.totalPedidos),
+            this.montarCard('dashboard.kpi.total_nfe', 'pi-file', 'green', 'dashboard.kpi.action.issued', dados.totalNFe),
+            this.montarCard('dashboard.kpi.nfe_cancelled', 'pi-times-circle', 'red', 'dashboard.kpi.action.cancelled', dados.nfeCanceladas),
+            this.montarCard('dashboard.kpi.cce_issued', 'pi-file-edit', 'purple', 'dashboard.kpi.action.issued', dados.cceEmitidas),
+            this.montarCard('dashboard.kpi.invalidated_notes', 'pi-ban', 'amber', 'dashboard.kpi.action.invalidated', dados.notasInutilizadas),
+        ];
+    }
+
+    // Soma todas as empresas quando "Todas as empresas" está selecionado,
+    // ou retorna só os dados da empresa escolhida.
+    private obterIndicadoresConsolidados(empresaId: string): EmpresaIndicadores {
+        if (empresaId !== this.TODAS_EMPRESAS) {
+            return this.INDICADORES_MOCK[empresaId];
+        }
+
+        const todasEmpresas = Object.values(this.INDICADORES_MOCK);
+        const somar = (chave: keyof EmpresaIndicadores): IndicadorEmpresa => ({
+            total: todasEmpresas.reduce((acc, e) => acc + e[chave].total, 0),
+            periodo: {
+                hoje: todasEmpresas.reduce((acc, e) => acc + e[chave].periodo.hoje, 0),
+                semana: todasEmpresas.reduce((acc, e) => acc + e[chave].periodo.semana, 0),
+                mes: todasEmpresas.reduce((acc, e) => acc + e[chave].periodo.mes, 0),
+                ano: todasEmpresas.reduce((acc, e) => acc + e[chave].periodo.ano, 0),
+            },
+        });
+
+        return {
+            totalPedidos: somar('totalPedidos'),
+            totalNFe: somar('totalNFe'),
+            nfeCanceladas: somar('nfeCanceladas'),
+            cceEmitidas: somar('cceEmitidas'),
+            notasInutilizadas: somar('notasInutilizadas'),
+        };
+    }
+
+    private montarCard(labelKey: string, icon: string, cor: CardIndicador['cor'], acaoKey: string, indicador: IndicadorEmpresa): CardIndicador {
+        const delta = this.obterDeltaPeriodo(indicador.periodo);
+        return {
+            labelKey, icon, cor, acaoKey,
+            total: indicador.total,
+            delta,
+        };
+    }
+
+    private obterDeltaPeriodo(periodo: ValoresPorPeriodo): number {
+        switch (this.periodoSelecionado) {
+            case 'hoje': return periodo.hoje;
+            case 'semana': return periodo.semana;
+            case 'mes': return periodo.mes;
+            case 'ano': return periodo.ano;
+            case 'personalizado': return this.estimarValorPersonalizado(periodo.ano);
+            default: return periodo.hoje;
+        }
+    }
+
+    // Período personalizado: como é dado simulado, estimamos proporcionalmente
+    // à média diária do ano. TODO: substituir por agregação real por data quando
+    // existir o back — aí o intervalo vira um filtro de verdade na consulta.
+    private estimarValorPersonalizado(valorAno: number): number {
+        if (!this.dataInicioPersonalizado || !this.dataFimPersonalizado) return 0;
+        const inicio = new Date(this.dataInicioPersonalizado);
+        const fim = new Date(this.dataFimPersonalizado);
+        const dias = Math.max(1, Math.round((fim.getTime() - inicio.getTime()) / 86400000) + 1);
+        return Math.round((valorAno / 365) * dias);
+    }
+
+    // A composição final "{valor} {ação} {período}" (ex: "1.245 emitidas hoje")
+    // é montada no template com pipes | translate — aqui só devolvemos QUAL
+    // chave de sufixo de período usar, pra reagir à troca de idioma sozinho.
+    periodoSufixoKey(): string {
+        switch (this.periodoSelecionado) {
+            case 'hoje': return 'dashboard.kpi.suffix.today';
+            case 'semana': return 'dashboard.kpi.suffix.this_week';
+            case 'mes': return 'dashboard.kpi.suffix.this_month';
+            case 'ano': return 'dashboard.kpi.suffix.this_year';
+            case 'personalizado':
+                return (this.dataInicioPersonalizado && this.dataFimPersonalizado)
+                    ? 'dashboard.kpi.suffix.selected_period'
+                    : '';
+            default: return '';
+        }
+    }
+
+    mostrarSelecionePeriodo(): boolean {
+        return this.periodoSelecionado === 'personalizado' && (!this.dataInicioPersonalizado || !this.dataFimPersonalizado);
+    }
+
+    formatarNumero(valor: number): string {
+        const locales: Record<string, string> = { pt: 'pt-BR', en: 'en-US', es: 'es-ES', ar: 'ar-EG', zh: 'zh-CN' };
+        return valor.toLocaleString(locales[this.translate.currentLang] ?? 'pt-BR');
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // GRÁFICOS (Chart.js via primeng/chart) — agora reagem aos mesmos
+    // filtros de empresa/período usados nos cards.
+    // ════════════════════════════════════════════════════════════
+    private montarGraficos(): void {
+        const escuro = this.layoutService.config().colorScheme === 'dark';
+        const textColorSecondary = escuro ? '#a1a1aa' : '#6b7280';
+        const surfaceBorder = escuro ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)';
+
+        const base = this.SERIES_POR_PERIODO[this.periodoSelecionado];
+        const fatorTotal = this.obterFatoresEmpresas().reduce((acc, f) => acc + f, 0);
+
+        const pedidosSerie = base.pedidos.map(v => Math.round(v * fatorTotal));
+        const emitidasSerie = base.nfe.map(v => Math.round(v * fatorTotal));
+
+        // Canceladas/CC-e/Inutilizadas derivadas proporcionalmente das emitidas
+        // (mesma proporção observada nos totais do INDICADORES_MOCK).
+        // TODO: quando existir DashboardService, cada uma vira uma série agregada real.
+        const canceladasSerie = emitidasSerie.map(v => Math.round(v * 0.06));
+        const cceSerie = emitidasSerie.map(v => Math.round(v * 0.02));
+        const inutilizadasSerie = emitidasSerie.map(v => Math.round(v * 0.01));
+
+        this.vendasChartData = {
+            labels: base.labels,
+            datasets: [
+                {
+                    label: 'Pedidos',
+                    data: pedidosSerie,
+                    fill: true,
+                    tension: 0.4,
+                    borderColor: '#6366f1',
+                    backgroundColor: (ctx: any) => this.gradienteArea(ctx, 99, 102, 241),
+                    pointBackgroundColor: '#6366f1',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                },
+                {
+                    label: 'Emitidas',
+                    data: emitidasSerie,
+                    fill: true,
+                    tension: 0.4,
+                    borderColor: '#34d399',
+                    backgroundColor: (ctx: any) => this.gradienteArea(ctx, 52, 211, 153),
+                    pointBackgroundColor: '#34d399',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                },
+                {
+                    label: 'Canceladas',
+                    data: canceladasSerie,
+                    fill: false,
+                    tension: 0.4,
+                    borderColor: '#fb7185',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fb7185',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                },
+                {
+                    label: 'CC-e',
+                    data: cceSerie,
+                    fill: false,
+                    tension: 0.4,
+                    borderColor: '#a78bfa',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#a78bfa',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                },
+                {
+                    label: 'Inutilizadas',
+                    data: inutilizadasSerie,
+                    fill: false,
+                    tension: 0.4,
+                    borderColor: '#fbbf24',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fbbf24',
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                },
+            ],
+        };
+
+        this.vendasChartOptions = {
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: textColorSecondary, usePointStyle: true, boxWidth: 8 } },
+                tooltip: {
+                    backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d4d4d8',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 10,
+                    displayColors: true,
+                    usePointStyle: true,
+                },
+            },
+            scales: {
+                x: { ticks: { color: textColorSecondary }, grid: { display: false } },
+                y: {
+                    ticks: { color: textColorSecondary },
+                    grid: { color: surfaceBorder, drawBorder: false, borderDash: [4, 4] },
+                    beginAtZero: true,
+                },
+            },
+        };
+
+        this.distribuicaoChartData = {
+            labels: ['Mercado Livre', 'Shopee', 'Amazon', 'Nuvemshop'],
+            datasets: [{
+                data: this.obterDistribuicaoMkt(),
+                backgroundColor: ['#facc15', '#fb7185', '#fb923c', '#22d3ee'],
+                borderWidth: 0,
+                hoverOffset: 4,
+            }],
+        };
+
+        this.distribuicaoChartOptions = {
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: textColorSecondary, usePointStyle: true, boxWidth: 8, padding: 16 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d4d4d8',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 10,
+                },
+            },
+        };
+    }
+
+    // Gradiente vertical (50% de opacidade → 0%) pra área preenchida dos gráficos de linha
+    private gradienteArea(context: any, r: number, g: number, b: number): any {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return `rgba(${r}, ${g}, ${b}, 0.1)`;
+        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.5)`);
+        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        return gradient;
+    }
+
+    // Fator de cada empresa envolvida no filtro atual (uma só, ou todas somadas)
+    private obterFatoresEmpresas(): number[] {
+        if (this.empresaSelecionada !== this.TODAS_EMPRESAS) {
+            return [this.EMPRESA_FATOR[this.empresaSelecionada] ?? 0];
+        }
+        return Object.values(this.EMPRESA_FATOR);
+    }
+
+    // Distribuição por marketplace da empresa selecionada, ou soma de todas
+    private obterDistribuicaoMkt(): number[] {
+        if (this.empresaSelecionada !== this.TODAS_EMPRESAS) {
+            return this.MKT_POR_EMPRESA[this.empresaSelecionada] ?? [0, 0, 0, 0];
+        }
+        const todas = Object.values(this.MKT_POR_EMPRESA);
+        return todas.reduce((acc, arr) => acc.map((v, i) => v + arr[i]), [0, 0, 0, 0]);
+    }
+
+    // Rótulo do período atual, usado no cabeçalho dos gráficos
+    periodoAtualLabel(): string {
+        return this.periodos.find(p => p.value === this.periodoSelecionado)?.label ?? '';
+    }
+}

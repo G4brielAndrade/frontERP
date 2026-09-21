@@ -1,0 +1,65 @@
+<p-toast position="bottom-left"></p-toast>
+
+<aside class="icon-sidebar">
+    <nav class="nav-items">
+
+        <a *ngFor="let item of navItemsPrincipal"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label | translate"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label | translate }}</span>
+        </a>
+
+        <div class="nav-sep"></div>
+
+        <a *ngFor="let item of navItems"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label | translate"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label | translate }}</span>
+        </a>
+
+        <div class="nav-sep"></div>
+
+        <a *ngFor="let item of navItemsSecundario"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label | translate"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label | translate }}</span>
+        </a>
+
+        <div class="nav-sep"></div>
+
+        <a *ngFor="let item of navItemsIntegracoes"
+           class="nav-item"
+           [routerLink]="item.route ?? null"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           [class.disabled]="!item.disponivel"
+           [attr.aria-label]="item.label | translate"
+           (click)="onNavClick(item, $event)">
+            <i class="pi" [ngClass]="item.icon"></i>
+            <span class="nav-tooltip">{{ item.label | translate }}</span>
+        </a>
+    </nav>
+
+    <a class="nav-item nav-bottom" [attr.aria-label]="'shell.sidebar.settings' | translate" (click)="abrirConfiguracoes()">
+        <i class="pi pi-cog"></i>
+        <span class="nav-tooltip">{{ 'shell.sidebar.settings' | translate }}</span>
+    </a>
+</aside>

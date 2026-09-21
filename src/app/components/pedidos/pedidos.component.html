@@ -1,0 +1,196 @@
+<p-toast></p-toast>
+
+<div class="pedidos-page">
+
+    <!-- Métricas -->
+    <div class="metrics">
+        <div class="metric">
+            <div class="metric-label">{{ 'pedidos.metrics.today' | translate }}</div>
+            <div class="metric-val">{{ metrics.total }}</div>
+            <div class="metric-sub">{{ 'pedidos.metrics.orders' | translate }}</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">{{ 'pedidos.metrics.nfe_issued' | translate }}</div>
+            <div class="metric-val success">{{ metrics.emitidas }}</div>
+            <div class="metric-sub">{{ 'pedidos.metrics.authorized' | translate }}</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">{{ 'pedidos.metrics.waiting' | translate }}</div>
+            <div class="metric-val warning">{{ metrics.pending }}</div>
+            <div class="metric-sub">{{ 'pedidos.metrics.issuance' | translate }}</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">{{ 'pedidos.metrics.errors' | translate }}</div>
+            <div class="metric-val danger">{{ metrics.errors }}</div>
+            <div class="metric-sub">{{ 'pedidos.metrics.rejections' | translate }}</div>
+        </div>
+        <div class="metric metric-action">
+            <button class="btn btn-primary" (click)="emitirLote()">
+                <i class="pi pi-bolt"></i> {{ 'pedidos.metrics.issue_pending' | translate }}
+            </button>
+        </div>
+    </div>
+
+    <div class="content" [class.detail-active]="!!selectedOrder">
+
+        <!-- Lista de pedidos -->
+        <div class="order-list">
+            <div class="list-header">
+                <i class="pi pi-search"></i>
+                <input type="text" [placeholder]="'pedidos.list.search_placeholder' | translate"
+                       [ngModel]="searchTerm" (ngModelChange)="onBuscar($event)" />
+            </div>
+
+            <div class="filter-tabs">
+                <button class="ftab" [class.active]="currentFilter === 'todos'" (click)="setFiltro('todos')">{{ 'pedidos.list.filter_all' | translate }}</button>
+                <button class="ftab" [class.active]="currentFilter === 'pendente'" (click)="setFiltro('pendente')">{{ 'pedidos.list.filter_pending' | translate }}</button>
+                <button class="ftab" [class.active]="currentFilter === 'emitida'" (click)="setFiltro('emitida')">{{ 'pedidos.list.filter_issued' | translate }}</button>
+                <button class="ftab" [class.active]="currentFilter === 'erro'" (click)="setFiltro('erro')">{{ 'pedidos.list.filter_errors' | translate }}</button>
+            </div>
+
+            <div class="orders">
+                <div class="empty-state" style="height:120px" *ngIf="filteredOrders.length === 0">
+                    <i class="pi pi-search"></i><span>{{ 'pedidos.list.no_orders_found' | translate }}</span>
+                </div>
+
+                <div class="order-row" *ngFor="let o of filteredOrders"
+                     [class.selected]="selectedOrder?.id === o.id"
+                     (click)="selecionarPedido(o)">
+                    <div class="order-row-top">
+                        <span class="order-id">{{ o.id }}</span>
+
+                        <span class="badge badge-amber" *ngIf="o.status === 'pendente'"><i class="pi pi-clock"></i> {{ 'pedidos.status.pending' | translate }}</span>
+                        <span class="badge badge-blue" *ngIf="o.status === 'emitindo'"><i class="pi pi-spin pi-spinner"></i> {{ 'pedidos.status.issuing' | translate }}</span>
+                        <span class="badge badge-green" *ngIf="o.status === 'emitida'"><i class="pi pi-check"></i> {{ 'pedidos.status.nfe_authorized' | translate }}</span>
+                        <span class="badge badge-red" *ngIf="o.status === 'erro'"><i class="pi pi-exclamation-triangle"></i> {{ 'pedidos.status.error' | translate }}</span>
+                        <span class="badge badge-gray" *ngIf="o.status === 'cancelada'"><i class="pi pi-times"></i> {{ 'pedidos.status.cancelled' | translate }}</span>
+                    </div>
+                    <div class="order-row-mid">
+                        <span class="order-mkt">
+                            <span class="mkt-dot" [ngClass]="MKT_DOT_CLASS[o.mkt]"></span>
+                            {{ MKT_LABELS[o.mkt] }}
+                        </span>
+                        <span class="order-val">{{ o.val }}</span>
+                    </div>
+                    <div class="order-buyer">{{ o.buyer }} · {{ o.cidade }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel de detalhe -->
+        <div class="detail">
+
+            <ng-container *ngIf="selectedOrder as o">
+
+                <!-- Barra de progresso NF-e -->
+                <div class="nfe-strip">
+                    <button class="back-to-list" (click)="fecharDetalhe()">
+                        <i class="pi pi-arrow-left"></i> {{ 'pedidos.detail.back_to_list' | translate }}
+                    </button>
+                    <div class="nfe-progress">
+                        <ng-container *ngFor="let step of NFE_STEPS; let i = index">
+                            <div class="nfe-line" [class.done]="i > 0 && statusDots(o.status)[i-1] === 'done' && statusDots(o.status)[i] === 'done'" *ngIf="i > 0"></div>
+                            <div class="nfe-step">
+                                <div class="nfe-dot" [ngClass]="statusDots(o.status)[i]">
+                                    <i class="pi" [ngClass]="step.icon" [class.spin]="statusDots(o.status)[i] === 'active'"></i>
+                                </div>
+                                <span>{{ step.labelKey | translate }}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <div class="detail-body">
+
+                    <!-- Seção de erro -->
+                    <div class="detail-section error" *ngIf="o.status === 'erro' && o.error">
+                        <div class="detail-section-title">
+                            <i class="pi pi-exclamation-triangle"></i> {{ 'pedidos.detail.error_title' | translate }} — {{ 'pedidos.detail.error_code' | translate }} {{ o.error.codigoErro }}
+                        </div>
+                        <p style="font-size:12px;margin-bottom:10px">{{ o.error.mensagem }}</p>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn btn-secondary" style="flex:none;font-size:11px" (click)="reemitir(o.id)">
+                                <i class="pi pi-refresh"></i> {{ 'pedidos.detail.try_again' | translate }}
+                            </button>
+                            <button class="btn btn-secondary" style="flex:none;font-size:11px" (click)="verSolucao(o.error.codigoErro)">
+                                <i class="pi pi-book"></i> {{ 'pedidos.detail.see_solution' | translate }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dados do pedido -->
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-shopping-cart"></i> {{ 'pedidos.detail.order_data' | translate }}</div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_order' | translate }}</span><span class="detail-val">{{ o.id }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_marketplace' | translate }}</span><span class="detail-val">{{ MKT_LABELS[o.mkt] }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_buyer' | translate }}</span><span class="detail-val">{{ o.buyer }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_cpf' | translate }}</span><span class="detail-val">{{ o.cpf }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_city' | translate }}</span><span class="detail-val">{{ o.cidade }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_zip' | translate }}</span><span class="detail-val">{{ o.cep }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_shipping' | translate }}</span><span class="detail-val">{{ o.frete }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_deadline' | translate }}</span><span class="detail-val">{{ o.prazo }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_total' | translate }}</span><span class="detail-val">{{ o.val }}</span></div>
+                    </div>
+
+                    <!-- Itens -->
+                    <div class="detail-section">
+                        <div class="detail-section-title"><i class="pi pi-box"></i> {{ 'pedidos.detail.items' | translate }} ({{ o.items.length }})</div>
+                        <div class="item-row" *ngFor="let it of o.items">
+                            <div class="item-thumb"><i class="pi pi-box"></i></div>
+                            <div class="item-info">
+                                <div class="item-name">{{ it.name }}</div>
+                                <div class="item-sku">{{ it.sku }} · NCM {{ it.ncm }}</div>
+                            </div>
+                            <div class="item-qty">×{{ it.qty }}</div>
+                            <div class="item-price">{{ it.price }}</div>
+                        </div>
+                    </div>
+
+                    <!-- NF-e autorizada -->
+                    <div class="detail-section nfe-ok" *ngIf="o.status === 'emitida' && o.nfe as nfe">
+                        <div class="detail-section-title"><i class="pi pi-check-circle"></i> {{ 'pedidos.status.nfe_authorized' | translate }}</div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_issued_at' | translate }}</span><span class="detail-val">{{ nfe.emitidaEm }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_access_key' | translate }}</span><span class="detail-val mono">{{ nfe.chNFe }}</span></div>
+                        <div class="detail-row"><span class="detail-label">{{ 'pedidos.detail.field_protocol' | translate }}</span><span class="detail-val">{{ nfe.protocolo }}</span></div>
+                        <div class="nfe-actions">
+                            <button class="btn btn-primary" style="flex:none;font-size:11px">
+                                <i class="pi pi-print"></i> {{ 'pedidos.detail.print_danfe' | translate }}
+                            </button>
+                            <button class="btn btn-secondary" style="flex:none;font-size:11px">
+                                <i class="pi pi-download"></i> {{ 'pedidos.detail.download_pdf' | translate }}
+                            </button>
+                            <button class="btn btn-secondary" style="flex:none;font-size:11px">
+                                <i class="pi pi-code"></i> XML
+                            </button>
+                            <button class="btn btn-secondary" style="flex:none;font-size:11px;color:var(--danger)" (click)="cancelarNFe(o.id)">
+                                <i class="pi pi-times"></i> {{ 'pedidos.detail.cancel_nfe' | translate }}
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Barra de ações -->
+                <div class="action-bar">
+                    <button class="btn btn-emit" [disabled]="o.status === 'emitida' || o.status === 'emitindo'" (click)="emitirNFe()">
+                        <i class="pi" [ngClass]="o.status === 'emitindo' ? 'pi-spin pi-spinner' : (o.status === 'emitida' ? 'pi-check' : 'pi-file')"></i>
+                        {{ (o.status === 'emitindo' ? 'pedidos.status.issuing' : (o.status === 'emitida' ? 'pedidos.detail.nfe_issued' : 'pedidos.detail.issue_nfe')) | translate }}
+                    </button>
+                    <button class="btn btn-secondary" [disabled]="o.status !== 'emitida'" (click)="imprimirEtiqueta(o)">
+                        <i class="pi pi-print"></i> {{ 'pedidos.detail.label' | translate }}
+                    </button>
+                    <button class="btn btn-secondary" [disabled]="o.status !== 'emitida'" (click)="cancelarNFe(o.id)">
+                        <i class="pi pi-times"></i> {{ 'pedidos.detail.cancel_nfe' | translate }}
+                    </button>
+                </div>
+
+            </ng-container>
+
+            <div class="empty-state" *ngIf="!selectedOrder">
+                <i class="pi pi-file"></i>
+                <span>{{ 'pedidos.detail.select_order' | translate }}</span>
+            </div>
+
+        </div>
+    </div>
+</div>

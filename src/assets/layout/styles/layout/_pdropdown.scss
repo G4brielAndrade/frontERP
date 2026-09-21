@@ -1,0 +1,138 @@
+/* ────────────────────────────────────────────────────────────────────────
+   p-dropdown (PrimeNG) com a cara do design system "Nexus" em vez do tema
+   padrão lara-dark/light-indigo. Cobre TODOS os p-dropdown do app — não é
+   preciso repetir estilo por tela, só usar <p-dropdown> normalmente (com
+   ou sem a classe utilitária .filtro-dropdown pra caber num "filtro-field"
+   ou "form-field" de largura total).
+
+   Por que não deixar no tema padrão do PrimeNG? Ele usa uma paleta própria
+   (--surface-overlay etc, definida no theme.css) que não é a mesma paleta
+   "Nexus" (--bg-primary, --border, --text-primary... de _nexus-theme.scss)
+   usada no resto do ERP — por isso a caixa fechada ficava com uma cara e o
+   painel aberto (que é o próprio PrimeNG, sem override nenhum) com outra,
+   ou até sem estilo nenhum quando era um <select> nativo.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* ── Caixa fechada ──────────────────────────────────────────────────── */
+.p-dropdown {
+    width: auto;
+    font-size: 13px;
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    box-shadow: none;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:not(.p-disabled):hover {
+        border-color: var(--border-md);
+    }
+
+    &:not(.p-disabled).p-focus {
+        border-color: var(--accent);
+        background: var(--bg-primary);
+        box-shadow: none;
+    }
+
+    .p-dropdown-label {
+        padding: 8px 10px;
+        color: var(--text-primary);
+
+        &.p-placeholder {
+            color: var(--text-muted);
+        }
+    }
+
+    .p-dropdown-trigger {
+        width: 2.2rem;
+        color: var(--text-secondary);
+    }
+
+    &.p-disabled {
+        opacity: 0.6;
+    }
+}
+
+/* Dentro de um campo de filtro/formulário de largura total (mesmo
+   comportamento que o <select> nativo tinha antes). Fora desses contextos
+   (ex.: filtro solto ao lado de uma busca) o dropdown mantém largura pelo
+   conteúdo, como já era. */
+.filtro-field .p-dropdown,
+.form-field .p-dropdown {
+    width: 100%;
+}
+
+/* ── Painel da lista (o que antes aparecia sem estilo nenhum) ─────────
+   Mesmo fundo sólido do menu do avatar (--menu-panel-bg, de
+   _nexus-theme.scss) — sólido de propósito, sem backdrop-filter, pelos
+   mesmos motivos documentados em _topbar.scss (bug de composição do
+   Chromium quando um painel flutuante com blur fica sobre outros
+   elementos com blur). */
+.p-dropdown-panel {
+    background: var(--menu-panel-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: .35rem;
+    overflow: hidden;
+
+    .p-dropdown-header {
+        background: transparent;
+        border-bottom: 0.5px solid var(--border);
+        padding: .5rem .6rem;
+
+        .p-dropdown-filter {
+            background: var(--bg-secondary);
+            border: 0.5px solid var(--border-md);
+            border-radius: var(--radius-sm, 8px);
+            color: var(--text-primary);
+
+            &:focus {
+                border-color: var(--accent);
+            }
+        }
+
+        .p-dropdown-filter-icon {
+            color: var(--text-muted);
+        }
+    }
+
+    .p-dropdown-items {
+        padding: 0;
+
+        .p-dropdown-item {
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: .6rem .75rem;
+            font-size: 13px;
+            margin: 1px 0;
+
+            &:not(.p-highlight):not(.p-disabled).p-focus,
+            &:not(.p-highlight):not(.p-disabled):hover {
+                background: var(--bg-tertiary);
+                color: var(--text-primary);
+            }
+
+            &.p-highlight {
+                background: var(--accent);
+                color: #fff;
+            }
+
+            &.p-disabled {
+                color: var(--text-muted);
+            }
+        }
+
+        .p-dropdown-item-group {
+            color: var(--text-muted);
+            background: transparent;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .p-dropdown-empty-message {
+            color: var(--text-muted);
+            padding: .6rem .75rem;
+        }
+    }
+}

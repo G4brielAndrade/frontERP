@@ -1,0 +1,39 @@
+<div class="layout-wrapper" [ngClass]="containerClass">
+    <app-topbar></app-topbar>
+    <app-sidebar></app-sidebar>
+    <div class="layout-main-container">
+        <div class="layout-main">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <app-config></app-config>
+    <div class="layout-mask"></div>
+
+    <!-- Caixa do avatar (Tema/Idioma/Perfil/Sair): fica fora do <app-topbar> de propósito,
+         pra não ser filha de um elemento com backdrop-filter (o topbar tem blur(30px)),
+         o que causava uma mancha escura vazando sobre o conteúdo da página ao abrir. -->
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button class="p-link layout-topbar-button theme-toggle" (click)="appTopbar.toggleColorScheme()" [title]="'shell.avatar_menu.theme_toggle' | translate">
+            <i class="pi" [ngClass]="layoutService.config().colorScheme === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
+            <span>{{ (layoutService.config().colorScheme === 'dark' ? 'shell.avatar_menu.theme_light' : 'shell.avatar_menu.theme_dark') | translate }}</span>
+        </button>
+
+        <div class="layout-topbar-lang-label">{{ 'shell.avatar_menu.language' | translate }}</div>
+        <div class="layout-topbar-lang-row">
+            <button *ngFor="let idioma of languageService.IDIOMAS" type="button" class="lang-btn"
+                [class.active]="idioma.codigo === languageService.idiomaAtual"
+                [title]="idioma.label" (click)="languageService.trocarIdioma(idioma.codigo)">
+                {{ idioma.codigo | uppercase }}
+            </button>
+        </div>
+
+        <button class="p-link layout-topbar-button" [routerLink]="'cadastro/alterarSenha'">
+            <i class="pi pi-user"></i>
+            <span>{{ 'shell.avatar_menu.profile' | translate }}</span>
+        </button>
+        <button class="p-link layout-topbar-button" (click)="appTopbar.logout()">
+            <i class="pi pi-power-off"></i>
+            <span>{{ 'shell.avatar_menu.logout' | translate }}</span>
+        </button>
+    </div>
+</div>

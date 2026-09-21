@@ -1,0 +1,23 @@
+<div class="layout-topbar">
+    <div class="layout-topbar-logo">
+        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.png" alt="logo">
+        <span></span>
+    </div>
+
+    <div class="command-bar">
+        <i class="pi pi-star-fill command-bar-icon"></i>
+        <input type="text" [placeholder]="'shell.topbar.search_placeholder' | translate" />
+        <span class="command-bar-shortcut">⌘K</span>
+    </div>
+
+    <div class="layout-topbar-avatar-menu">
+        <button #topbarmenubutton class="p-link layout-topbar-button layout-topbar-avatar-button" (click)="layoutService.showProfileSidebar()" [title]="'shell.topbar.account' | translate">
+            <i class="pi pi-user"></i>
+        </button>
+    </div>
+    <!-- A caixa com Tema/Perfil/Sair não fica mais aqui dentro: um elemento com
+         backdrop-filter (este .layout-topbar) some com a sombra/blur de um filho
+         posicionado (bug de composição do Chromium), fazendo "vazar" uma mancha
+         escura por cima do conteúdo da página logo abaixo do topbar. A caixa foi
+         movida pra fora do topbar, em app.layout.component.html. -->
+</div>

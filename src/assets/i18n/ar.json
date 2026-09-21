@@ -1,0 +1,405 @@
+{
+  "dashboard": {
+    "attention_orders": {
+      "empty": "لا توجد طلبات تحتاج إلى اهتمام الآن.",
+      "title": "الطلبات التي تحتاج إلى اهتمام",
+      "view_all": "عرض الكل"
+    },
+    "charts": {
+      "marketplace_distribution": "التوزيع حسب المتجر",
+      "timeline_title": "المؤشرات عبر الزمن"
+    },
+    "filters": {
+      "all_companies": "جميع الشركات",
+      "company": "الشركة",
+      "from": "من",
+      "period": "الفترة",
+      "period_custom": "فترة مخصصة",
+      "period_this_month": "هذا الشهر",
+      "period_this_week": "هذا الأسبوع",
+      "period_this_year": "هذا العام",
+      "period_today": "اليوم",
+      "select_period": "اختر الفترة",
+      "to": "إلى"
+    },
+    "kpi": {
+      "action": {
+        "cancelled": "ملغاة",
+        "invalidated": "ملغاة",
+        "issued": "صادرة",
+        "received": "مستلمة"
+      },
+      "cce_issued": "CC-e الصادرة",
+      "invalidated_notes": "الفواتير الملغاة",
+      "nfe_cancelled": "NF-e الملغاة",
+      "suffix": {
+        "selected_period": "في الفترة المحددة",
+        "this_month": "هذا الشهر",
+        "this_week": "هذا الأسبوع",
+        "this_year": "هذا العام",
+        "today": "اليوم"
+      },
+      "total_nfe": "إجمالي NF-e",
+      "total_orders": "إجمالي الطلبات"
+    }
+  },
+  "estoque": {
+    "abc": {
+      "class": "الفئة",
+      "cumulative": "تراكمي",
+      "hint_a": "= المنتجات التي تصل إلى 80% من الإيرادات،",
+      "hint_b": "حتى 95%،",
+      "hint_c": "والباقي.",
+      "hint_prefix": "التصنيف حسب حصة الإيرادات خلال آخر 30 يومًا —",
+      "revenue_30d": "الإيرادات (30 يومًا)",
+      "share": "الحصة"
+    },
+    "actions": {
+      "adjust": "تعديل"
+    },
+    "adjust": {
+      "confirm": "تأكيد التعديل",
+      "current_stock": "المخزون الحالي",
+      "new_movement": "حركة جديدة",
+      "note_optional": "ملاحظة (اختياري)",
+      "note_placeholder": "مثال: فاتورة شراء رقم 1234",
+      "quantity": "الكمية",
+      "stock_after": "المخزون بعد التعديل",
+      "title": "تعديل المخزون",
+      "type_in": "دخول (يضاف إلى المخزون)",
+      "type_out": "خروج (يُخصم من المخزون)",
+      "units": "وحدات",
+      "units_available": "الوحدات المتاحة",
+      "units_reserved": "محجوزة"
+    },
+    "empty": {
+      "no_movements": "لم يتم العثور على حركات",
+      "no_products": "لم يتم العثور على منتجات"
+    },
+    "filters": {
+      "search_placeholder": "ابحث بواسطة SKU أو الاسم...",
+      "status_all": "جميع الحالات",
+      "type_all": "جميع الأنواع"
+    },
+    "kpi": {
+      "active_skus": "رموز SKU النشطة",
+      "out_of_stock": "نفدت الكمية",
+      "stock_value": "قيمة المخزون"
+    },
+    "motivo": {
+      "ajuste_manual": "تعديل يدوي",
+      "cancelamento": "إلغاء",
+      "compra": "شراء",
+      "devolucao": "إرجاع",
+      "inventario": "جرد",
+      "venda": "بيع"
+    },
+    "mov_type": {
+      "adjustment": "تعديل",
+      "adjustment_plural": "التعديلات",
+      "in": "دخول",
+      "in_plural": "دخول",
+      "out": "خروج",
+      "out_plural": "خروج"
+    },
+    "status": {
+      "low": "مخزون منخفض",
+      "ok": "جيد",
+      "out": "نفدت الكمية"
+    },
+    "subtitle": "التحكم في المستويات والحركات ومنحنى ABC",
+    "table": {
+      "available": "متاح",
+      "current_stock": "المخزون الحالي",
+      "date": "التاريخ",
+      "minimum": "الحد الأدنى",
+      "product": "المنتج",
+      "qty": "الكمية",
+      "reason": "السبب",
+      "reserved": "محجوز",
+      "resulting_balance": "الرصيد الناتج",
+      "sku_name": "SKU / الاسم",
+      "status": "الحالة",
+      "type": "النوع",
+      "user": "المستخدم"
+    },
+    "tabs": {
+      "abc_curve": "منحنى ABC",
+      "levels": "مستويات المخزون",
+      "movements": "الحركات"
+    },
+    "title": "المخزون"
+  },
+  "fiscal": {
+    "actions": {
+      "cancel": "إلغاء",
+      "edit": "تعديل",
+      "remove": "إزالة"
+    },
+    "form": {
+      "address": "العنوان",
+      "certificate": "الشهادة الرقمية A1",
+      "certificate_password": "كلمة مرور الشهادة",
+      "city": "المدينة",
+      "company_data": "بيانات الشركة",
+      "company_name": "الاسم القانوني",
+      "company_name_placeholder": "مثال: شركة التجارة الإلكترونية المحدودة",
+      "complement": "تفاصيل إضافية",
+      "edit_title": "تعديل حساب الفواتير",
+      "email": "البريد الإلكتروني",
+      "linked_stores": "المتاجر المرتبطة",
+      "neighborhood": "الحي",
+      "next_number": "رقم الفاتورة التالي",
+      "next_number_warning": "غيّر <strong>الرقم التالي</strong> فقط أثناء الإعداد الأولي. الرقم الأقل من آخر رقم صادر يسبب رفضًا بسبب التكرار لدى SEFAZ.",
+      "nfe_numbering": "ترقيم NF-e",
+      "nfe_series": "سلسلة NF-e",
+      "no_stores_available": "لا يوجد متجر متكامل متاح. قم بدمج متجر أولًا في تبويب <strong>عمليات الدمج</strong>.",
+      "number": "الرقم",
+      "optional": "اختياري",
+      "save": "حفظ الحساب",
+      "save_full": "حفظ حساب الفواتير",
+      "security_note": "الشهادة وكلمة المرور مشفرتان أثناء التخزين. فقط خدمة الإصدار لديها صلاحية الوصول عند التوقيع.",
+      "select_placeholder": "اختر…",
+      "state": "الولاية",
+      "state_registration": "السجل الضريبي للولاية",
+      "stores_hint": "اختر المتاجر التي ستصدر NF-e بهذا الـ CNPJ. لا يمكن ربط المتجر إلا بحساب فواتير واحد في كل مرة.",
+      "street": "الشارع",
+      "street_placeholder": "شارع، جادة...",
+      "subtitle": "أدخل بيانات CNPJ للمُصدر واربط المتاجر",
+      "tax_regime": "النظام الضريبي",
+      "unit_branch": "فرع",
+      "unit_hq": "المقر الرئيسي",
+      "unit_type": "نوع الوحدة",
+      "upload_click": "<strong>انقر للرفع</strong> أو اسحب الملف",
+      "upload_hint": ".pfx أو .p12 — حتى 5 ميغابايت",
+      "uploaded_at": "تم الرفع في",
+      "zip": "الرمز البريدي"
+    },
+    "list": {
+      "certificate": "الشهادة",
+      "complete": "مكتمل",
+      "count_plural": "حسابات مسجلة",
+      "count_singular": "حساب مسجل",
+      "empty_hint": "أنشئ حساب فواتير لربط متاجرك والبدء في إصدار الفواتير.",
+      "empty_title": "لا يوجد حساب فواتير مسجل",
+      "linked_stores": "المتاجر المرتبطة",
+      "new_account": "حساب فواتير جديد",
+      "next_number": "الرقم التالي",
+      "no_certificate": "بدون شهادة",
+      "no_stores_linked": "لا توجد متاجر مرتبطة",
+      "pending": "معلق",
+      "series": "السلسلة"
+    },
+    "title": "حسابات الفواتير"
+  },
+  "pedidos": {
+    "detail": {
+      "back_to_list": "العودة إلى القائمة",
+      "cancel_nfe": "إلغاء NF-e",
+      "download_pdf": "تنزيل PDF",
+      "error_code": "الرمز",
+      "error_title": "خطأ",
+      "field_access_key": "مفتاح الوصول",
+      "field_buyer": "المشتري",
+      "field_city": "المدينة",
+      "field_cpf": "CPF",
+      "field_deadline": "الموعد النهائي",
+      "field_issued_at": "صدرت في",
+      "field_marketplace": "المتجر الإلكتروني",
+      "field_order": "الطلب",
+      "field_protocol": "البروتوكول",
+      "field_shipping": "الشحن",
+      "field_total": "الإجمالي",
+      "field_zip": "الرمز البريدي",
+      "issue_nfe": "إصدار NF-e",
+      "items": "العناصر",
+      "label": "الملصق",
+      "nfe_issued": "تم إصدار NF-e",
+      "order_data": "بيانات الطلب",
+      "print_danfe": "طباعة DANFE",
+      "see_solution": "عرض الحل",
+      "select_order": "اختر طلبًا",
+      "try_again": "أعد المحاولة"
+    },
+    "list": {
+      "filter_all": "الكل",
+      "filter_errors": "الأخطاء",
+      "filter_issued": "الصادرة",
+      "filter_pending": "المعلقة",
+      "no_orders_found": "لم يتم العثور على طلبات",
+      "search_placeholder": "ابحث عن طلب أو مشترٍ…"
+    },
+    "metrics": {
+      "authorized": "معتمدة",
+      "errors": "الأخطاء",
+      "issuance": "الإصدار",
+      "issue_pending": "إصدار المعلقة",
+      "nfe_issued": "NF-e الصادرة",
+      "orders": "طلبات",
+      "rejections": "الرفض",
+      "today": "اليوم",
+      "waiting": "بانتظار"
+    },
+    "nfe_steps": {
+      "authorized": "معتمدة",
+      "order": "الطلب",
+      "queue": "قائمة الانتظار",
+      "sefaz": "SEFAZ",
+      "xml": "XML"
+    },
+    "status": {
+      "cancelled": "ملغاة",
+      "error": "خطأ",
+      "issuing": "جارٍ الإصدار…",
+      "nfe_authorized": "NF-e معتمدة",
+      "pending": "معلق"
+    }
+  },
+  "produtos": {
+    "actions": {
+      "edit": "تعديل"
+    },
+    "empty": {
+      "no_kits": "لا يوجد منتج مجمّع مسجل",
+      "no_kits_hint": "أنشئ مجموعة عن طريق دمج منتجات فردية من الكتالوج الخاص بك.",
+      "no_products": "لم يتم العثور على منتجات",
+      "no_products_hint": "اضبط عوامل تصفية البحث، أو زامن الكتالوج لرؤية المنتجات هنا."
+    },
+    "filters": {
+      "search_placeholder": "ابحث بواسطة SKU أو الاسم...",
+      "status_all": "جميع الحالات"
+    },
+    "form": {
+      "add": "إضافة",
+      "add_products": "إضافة منتجات",
+      "associate_products": "ربط المنتجات",
+      "associated_products": "المنتجات المرتبطة",
+      "basic_info": "المعلومات الأساسية",
+      "combine_products": "ادمج منتجات فردية في مجموعة",
+      "combined_sku": "SKU المجمّع",
+      "edit_kit": "تعديل المنتج المجمّع",
+      "edit_product": "تعديل المنتج",
+      "fill_product_data": "أدخل بيانات المنتج",
+      "group": "المجموعة",
+      "group_placeholder": "مثال: إكسسوارات",
+      "height": "الارتفاع (سم)",
+      "kit_data": "بيانات المجموعة",
+      "kit_name": "اسم المنتج المجمّع",
+      "kit_name_placeholder": "مثال: مجموعة العناية بالبشرة الأساسية 5 منتجات",
+      "length": "الطول (سم)",
+      "ncm_warning": "لا يمكن إصدار NF-e لمنتج بدون NCM — أدخله قبل ربطه بطلب.",
+      "new_product": "منتج جديد",
+      "nfe_info": "معلومات NF-e",
+      "no_associated_products": "لا توجد منتجات مرتبطة بعد. ابحث أدناه وأضفها إلى المجموعة.",
+      "no_fiscal_account": "لا يوجد حساب ضريبي مسجل",
+      "no_fiscal_account_hint": "قم بتسجيل شركة في \"الشركات\" قبل ربط المنتجات.",
+      "optional": "اختياري",
+      "origin": "منشأ المنتج",
+      "output_own_manufacturing": "خروج التصنيع الخاص",
+      "output_resale": "خروج منتجات إعادة البيع",
+      "parent_sku": "SKU الأصلي",
+      "parent_sku_placeholder": "اختياري — للأصناف المتغيرة",
+      "product_data": "بيانات المنتج",
+      "product_name": "اسم المنتج",
+      "product_name_placeholder": "مثال: كابل USB-C 2م نايلون مضفور",
+      "save_kit": "حفظ المنتج المجمّع",
+      "save_product": "حفظ المنتج",
+      "shipping_mode": "طريقة الشحن",
+      "stock_hint": "يتم خصم هذا الرقم تلقائيًا مع كل طلب صادر.",
+      "stock_quantity": "كمية المخزون",
+      "supplier": "المورد",
+      "tax_class_hint": "اختر الشركة (الشركات) المسجلة في \"الشركات\" التي تصدر فاتورة لهذا المنتج.",
+      "tax_class_title": "فئة الضريبة — الربط بـ CNPJ",
+      "unit": "الوحدة",
+      "weight": "الوزن (كجم)",
+      "weight_size": "الوزن والحجم",
+      "width": "العرض (سم)"
+    },
+    "kit": {
+      "products_count": "منتج (منتجات)",
+      "shipping_combined": "شحن مجمّع",
+      "shipping_random": "شحن عشوائي"
+    },
+    "kit_title": "منتج مجمّع",
+    "list": {
+      "kits_registered": "مجموعات مسجلة",
+      "new_kit": "منتج مجمّع جديد",
+      "new_product": "منتج جديد",
+      "of": "من",
+      "products": "منتجات"
+    },
+    "status": {
+      "active": "نشط",
+      "interrupted": "متوقف",
+      "paused": "متوقف مؤقتًا"
+    },
+    "table": {
+      "pending": "معلق",
+      "sku_name": "SKU / الاسم",
+      "status": "الحالة",
+      "stock": "المخزون"
+    },
+    "title": "المنتجات"
+  },
+  "relatorios": {
+    "charts": {
+      "revenue_by_store": "الإيرادات حسب المتجر"
+    },
+    "empty": {
+      "no_data": "لا توجد بيانات للفترة/المتجر المحددين"
+    },
+    "export_xlsx": "تصدير XLSX",
+    "filters": {
+      "all_stores": "جميع المتاجر",
+      "period_12m": "12 شهرًا",
+      "period_30d": "30 يومًا",
+      "period_7d": "7 أيام",
+      "period_90d": "90 يومًا",
+      "period_custom": "مخصص",
+      "to_lowercase": "إلى"
+    },
+    "kpi": {
+      "average_ticket": "متوسط قيمة الطلب",
+      "net_revenue": "الإيرادات الصافية",
+      "order_count": "عدد الطلبات",
+      "profit_margin": "هامش الربح",
+      "vs_previous_period": "مقارنة بالفترة السابقة"
+    },
+    "subtitle": "أداء المبيعات حسب الفترة والمتجر",
+    "table": {
+      "breakdown": "التفصيل",
+      "by_day": "(يوميًا)",
+      "by_month": "(شهريًا)",
+      "expenses": "المصروفات",
+      "margin": "الهامش",
+      "other_revenue": "إيرادات أخرى",
+      "profit": "الربح"
+    },
+    "title": "التقارير"
+  },
+  "shell": {
+    "avatar_menu": {
+      "language": "اللغة",
+      "logout": "تسجيل الخروج",
+      "profile": "الملف الشخصي",
+      "theme_dark": "الوضع الداكن",
+      "theme_light": "الوضع الفاتح",
+      "theme_toggle": "تبديل الوضع الفاتح/الداكن"
+    },
+    "sidebar": {
+      "companies": "الشركات",
+      "home": "الرئيسية",
+      "integrations": "عمليات الدمج",
+      "module_in_progress": "الوحدة قيد التطوير.",
+      "orders": "الطلبات",
+      "products": "المنتجات",
+      "reports": "التقارير",
+      "settings": "الإعدادات",
+      "stock": "المخزون"
+    },
+    "topbar": {
+      "account": "الحساب",
+      "search_placeholder": "اسأل شيئًا، أو ابحث عن طلب أو منتج أو CNPJ..."
+    }
+  }
+}

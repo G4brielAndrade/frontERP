@@ -1,0 +1,405 @@
+{
+  "dashboard": {
+    "attention_orders": {
+      "empty": "目前没有需要关注的订单。",
+      "title": "需要关注的订单",
+      "view_all": "查看全部"
+    },
+    "charts": {
+      "marketplace_distribution": "按市场分布",
+      "timeline_title": "指标趋势"
+    },
+    "filters": {
+      "all_companies": "所有公司",
+      "company": "公司",
+      "from": "从",
+      "period": "时段",
+      "period_custom": "自定义时段",
+      "period_this_month": "本月",
+      "period_this_week": "本周",
+      "period_this_year": "今年",
+      "period_today": "今天",
+      "select_period": "请选择时段",
+      "to": "到"
+    },
+    "kpi": {
+      "action": {
+        "cancelled": "已取消",
+        "invalidated": "已作废",
+        "issued": "已开具",
+        "received": "已收到"
+      },
+      "cce_issued": "已开具的 CC-e",
+      "invalidated_notes": "作废发票",
+      "nfe_cancelled": "已取消的 NF-e",
+      "suffix": {
+        "selected_period": "在所选时段内",
+        "this_month": "本月",
+        "this_week": "本周",
+        "this_year": "今年",
+        "today": "今天"
+      },
+      "total_nfe": "NF-e 总数",
+      "total_orders": "订单总数"
+    }
+  },
+  "estoque": {
+    "abc": {
+      "class": "分类",
+      "cumulative": "累计",
+      "hint_a": "= 累计占收入 80% 的产品，",
+      "hint_b": "至 95%，",
+      "hint_c": "其余部分。",
+      "hint_prefix": "按最近30天收入占比分类 —",
+      "revenue_30d": "收入（30天）",
+      "share": "占比"
+    },
+    "actions": {
+      "adjust": "调整"
+    },
+    "adjust": {
+      "confirm": "确认调整",
+      "current_stock": "当前库存",
+      "new_movement": "新增变动",
+      "note_optional": "备注（可选）",
+      "note_placeholder": "例如：采购发票编号 1234",
+      "quantity": "数量",
+      "stock_after": "调整后库存",
+      "title": "调整库存",
+      "type_in": "入库（增加库存）",
+      "type_out": "出库（减少库存）",
+      "units": "件",
+      "units_available": "可用数量",
+      "units_reserved": "已预留"
+    },
+    "empty": {
+      "no_movements": "未找到库存变动",
+      "no_products": "未找到产品"
+    },
+    "filters": {
+      "search_placeholder": "按 SKU 或名称搜索...",
+      "status_all": "所有状态",
+      "type_all": "所有类型"
+    },
+    "kpi": {
+      "active_skus": "有效 SKU",
+      "out_of_stock": "缺货",
+      "stock_value": "库存价值"
+    },
+    "motivo": {
+      "ajuste_manual": "手动调整",
+      "cancelamento": "取消",
+      "compra": "采购",
+      "devolucao": "退货",
+      "inventario": "盘点",
+      "venda": "销售"
+    },
+    "mov_type": {
+      "adjustment": "调整",
+      "adjustment_plural": "调整",
+      "in": "入库",
+      "in_plural": "入库",
+      "out": "出库",
+      "out_plural": "出库"
+    },
+    "status": {
+      "low": "库存偏低",
+      "ok": "正常",
+      "out": "缺货"
+    },
+    "subtitle": "库存水平、变动与 ABC 分类管理",
+    "table": {
+      "available": "可用",
+      "current_stock": "当前库存",
+      "date": "日期",
+      "minimum": "最低库存",
+      "product": "产品",
+      "qty": "数量",
+      "reason": "原因",
+      "reserved": "已预留",
+      "resulting_balance": "结余数量",
+      "sku_name": "SKU / 名称",
+      "status": "状态",
+      "type": "类型",
+      "user": "用户"
+    },
+    "tabs": {
+      "abc_curve": "ABC 分类",
+      "levels": "库存水平",
+      "movements": "库存变动"
+    },
+    "title": "库存"
+  },
+  "fiscal": {
+    "actions": {
+      "cancel": "取消",
+      "edit": "编辑",
+      "remove": "移除"
+    },
+    "form": {
+      "address": "地址",
+      "certificate": "A1 数字证书",
+      "certificate_password": "证书密码",
+      "city": "城市",
+      "company_data": "公司信息",
+      "company_name": "公司法定名称",
+      "company_name_placeholder": "例如：某电子贸易有限公司",
+      "complement": "补充信息",
+      "edit_title": "编辑发票账户",
+      "email": "电子邮箱",
+      "linked_stores": "已关联店铺",
+      "neighborhood": "街区",
+      "next_number": "下一张发票编号",
+      "next_number_warning": "仅在初始设置时修改<strong>下一编号</strong>。低于最后开具编号的数字会导致 SEFAZ 因重复而拒绝。",
+      "nfe_numbering": "NF-e 编号",
+      "nfe_series": "NF-e 系列",
+      "no_stores_available": "没有可用的已集成店铺。请先在<strong>集成</strong>标签页中集成店铺。",
+      "number": "门牌号",
+      "optional": "可选",
+      "save": "保存账户",
+      "save_full": "保存发票账户",
+      "security_note": "证书和密码在静态存储时已加密。只有开票服务在签名时可以访问。",
+      "select_placeholder": "请选择…",
+      "state": "州/省",
+      "state_registration": "州注册号",
+      "stores_hint": "选择将使用此 CNPJ 开具 NF-e 的店铺。一个店铺同一时间只能关联一个发票账户。",
+      "street": "街道",
+      "street_placeholder": "街道、大道...",
+      "subtitle": "填写开票方 CNPJ 信息并关联店铺",
+      "tax_regime": "税制类型",
+      "unit_branch": "分支机构",
+      "unit_hq": "总部",
+      "unit_type": "单位类型",
+      "upload_click": "<strong>点击上传</strong>或拖拽文件",
+      "upload_hint": ".pfx 或 .p12 — 最大 5MB",
+      "uploaded_at": "上传于",
+      "zip": "邮政编码"
+    },
+    "list": {
+      "certificate": "证书",
+      "complete": "完整",
+      "count_plural": "个已注册账户",
+      "count_singular": "个已注册账户",
+      "empty_hint": "创建发票账户以关联店铺并开始开具发票。",
+      "empty_title": "尚未注册发票账户",
+      "linked_stores": "已关联店铺",
+      "new_account": "新建发票账户",
+      "next_number": "下一编号",
+      "no_certificate": "无证书",
+      "no_stores_linked": "未关联店铺",
+      "pending": "待处理",
+      "series": "序列"
+    },
+    "title": "发票账户"
+  },
+  "pedidos": {
+    "detail": {
+      "back_to_list": "返回列表",
+      "cancel_nfe": "取消 NF-e",
+      "download_pdf": "下载 PDF",
+      "error_code": "代码",
+      "error_title": "错误",
+      "field_access_key": "访问密钥",
+      "field_buyer": "买家",
+      "field_city": "城市",
+      "field_cpf": "CPF",
+      "field_deadline": "截止日期",
+      "field_issued_at": "开具于",
+      "field_marketplace": "电商平台",
+      "field_order": "订单",
+      "field_protocol": "协议号",
+      "field_shipping": "运费",
+      "field_total": "总计",
+      "field_zip": "邮政编码",
+      "issue_nfe": "开具 NF-e",
+      "items": "商品项",
+      "label": "面单",
+      "nfe_issued": "NF-e 已开具",
+      "order_data": "订单信息",
+      "print_danfe": "打印 DANFE",
+      "see_solution": "查看解决方案",
+      "select_order": "请选择订单",
+      "try_again": "重试"
+    },
+    "list": {
+      "filter_all": "全部",
+      "filter_errors": "错误",
+      "filter_issued": "已开具",
+      "filter_pending": "待处理",
+      "no_orders_found": "未找到订单",
+      "search_placeholder": "搜索订单、买家…"
+    },
+    "metrics": {
+      "authorized": "已批准",
+      "errors": "错误",
+      "issuance": "开票",
+      "issue_pending": "开具待处理项",
+      "nfe_issued": "已开具 NF-e",
+      "orders": "订单",
+      "rejections": "被拒",
+      "today": "今天",
+      "waiting": "等待中"
+    },
+    "nfe_steps": {
+      "authorized": "已批准",
+      "order": "订单",
+      "queue": "队列",
+      "sefaz": "SEFAZ",
+      "xml": "XML"
+    },
+    "status": {
+      "cancelled": "已取消",
+      "error": "错误",
+      "issuing": "开具中…",
+      "nfe_authorized": "NF-e 已批准",
+      "pending": "待处理"
+    }
+  },
+  "produtos": {
+    "actions": {
+      "edit": "编辑"
+    },
+    "empty": {
+      "no_kits": "尚未注册组合产品",
+      "no_kits_hint": "从您的目录中组合单品，创建一个套装。",
+      "no_products": "未找到产品",
+      "no_products_hint": "调整搜索筛选条件，或同步您的目录以在此查看产品。"
+    },
+    "filters": {
+      "search_placeholder": "按 SKU 或名称搜索...",
+      "status_all": "所有状态"
+    },
+    "form": {
+      "add": "添加",
+      "add_products": "添加产品",
+      "associate_products": "关联产品",
+      "associated_products": "已关联产品",
+      "basic_info": "基本信息",
+      "combine_products": "将单品组合成套装",
+      "combined_sku": "组合 SKU",
+      "edit_kit": "编辑组合产品",
+      "edit_product": "编辑产品",
+      "fill_product_data": "填写产品信息",
+      "group": "分组",
+      "group_placeholder": "例如：配件",
+      "height": "高度（cm）",
+      "kit_data": "套装信息",
+      "kit_name": "组合产品名称",
+      "kit_name_placeholder": "例如：基础护肤5件套",
+      "length": "长度（cm）",
+      "ncm_warning": "没有 NCM 的产品无法开具 NF-e——请在关联订单前填写。",
+      "new_product": "新建产品",
+      "nfe_info": "NF-e 信息",
+      "no_associated_products": "尚未关联任何产品。请在下方搜索并添加到套装。",
+      "no_fiscal_account": "尚未注册税务账户",
+      "no_fiscal_account_hint": "请先在“公司”中注册公司，再关联产品。",
+      "optional": "可选",
+      "origin": "产品产地",
+      "output_own_manufacturing": "自产产品出库",
+      "output_resale": "转售产品出库",
+      "parent_sku": "父级 SKU",
+      "parent_sku_placeholder": "可选——用于变体",
+      "product_data": "产品信息",
+      "product_name": "产品名称",
+      "product_name_placeholder": "例如：2米编织尼龙 USB-C 数据线",
+      "save_kit": "保存组合产品",
+      "save_product": "保存产品",
+      "shipping_mode": "发货方式",
+      "stock_hint": "每开具一个订单，该数量会自动扣减。",
+      "stock_quantity": "库存数量",
+      "supplier": "供应商",
+      "tax_class_hint": "选择在“公司”中注册的、为该产品开票的公司。",
+      "tax_class_title": "税收分类 — 与 CNPJ 关联",
+      "unit": "单位",
+      "weight": "重量（kg）",
+      "weight_size": "重量与尺寸",
+      "width": "宽度（cm）"
+    },
+    "kit": {
+      "products_count": "个产品",
+      "shipping_combined": "合并发货",
+      "shipping_random": "随机发货"
+    },
+    "kit_title": "组合产品",
+    "list": {
+      "kits_registered": "个已注册套装",
+      "new_kit": "新建组合产品",
+      "new_product": "新建产品",
+      "of": "共",
+      "products": "个产品"
+    },
+    "status": {
+      "active": "已启用",
+      "interrupted": "已停用",
+      "paused": "已暂停"
+    },
+    "table": {
+      "pending": "待处理",
+      "sku_name": "SKU / 名称",
+      "status": "状态",
+      "stock": "库存"
+    },
+    "title": "产品"
+  },
+  "relatorios": {
+    "charts": {
+      "revenue_by_store": "按店铺收入"
+    },
+    "empty": {
+      "no_data": "所选时段/店铺暂无数据"
+    },
+    "export_xlsx": "导出 XLSX",
+    "filters": {
+      "all_stores": "所有店铺",
+      "period_12m": "12个月",
+      "period_30d": "30天",
+      "period_7d": "7天",
+      "period_90d": "90天",
+      "period_custom": "自定义",
+      "to_lowercase": "至"
+    },
+    "kpi": {
+      "average_ticket": "平均客单价",
+      "net_revenue": "净收入",
+      "order_count": "订单数量",
+      "profit_margin": "利润率",
+      "vs_previous_period": "较上一时段"
+    },
+    "subtitle": "按时段和店铺的销售表现",
+    "table": {
+      "breakdown": "明细",
+      "by_day": "（按日）",
+      "by_month": "（按月）",
+      "expenses": "支出",
+      "margin": "利润率",
+      "other_revenue": "其他收入",
+      "profit": "利润"
+    },
+    "title": "报表"
+  },
+  "shell": {
+    "avatar_menu": {
+      "language": "语言",
+      "logout": "退出登录",
+      "profile": "个人资料",
+      "theme_dark": "深色主题",
+      "theme_light": "浅色主题",
+      "theme_toggle": "切换浅色/深色主题"
+    },
+    "sidebar": {
+      "companies": "公司",
+      "home": "首页",
+      "integrations": "集成",
+      "module_in_progress": "模块开发中。",
+      "orders": "订单",
+      "products": "产品",
+      "reports": "报表",
+      "settings": "设置",
+      "stock": "库存"
+    },
+    "topbar": {
+      "account": "账户",
+      "search_placeholder": "问点什么，或搜索订单、产品、CNPJ..."
+    }
+  }
+}

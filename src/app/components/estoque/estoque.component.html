@@ -1,0 +1,242 @@
+<div class="estoque-page">
+
+    <div class="estoque-header">
+        <div>
+            <div class="estoque-title">{{ 'estoque.title' | translate }}</div>
+            <div class="estoque-subtitle">{{ 'estoque.subtitle' | translate }}</div>
+        </div>
+    </div>
+
+    <div class="kpi-grid fade-in-stagger">
+        <div class="kpi-card">
+            <div class="kpi-label">{{ 'estoque.kpi.active_skus' | translate }}</div>
+            <div class="kpi-valor">{{ totalSkus }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">{{ 'estoque.kpi.stock_value' | translate }}</div>
+            <div class="kpi-valor">{{ formatarMoeda(valorTotalEstoque) }}</div>
+        </div>
+        <div class="kpi-card" [class.kpi-danger]="qtdRuptura > 0">
+            <div class="kpi-label">{{ 'estoque.kpi.out_of_stock' | translate }}</div>
+            <div class="kpi-valor">{{ qtdRuptura }}</div>
+        </div>
+        <div class="kpi-card" [class.kpi-warning]="qtdBaixo > 0">
+            <div class="kpi-label">{{ 'estoque.status.low' | translate }}</div>
+            <div class="kpi-valor">{{ qtdBaixo }}</div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ LISTAGEM (abas) ═══════════════════════ -->
+    <ng-container *ngIf="view === 'list'">
+        <div class="estoque-tabs">
+            <button class="tab-btn" [class.active]="abaAtiva==='niveis'" (click)="abaAtiva='niveis'">{{ 'estoque.tabs.levels' | translate }}</button>
+            <button class="tab-btn" [class.active]="abaAtiva==='movimentacoes'" (click)="abaAtiva='movimentacoes'">{{ 'estoque.tabs.movements' | translate }}</button>
+            <button class="tab-btn" [class.active]="abaAtiva==='curva-abc'" (click)="abaAtiva='curva-abc'">{{ 'estoque.tabs.abc_curve' | translate }}</button>
+        </div>
+
+        <!-- ── Níveis de estoque ── -->
+        <ng-container *ngIf="abaAtiva==='niveis'">
+            <div class="estoque-filtros">
+                <div class="search-box">
+                    <i class="pi pi-search"></i>
+                    <input type="text" [placeholder]="'estoque.filters.search_placeholder' | translate" [(ngModel)]="busca">
+                </div>
+                <p-dropdown [options]="STATUS_ESTOQUE_OPTIONS" [(ngModel)]="filtroStatus"
+                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown">
+                    <ng-template let-item pTemplate="selectedItem">{{ item.label | translate }}</ng-template>
+                    <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+                </p-dropdown>
+            </div>
+
+            <div class="estoque-scroll">
+                <table class="estoque-table" *ngIf="niveisFiltrados.length; else vazioNiveis">
+                    <thead>
+                        <tr>
+                            <th class="col-img"></th>
+                            <th>{{ 'estoque.table.sku_name' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.table.current_stock' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.table.reserved' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.table.available' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.table.minimum' | translate }}</th>
+                            <th class="col-money">{{ 'estoque.kpi.stock_value' | translate }}</th>
+                            <th class="col-status">{{ 'estoque.table.status' | translate }}</th>
+                            <th class="col-actions"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let n of niveisFiltrados">
+                            <td class="col-img"><div class="produto-thumb"><i class="pi pi-box"></i></div></td>
+                            <td>
+                                <div class="produto-nome">{{ n.nome }}</div>
+                                <div class="produto-sku">{{ n.sku }}</div>
+                            </td>
+                            <td class="col-num"><strong>{{ n.estoqueAtual }}</strong></td>
+                            <td class="col-num text-muted">{{ n.reservado }}</td>
+                            <td class="col-num">{{ n.disponivel }}</td>
+                            <td class="col-num text-muted">{{ n.estoqueMinimo }}</td>
+                            <td class="col-money">{{ formatarMoeda(n.valorEmEstoque) }}</td>
+                            <td class="col-status"><span class="badge" [ngClass]="statusClass(n.status)">{{ statusLabel(n.status) | translate }}</span></td>
+                            <td class="col-actions">
+                                <button class="btn btn-secondary" (click)="abrirAjuste(n)"><i class="pi pi-pencil"></i> {{ 'estoque.actions.adjust' | translate }}</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #vazioNiveis>
+                    <div class="estoque-empty"><i class="pi pi-box"></i><span>{{ 'estoque.empty.no_products' | translate }}</span></div>
+                </ng-template>
+            </div>
+        </ng-container>
+
+        <!-- ── Movimentações ── -->
+        <ng-container *ngIf="abaAtiva==='movimentacoes'">
+            <div class="estoque-filtros">
+                <div class="search-box">
+                    <i class="pi pi-search"></i>
+                    <input type="text" [placeholder]="'estoque.filters.search_placeholder' | translate" [(ngModel)]="busca">
+                </div>
+                <p-dropdown [options]="TIPO_MOV_OPTIONS" [(ngModel)]="filtroTipoMov"
+                    optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown">
+                    <ng-template let-item pTemplate="selectedItem">{{ item.label | translate }}</ng-template>
+                    <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+                </p-dropdown>
+            </div>
+
+            <div class="estoque-scroll">
+                <table class="estoque-table" *ngIf="movimentacoesFiltradas.length; else vazioMov">
+                    <thead>
+                        <tr>
+                            <th>{{ 'estoque.table.date' | translate }}</th>
+                            <th>{{ 'estoque.table.product' | translate }}</th>
+                            <th class="col-status">{{ 'estoque.table.type' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.table.qty' | translate }}</th>
+                            <th>{{ 'estoque.table.reason' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.table.resulting_balance' | translate }}</th>
+                            <th>{{ 'estoque.table.user' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let m of movimentacoesFiltradas">
+                            <td>{{ m.data }}</td>
+                            <td>
+                                <div class="produto-nome">{{ m.nomeProduto }}</div>
+                                <div class="produto-sku">{{ m.sku }}<span *ngIf="m.referenciaPedido"> · {{ m.referenciaPedido }}</span></div>
+                            </td>
+                            <td class="col-status"><span class="badge" [ngClass]="tipoMovClass(m.tipo)">{{ tipoMovLabel(m.tipo) | translate }}</span></td>
+                            <td class="col-num" [class.text-danger]="m.tipo === 'saida'" [class.text-success]="m.tipo !== 'saida'">
+                                {{ m.tipo === 'saida' ? '−' : '+' }}{{ m.quantidade }}
+                            </td>
+                            <td>
+                                {{ MOTIVOS_KEYS[m.motivo] | translate }}
+                                <div class="mov-obs" *ngIf="m.observacao">{{ m.observacao }}</div>
+                            </td>
+                            <td class="col-num">{{ m.saldoResultante }}</td>
+                            <td>{{ m.usuario }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #vazioMov>
+                    <div class="estoque-empty"><i class="pi pi-history"></i><span>{{ 'estoque.empty.no_movements' | translate }}</span></div>
+                </ng-template>
+            </div>
+        </ng-container>
+
+        <!-- ── Curva ABC ── -->
+        <ng-container *ngIf="abaAtiva==='curva-abc'">
+            <div class="abc-hint">
+                {{ 'estoque.abc.hint_prefix' | translate }} <strong>A</strong> {{ 'estoque.abc.hint_a' | translate }} <strong>B</strong> {{ 'estoque.abc.hint_b' | translate }} <strong>C</strong> {{ 'estoque.abc.hint_c' | translate }}
+            </div>
+            <div class="estoque-scroll">
+                <table class="estoque-table">
+                    <thead>
+                        <tr>
+                            <th class="col-num">#</th>
+                            <th>{{ 'estoque.table.sku_name' | translate }}</th>
+                            <th class="col-money">{{ 'estoque.abc.revenue_30d' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.abc.share' | translate }}</th>
+                            <th class="col-num">{{ 'estoque.abc.cumulative' | translate }}</th>
+                            <th class="col-status">{{ 'estoque.abc.class' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let f of faixasABC; let i = index">
+                            <td class="col-num text-muted">{{ i + 1 }}</td>
+                            <td>
+                                <div class="produto-nome">{{ f.nome }}</div>
+                                <div class="produto-sku">{{ f.sku }}</div>
+                            </td>
+                            <td class="col-money">{{ formatarMoeda(f.receita30d) }}</td>
+                            <td class="col-num">{{ f.participacao }}%</td>
+                            <td class="col-num">{{ f.participacaoAcumulada }}%</td>
+                            <td class="col-status"><span class="badge-abc" [ngClass]="classeABCClass(f.classe)">{{ f.classe }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <!-- ═══════════════════════ AJUSTE MANUAL ═══════════════════════ -->
+    <ng-container *ngIf="view === 'ajuste' && ajusteAlvo as alvo">
+        <div class="form-header">
+            <button class="btn-back" (click)="voltarLista()"><i class="pi pi-arrow-left"></i></button>
+            <div class="form-header-info">
+                <div class="form-title">{{ 'estoque.adjust.title' | translate }}</div>
+                <div class="form-subtitle">{{ alvo.nome }} · {{ alvo.sku }}</div>
+            </div>
+        </div>
+
+        <div class="ajuste-scroll">
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-box"></i> {{ 'estoque.adjust.current_stock' | translate }}</div>
+                <div class="ajuste-atual">
+                    <span class="ajuste-atual-valor">{{ alvo.estoqueAtual }}</span>
+                    <span class="ajuste-atual-label">{{ 'estoque.adjust.units_available' | translate }}: {{ alvo.disponivel }} · {{ 'estoque.adjust.units_reserved' | translate }}: {{ alvo.reservado }}</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="detail-section-title"><i class="pi pi-pencil"></i> {{ 'estoque.adjust.new_movement' | translate }}</div>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span class="form-label">{{ 'estoque.table.type' | translate }}</span>
+                        <p-dropdown [options]="TIPO_AJUSTE_OPTIONS" [(ngModel)]="ajusteForm.tipo"
+                            optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown">
+                    <ng-template let-item pTemplate="selectedItem">{{ item.label | translate }}</ng-template>
+                    <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+                </p-dropdown>
+                    </label>
+                    <label class="form-field">
+                        <span class="form-label">{{ 'estoque.adjust.quantity' | translate }}</span>
+                        <input type="number" min="1" [(ngModel)]="ajusteForm.quantidade">
+                    </label>
+                    <label class="form-field span-2">
+                        <span class="form-label">{{ 'estoque.table.reason' | translate }}</span>
+                        <p-dropdown [options]="motivoOptions" [(ngModel)]="ajusteForm.motivo"
+                            optionLabel="label" optionValue="value" appendTo="body" styleClass="filtro-dropdown">
+                    <ng-template let-item pTemplate="selectedItem">{{ item.label | translate }}</ng-template>
+                    <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+                </p-dropdown>
+                    </label>
+                    <label class="form-field span-2">
+                        <span class="form-label">{{ 'estoque.adjust.note_optional' | translate }}</span>
+                        <input type="text" [(ngModel)]="ajusteForm.observacao" [placeholder]="'estoque.adjust.note_placeholder' | translate">
+                    </label>
+                </div>
+
+                <div class="ajuste-preview">
+                    <span>{{ 'estoque.adjust.stock_after' | translate }}:</span>
+                    <strong>
+                        {{ ajusteForm.tipo === 'saida' ? (alvo.estoqueAtual - (ajusteForm.quantidade || 0)) : (alvo.estoqueAtual + (ajusteForm.quantidade || 0)) }} {{ 'estoque.adjust.units' | translate }}
+                    </strong>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" (click)="confirmarAjuste()"><i class="pi pi-check"></i> {{ 'estoque.adjust.confirm' | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <p-toast></p-toast>
+</div>

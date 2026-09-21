@@ -1,0 +1,405 @@
+{
+  "dashboard": {
+    "attention_orders": {
+      "empty": "Ningún pedido necesita atención ahora.",
+      "title": "Pedidos que necesitan atención",
+      "view_all": "Ver todos"
+    },
+    "charts": {
+      "marketplace_distribution": "Distribución por marketplace",
+      "timeline_title": "Indicadores a lo largo del tiempo"
+    },
+    "filters": {
+      "all_companies": "Todas las empresas",
+      "company": "Empresa",
+      "from": "Desde",
+      "period": "Período",
+      "period_custom": "Período personalizado",
+      "period_this_month": "Este mes",
+      "period_this_week": "Esta semana",
+      "period_this_year": "Este año",
+      "period_today": "Hoy",
+      "select_period": "Seleccione el período",
+      "to": "Hasta"
+    },
+    "kpi": {
+      "action": {
+        "cancelled": "canceladas",
+        "invalidated": "inutilizadas",
+        "issued": "emitidas",
+        "received": "recibidos"
+      },
+      "cce_issued": "CC-e emitidas",
+      "invalidated_notes": "Notas inutilizadas",
+      "nfe_cancelled": "NF-e canceladas",
+      "suffix": {
+        "selected_period": "en el período seleccionado",
+        "this_month": "este mes",
+        "this_week": "esta semana",
+        "this_year": "este año",
+        "today": "hoy"
+      },
+      "total_nfe": "Total de NF-e",
+      "total_orders": "Total de pedidos"
+    }
+  },
+  "estoque": {
+    "abc": {
+      "class": "Clase",
+      "cumulative": "Acumulado",
+      "hint_a": "= productos que suman hasta el 80% de los ingresos,",
+      "hint_b": "hasta el 95%,",
+      "hint_c": "el resto.",
+      "hint_prefix": "Clasificación por participación en los ingresos de los últimos 30 días —",
+      "revenue_30d": "Ingresos (30d)",
+      "share": "Participación"
+    },
+    "actions": {
+      "adjust": "Ajustar"
+    },
+    "adjust": {
+      "confirm": "Confirmar ajuste",
+      "current_stock": "INVENTARIO ACTUAL",
+      "new_movement": "NUEVO MOVIMIENTO",
+      "note_optional": "Observación (opcional)",
+      "note_placeholder": "Ej.: factura de compra n.º 1234",
+      "quantity": "Cantidad",
+      "stock_after": "Inventario después del ajuste",
+      "title": "Ajustar inventario",
+      "type_in": "Entrada (suma al inventario)",
+      "type_out": "Salida (resta del inventario)",
+      "units": "unidades",
+      "units_available": "unidades disponibles",
+      "units_reserved": "reservadas"
+    },
+    "empty": {
+      "no_movements": "Ningún movimiento encontrado",
+      "no_products": "Ningún producto encontrado"
+    },
+    "filters": {
+      "search_placeholder": "Buscar por SKU o nombre...",
+      "status_all": "Todos los estados",
+      "type_all": "Todos los tipos"
+    },
+    "kpi": {
+      "active_skus": "SKUs activos",
+      "out_of_stock": "Agotado",
+      "stock_value": "Valor en inventario"
+    },
+    "motivo": {
+      "ajuste_manual": "Ajuste manual",
+      "cancelamento": "Cancelación",
+      "compra": "Compra",
+      "devolucao": "Devolución",
+      "inventario": "Inventario",
+      "venda": "Venta"
+    },
+    "mov_type": {
+      "adjustment": "Ajuste",
+      "adjustment_plural": "Ajustes",
+      "in": "Entrada",
+      "in_plural": "Entradas",
+      "out": "Salida",
+      "out_plural": "Salidas"
+    },
+    "status": {
+      "low": "Stock bajo",
+      "ok": "OK",
+      "out": "Agotado"
+    },
+    "subtitle": "Control de niveles, movimientos y curva ABC",
+    "table": {
+      "available": "Disponible",
+      "current_stock": "Stock actual",
+      "date": "Fecha",
+      "minimum": "Mínimo",
+      "product": "Producto",
+      "qty": "Cant.",
+      "reason": "Motivo",
+      "reserved": "Reservado",
+      "resulting_balance": "Saldo resultante",
+      "sku_name": "SKU / Nombre",
+      "status": "Estado",
+      "type": "Tipo",
+      "user": "Usuario"
+    },
+    "tabs": {
+      "abc_curve": "Curva ABC",
+      "levels": "Niveles de Inventario",
+      "movements": "Movimientos"
+    },
+    "title": "Inventario"
+  },
+  "fiscal": {
+    "actions": {
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "remove": "Quitar"
+    },
+    "form": {
+      "address": "Dirección",
+      "certificate": "Certificado Digital A1",
+      "certificate_password": "Contraseña del certificado",
+      "city": "Ciudad",
+      "company_data": "Datos de la empresa",
+      "company_name": "Razón Social",
+      "company_name_placeholder": "Ej.: Comercio de Electrónicos LTDA",
+      "complement": "Complemento",
+      "edit_title": "Editar cuenta de facturación",
+      "email": "Correo electrónico",
+      "linked_stores": "Tiendas vinculadas",
+      "neighborhood": "Barrio",
+      "next_number": "Próximo número de factura",
+      "next_number_warning": "Cambie el <strong>próximo número</strong> solo en la configuración inicial. Un número menor al último emitido provoca rechazo por duplicidad en SEFAZ.",
+      "nfe_numbering": "Numeración de NF-e",
+      "nfe_series": "Serie de NF-e",
+      "no_stores_available": "Ninguna tienda integrada disponible. Integre una tienda primero en la pestaña <strong>Integraciones</strong>.",
+      "number": "Número",
+      "optional": "Opcional",
+      "save": "Guardar cuenta",
+      "save_full": "Guardar cuenta de facturación",
+      "security_note": "El certificado y la contraseña están cifrados en reposo. Solo el servicio de emisión tiene acceso en el momento de la firma.",
+      "select_placeholder": "Seleccione…",
+      "state": "Estado",
+      "state_registration": "Inscripción Estatal",
+      "stores_hint": "Seleccione las tiendas que emitirán NF-e con este CNPJ. Una tienda solo puede estar vinculada a una cuenta de facturación a la vez.",
+      "street": "Calle",
+      "street_placeholder": "Calle, Avenida...",
+      "subtitle": "Complete los datos del CNPJ emisor y vincule las tiendas",
+      "tax_regime": "Tipo de tributación",
+      "unit_branch": "Sucursal",
+      "unit_hq": "Casa Matriz",
+      "unit_type": "Tipo de unidad",
+      "upload_click": "<strong>Haga clic para subir</strong> o arrastre el archivo",
+      "upload_hint": ".pfx o .p12 — hasta 5MB",
+      "uploaded_at": "Enviado el",
+      "zip": "Código Postal"
+    },
+    "list": {
+      "certificate": "Certificado",
+      "complete": "Completo",
+      "count_plural": "cuentas registradas",
+      "count_singular": "cuenta registrada",
+      "empty_hint": "Cree una cuenta de facturación para vincular sus tiendas y empezar a emitir facturas.",
+      "empty_title": "Ninguna cuenta de facturación registrada",
+      "linked_stores": "Tiendas vinculadas",
+      "new_account": "Nueva cuenta de facturación",
+      "next_number": "N.º sig.",
+      "no_certificate": "Sin certificado",
+      "no_stores_linked": "Ninguna tienda vinculada",
+      "pending": "Pendiente",
+      "series": "Serie"
+    },
+    "title": "Cuentas de Facturación"
+  },
+  "pedidos": {
+    "detail": {
+      "back_to_list": "Volver a la lista",
+      "cancel_nfe": "Cancelar NF-e",
+      "download_pdf": "Descargar PDF",
+      "error_code": "Código",
+      "error_title": "Error",
+      "field_access_key": "Clave de acceso",
+      "field_buyer": "Comprador",
+      "field_city": "Ciudad",
+      "field_cpf": "CPF",
+      "field_deadline": "Plazo",
+      "field_issued_at": "Emitida el",
+      "field_marketplace": "Marketplace",
+      "field_order": "Pedido",
+      "field_protocol": "Protocolo",
+      "field_shipping": "Envío",
+      "field_total": "Total",
+      "field_zip": "Código Postal",
+      "issue_nfe": "Emitir NF-e",
+      "items": "Artículos",
+      "label": "Etiqueta",
+      "nfe_issued": "NF-e emitida",
+      "order_data": "Datos del pedido",
+      "print_danfe": "Imprimir DANFE",
+      "see_solution": "Ver solución",
+      "select_order": "Seleccione un pedido",
+      "try_again": "Reintentar"
+    },
+    "list": {
+      "filter_all": "Todos",
+      "filter_errors": "Errores",
+      "filter_issued": "Emitidos",
+      "filter_pending": "Pendientes",
+      "no_orders_found": "Ningún pedido encontrado",
+      "search_placeholder": "Buscar pedido, comprador…"
+    },
+    "metrics": {
+      "authorized": "autorizadas",
+      "errors": "Errores",
+      "issuance": "emisión",
+      "issue_pending": "Emitir pendientes",
+      "nfe_issued": "NF-e emitidas",
+      "orders": "pedidos",
+      "rejections": "rechazos",
+      "today": "Hoy",
+      "waiting": "Esperando"
+    },
+    "nfe_steps": {
+      "authorized": "Autorizada",
+      "order": "Pedido",
+      "queue": "Cola",
+      "sefaz": "SEFAZ",
+      "xml": "XML"
+    },
+    "status": {
+      "cancelled": "Cancelada",
+      "error": "Error",
+      "issuing": "Emitiendo…",
+      "nfe_authorized": "NF-e autorizada",
+      "pending": "Pendiente"
+    }
+  },
+  "produtos": {
+    "actions": {
+      "edit": "Editar"
+    },
+    "empty": {
+      "no_kits": "Ningún producto combinado registrado",
+      "no_kits_hint": "Cree un kit combinando productos individuales de su catálogo.",
+      "no_products": "Ningún producto encontrado",
+      "no_products_hint": "Ajuste los filtros de búsqueda, o sincronice su catálogo para ver los productos aquí."
+    },
+    "filters": {
+      "search_placeholder": "Buscar por SKU o nombre...",
+      "status_all": "Todos los estados"
+    },
+    "form": {
+      "add": "Agregar",
+      "add_products": "AGREGAR PRODUCTOS",
+      "associate_products": "Asociar productos",
+      "associated_products": "PRODUCTOS ASOCIADOS",
+      "basic_info": "Información básica",
+      "combine_products": "Combine productos individuales en un kit",
+      "combined_sku": "SKU combinado",
+      "edit_kit": "Editar producto combinado",
+      "edit_product": "Editar producto",
+      "fill_product_data": "Complete los datos del producto",
+      "group": "Grupo",
+      "group_placeholder": "Ej.: Accesorios",
+      "height": "Alto (cm)",
+      "kit_data": "DATOS DEL KIT",
+      "kit_name": "Nombre del producto combinado",
+      "kit_name_placeholder": "Ej.: Kit Skincare Básico 5 Productos",
+      "length": "Largo (cm)",
+      "ncm_warning": "Un producto sin NCM no puede tener NF-e emitida — complételo antes de vincularlo a un pedido.",
+      "new_product": "Nuevo producto",
+      "nfe_info": "Información de NF-e",
+      "no_associated_products": "Ningún producto asociado todavía. Busque abajo y añada al kit.",
+      "no_fiscal_account": "Ninguna cuenta fiscal registrada",
+      "no_fiscal_account_hint": "Registre una empresa en \"Empresas\" antes de vincular productos.",
+      "optional": "Opcional",
+      "origin": "Origen del producto",
+      "output_own_manufacturing": "Salida de fabricación propia",
+      "output_resale": "Salida de productos de reventa",
+      "parent_sku": "SKU Padre",
+      "parent_sku_placeholder": "Opcional — para variantes",
+      "product_data": "DATOS DEL PRODUCTO",
+      "product_name": "Nombre del producto",
+      "product_name_placeholder": "Ej.: Cable USB-C 2m Nylon Trenzado",
+      "save_kit": "Guardar producto combinado",
+      "save_product": "Guardar producto",
+      "shipping_mode": "Modo de envío",
+      "stock_hint": "Este número se descuenta automáticamente con cada pedido emitido.",
+      "stock_quantity": "Cantidad en inventario",
+      "supplier": "Proveedor",
+      "tax_class_hint": "Seleccione la(s) empresa(s) registrada(s) en \"Empresas\" que emiten factura por este producto.",
+      "tax_class_title": "CLASE DE IMPUESTO — VÍNCULO CON CNPJ",
+      "unit": "Unidad",
+      "weight": "Peso (kg)",
+      "weight_size": "PESO Y TAMAÑO",
+      "width": "Ancho (cm)"
+    },
+    "kit": {
+      "products_count": "producto(s)",
+      "shipping_combined": "Envío Combinado",
+      "shipping_random": "Envío Aleatorio"
+    },
+    "kit_title": "Producto Combinado",
+    "list": {
+      "kits_registered": "kits registrados",
+      "new_kit": "Nuevo producto combinado",
+      "new_product": "Nuevo producto",
+      "of": "de",
+      "products": "productos"
+    },
+    "status": {
+      "active": "Activo",
+      "interrupted": "Interrumpido",
+      "paused": "Pausado"
+    },
+    "table": {
+      "pending": "Pendiente",
+      "sku_name": "SKU / Nombre",
+      "status": "Estado",
+      "stock": "Inventario"
+    },
+    "title": "Productos"
+  },
+  "relatorios": {
+    "charts": {
+      "revenue_by_store": "Ingresos por tienda"
+    },
+    "empty": {
+      "no_data": "Sin datos para el período/tienda seleccionados"
+    },
+    "export_xlsx": "Exportar XLSX",
+    "filters": {
+      "all_stores": "Todas las tiendas",
+      "period_12m": "12 meses",
+      "period_30d": "30 días",
+      "period_7d": "7 días",
+      "period_90d": "90 días",
+      "period_custom": "Personalizado",
+      "to_lowercase": "hasta"
+    },
+    "kpi": {
+      "average_ticket": "Ticket Promedio",
+      "net_revenue": "Ingresos Netos",
+      "order_count": "Cant. de Pedidos",
+      "profit_margin": "Margen de Ganancia",
+      "vs_previous_period": "vs período anterior"
+    },
+    "subtitle": "Desempeño de ventas por período y tienda",
+    "table": {
+      "breakdown": "Detalle",
+      "by_day": "(por día)",
+      "by_month": "(por mes)",
+      "expenses": "Gastos",
+      "margin": "Margen",
+      "other_revenue": "Otros Ingresos",
+      "profit": "Ganancia"
+    },
+    "title": "Informes"
+  },
+  "shell": {
+    "avatar_menu": {
+      "language": "Idioma",
+      "logout": "Cerrar sesión",
+      "profile": "Perfil",
+      "theme_dark": "Tema oscuro",
+      "theme_light": "Tema claro",
+      "theme_toggle": "Alternar tema claro/oscuro"
+    },
+    "sidebar": {
+      "companies": "Empresas",
+      "home": "Inicio",
+      "integrations": "Integraciones",
+      "module_in_progress": "Módulo en desarrollo.",
+      "orders": "Pedidos",
+      "products": "Productos",
+      "reports": "Informes",
+      "settings": "Configuración",
+      "stock": "Inventario"
+    },
+    "topbar": {
+      "account": "Cuenta",
+      "search_placeholder": "Pregunta algo, o busca un pedido, producto, CNPJ..."
+    }
+  }
+}

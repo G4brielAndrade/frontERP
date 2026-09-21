@@ -1,0 +1,107 @@
+<div class="dashboard-page">
+
+    <!-- Filtros: empresa + período -->
+    <div class="filtros-bar">
+        <div class="filtro-field">
+            <label class="filtro-label">{{ 'dashboard.filters.company' | translate }}</label>
+            <p-dropdown [options]="empresaOptions" [(ngModel)]="empresaSelecionada" (onChange)="onEmpresaChange()"
+                optionLabel="label" optionValue="value" appendTo="body" [styleClass]="'filtro-dropdown'">
+                <ng-template let-item pTemplate="selectedItem">
+                    {{ item.value === TODAS_EMPRESAS ? ('dashboard.filters.all_companies' | translate) : item.label }}
+                </ng-template>
+                <ng-template let-item pTemplate="item">
+                    {{ item.value === TODAS_EMPRESAS ? ('dashboard.filters.all_companies' | translate) : item.label }}
+                </ng-template>
+            </p-dropdown>
+        </div>
+
+        <div class="filtro-field">
+            <label class="filtro-label">{{ 'dashboard.filters.period' | translate }}</label>
+            <p-dropdown [options]="periodos" [(ngModel)]="periodoSelecionado" (onChange)="onPeriodoChange()"
+                optionLabel="label" optionValue="value" appendTo="body" [styleClass]="'filtro-dropdown'">
+                <ng-template let-item pTemplate="selectedItem">{{ item.label | translate }}</ng-template>
+                <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+            </p-dropdown>
+        </div>
+
+        <ng-container *ngIf="periodoSelecionado === 'personalizado'">
+            <div class="filtro-field">
+                <label class="filtro-label">{{ 'dashboard.filters.from' | translate }}</label>
+                <input type="date" [(ngModel)]="dataInicioPersonalizado" (ngModelChange)="onPeriodoPersonalizadoChange()">
+            </div>
+            <div class="filtro-field">
+                <label class="filtro-label">{{ 'dashboard.filters.to' | translate }}</label>
+                <input type="date" [(ngModel)]="dataFimPersonalizado" (ngModelChange)="onPeriodoPersonalizadoChange()">
+            </div>
+        </ng-container>
+    </div>
+
+    <!-- Cards de indicadores (total acumulado + comparativo do período) -->
+    <div class="lembretes fade-in-stagger">
+        <div class="lembrete-card" *ngFor="let c of cards">
+            <div class="lembrete-top">
+                <span class="lembrete-label">{{ c.labelKey | translate }}</span>
+                <div class="lembrete-icon" [ngClass]="'icon-' + c.cor">
+                    <i class="pi" [ngClass]="c.icon"></i>
+                </div>
+            </div>
+            <div class="lembrete-valor" [ngClass]="'val-' + c.cor">{{ formatarNumero(c.total) }}</div>
+            <div class="lembrete-delta">
+                <span *ngIf="!mostrarSelecionePeriodo()">
+                    {{ formatarNumero(c.delta) }} {{ c.acaoKey | translate }} {{ periodoSufixoKey() | translate }}
+                </span>
+                <span *ngIf="mostrarSelecionePeriodo()">{{ 'dashboard.filters.select_period' | translate }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <!-- Gráfico de pedidos / NF-e -->
+        <div class="panel panel-chart">
+            <div class="panel-header">
+                <span class="panel-title">{{ 'dashboard.charts.timeline_title' | translate }} — {{ periodoAtualLabel() | translate }}</span>
+            </div>
+            <div class="panel-body chart-box">
+                <p-chart type="line" [data]="vendasChartData" [options]="vendasChartOptions" height="280px"></p-chart>
+            </div>
+        </div>
+
+        <!-- Distribuição por marketplace -->
+        <div class="panel panel-donut">
+            <div class="panel-header">
+                <span class="panel-title">{{ 'dashboard.charts.marketplace_distribution' | translate }}</span>
+            </div>
+            <div class="panel-body chart-box">
+                <p-chart type="doughnut" [data]="distribuicaoChartData" [options]="distribuicaoChartOptions" height="280px"></p-chart>
+            </div>
+        </div>
+
+        <!-- Pedidos que precisam de atenção -->
+        <div class="panel panel-wide">
+            <div class="panel-header">
+                <span class="panel-title">{{ 'dashboard.attention_orders.title' | translate }}</span>
+                <a routerLink="/pedidos" class="panel-link">{{ 'dashboard.attention_orders.view_all' | translate }} <i class="pi pi-arrow-right"></i></a>
+            </div>
+            <div class="panel-body">
+                <div class="atencao-row" *ngFor="let p of pedidosAtencao">
+                    <span class="atencao-badge" [ngClass]="p.status === 'erro' ? 'badge-red' : 'badge-amber'">
+                        <i class="pi" [ngClass]="p.status === 'erro' ? 'pi-exclamation-triangle' : 'pi-clock'"></i>
+                    </span>
+                    <div class="atencao-info">
+                        <div class="atencao-id">{{ p.id }} <span class="atencao-mkt">· {{ p.mkt }}</span></div>
+                        <div class="atencao-motivo">{{ p.motivo }}</div>
+                    </div>
+                    <div class="atencao-buyer">{{ p.buyer }}</div>
+                    <div class="atencao-val">{{ p.val }}</div>
+                </div>
+
+                <div class="atencao-empty" *ngIf="pedidosAtencao.length === 0">
+                    <i class="pi pi-check-circle"></i>
+                    <span>{{ 'dashboard.attention_orders.empty' | translate }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

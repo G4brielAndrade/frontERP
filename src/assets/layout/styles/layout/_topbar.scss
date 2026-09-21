@@ -1,0 +1,303 @@
+.layout-topbar {
+    position: fixed;
+    height: 5rem;
+    z-index: 997;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0 2rem;
+    background-color: var(--shell-bg);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--shell-border);
+    transition: left $transitionDuration;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: none;
+
+    .layout-topbar-logo {
+        display: flex;
+        align-items: center;
+        color: var(--surface-900);
+        font-size: 1.5rem;
+        font-weight: 500;
+        width: 200px;
+        flex-shrink: 0;
+        border-radius: 12px;
+
+        img {
+            height: 2rem;
+            margin-right: .5rem;
+        }
+
+        &:focus {
+            @include focused();
+        }
+    }
+
+    .layout-topbar-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        color: var(--text-color-secondary);
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        cursor: pointer;
+        transition: background-color $transitionDuration;
+
+        &:hover {
+            color: var(--text-color);
+            background-color: var(--surface-hover);
+        }
+
+        &:focus {
+            @include focused();
+        }
+
+        i {
+            font-size: 1.5rem;
+        }
+
+        span {
+            font-size: 1rem;
+            display: none;
+        }
+    }
+
+    .layout-menu-button {
+        margin-left: 2rem;
+    }
+
+    /* ── Command Bar — input central estilo IA, com glow reagindo ao hover ── */
+    .command-bar {
+        flex: 1;
+        max-width: 620px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 16px;
+        height: 44px;
+        border-radius: 22px;
+        background: var(--shell-bg-hover);
+        border: 1px solid var(--shell-border);
+        box-shadow: 0 0 0 rgba(99, 102, 241, 0);
+        transition: background 0.3s, box-shadow 0.5s, border-color 0.3s;
+    }
+    .command-bar:hover, .command-bar:focus-within {
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 0 32px rgba(99, 102, 241, 0.18);
+    }
+    .command-bar-icon {
+        font-size: 13px;
+        color: #a78bfa;
+        animation: nexusPulse 2.4s ease-in-out infinite;
+        flex-shrink: 0;
+    }
+    .command-bar input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--shell-text);
+        font-family: 'Inter', sans-serif;
+        font-size: 13.5px;
+    }
+    .command-bar input::placeholder { color: var(--shell-text-muted); }
+    .command-bar-shortcut {
+        font-size: 11px;
+        color: var(--shell-text-muted);
+        border: 1px solid var(--shell-border);
+        border-radius: 6px;
+        padding: 2px 6px;
+        flex-shrink: 0;
+    }
+    @keyframes nexusPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    /* ── Avatar unificado: tema + perfil + sair ficam numa caixa própria (ver
+       .layout-topbar-menu logo abaixo, fora deste bloco .layout-topbar) ── */
+    .layout-topbar-avatar-menu {
+        position: relative;
+        margin: 0 0 0 auto;
+
+        .layout-topbar-avatar-button {
+            margin: 0;
+        }
+    }
+}
+
+/* ── Caixa do avatar (Tema/Perfil/Sair) ──────────────────────────────────
+   Fica FORA de .layout-topbar de propósito (ver app.layout.component.html):
+   um filho com box-shadow/transform dentro de um ancestral com
+   backdrop-filter vaza uma mancha escura por cima do conteúdo — bug de
+   composição conhecido do Chromium.
+   IMPORTANTE: mesmo como irmão do topbar, o mesmo bug volta se ESTE
+   elemento tiver seu próprio backdrop-filter e ficar sobreposto a outros
+   elementos que também usam backdrop-filter (a barra de filtros e os
+   cards de KPI usam var(--glass-blur)). Por isso aqui usamos um fundo
+   SÓLIDO (--menu-panel-bg, definido em _nexus-theme.scss) e nunca mais
+   backdrop-filter neste componente. */
+.layout-topbar-menu {
+    position: fixed;
+    top: calc(5rem + .6rem);
+    right: 2rem;
+    margin: 0;
+    padding: .5rem;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    min-width: 13rem;
+    background: var(--menu-panel-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg, 14px);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+    z-index: 999;
+
+    .layout-topbar-button {
+        margin-left: 0;
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+        border-radius: 8px;
+        padding: .65rem .75rem;
+        color: var(--text-primary);
+
+        &:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-tertiary);
+        }
+
+        i {
+            font-size: 1.1rem;
+            margin-right: .6rem;
+        }
+
+        span {
+            display: inline-block;
+            font-size: .9rem;
+        }
+    }
+
+    /* ── Seletor de idioma (PT/EN/ES/AR/ZH) ───────────────────────── */
+    .layout-topbar-lang-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: var(--text-muted);
+        padding: .5rem .75rem .25rem;
+    }
+
+    .layout-topbar-lang-row {
+        display: flex;
+        gap: .35rem;
+        padding: 0 .75rem .5rem;
+
+        .lang-btn {
+            flex: 1;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: .02em;
+            padding: .4rem 0;
+            border: 0.5px solid var(--border-md);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: border-color .15s, background .15s, color .15s;
+
+            &:hover {
+                border-color: var(--accent);
+                color: var(--text-primary);
+            }
+
+            &.active {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: #fff;
+            }
+        }
+    }
+
+    /* Só abre no clique do avatar (layout-topbar-menu-mobile-active, via
+       showProfileSidebar()) — sem hover. */
+    &.layout-topbar-menu-mobile-active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .layout-topbar-menu {
+        right: 1rem;
+    }
+}
+
+@media (max-width: 991px) {
+    .layout-topbar {
+        .command-bar-shortcut { display: none; }
+    }
+}
+
+@media (max-width: 600px) {
+    .layout-topbar {
+        padding: 0 1rem;
+        gap: 0.5rem;
+
+        .layout-topbar-logo {
+            width: auto;
+            img { height: 1.6rem; }
+        }
+
+        .command-bar {
+            max-width: none;
+            min-width: 0;
+            padding: 0 10px;
+            height: 38px;
+        }
+        .command-bar input {
+            font-size: 12.5px;
+            min-width: 0;
+            text-overflow: ellipsis;
+        }
+
+        .layout-topbar-button {
+            width: 2.2rem; height: 2.2rem;
+            i { font-size: 1.15rem; }
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    .layout-topbar {
+        justify-content: space-between;
+
+        .layout-topbar-logo {
+            width: auto;
+            order: 2;
+        }
+
+        .layout-menu-button {
+            margin-left: 0;
+            order: 1;
+        }
+
+        /* .layout-topbar-menu (a caixa em si) é position:fixed e vive fora deste
+           bloco — não precisa de regra aqui, só ordenar o botão do avatar. */
+        .layout-topbar-avatar-menu {
+            order: 3;
+        }
+    }
+}

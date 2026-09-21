@@ -1,0 +1,96 @@
+/* Cores vêm de _nexus-theme.scss (--shell-*), reagem a claro/escuro automaticamente */
+:host {
+    --radius-md: 12px;
+}
+
+/* ── Floating Dock — estilo macOS, flutuante e centralizado verticalmente ── */
+.icon-sidebar {
+    position: fixed;
+    top: 50%;
+    left: 1.5rem;                 /* left-6 */
+    transform: translateY(-50%);
+    z-index: 900;
+    background: var(--shell-bg);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--shell-border);
+    border-radius: 22px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 10px;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.nav-items {
+    display: flex; flex-direction: column;
+    gap: 2px; width: 100%; align-items: center;
+}
+
+.nav-item {
+    position: relative;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--shell-text-muted);
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+    font-size: 19px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.nav-item:hover { background: var(--shell-bg-hover); color: var(--shell-text); transform: scale(1.05); }
+.nav-item.active { background: var(--shell-accent-bg); color: var(--shell-accent); }
+.nav-item.disabled { opacity: 0.35; }
+.nav-item.disabled:hover { background: transparent; color: var(--shell-text-muted); transform: none; }
+
+/* ── Tooltip com o nome do módulo (só aparece no hover) ────────── */
+.nav-tooltip {
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translate(-6px, -50%);
+    background: var(--shell-tooltip-bg);
+    backdrop-filter: blur(20px);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 11px;
+    border-radius: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    border: 1px solid var(--shell-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 950;
+}
+.nav-item:hover .nav-tooltip {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.nav-sep { width: 26px; height: 0.5px; background: var(--shell-border); margin: 6px 0; }
+.nav-bottom { margin-top: 4px; }
+
+/* ── Mobile: doc não pode simplesmente sumir (perderíamos a navegação) —
+   vira uma barra horizontal flutuante fixada embaixo da tela ── */
+@media (max-width: 768px) {
+    .icon-sidebar {
+        top: auto;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        max-width: calc(100vw - 2rem);
+        max-height: none;
+        padding: 8px 10px;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+    .nav-items { flex-direction: row; }
+    .nav-sep { width: 0.5px; height: 24px; margin: 0 6px; }
+    .nav-bottom { margin-top: 0; margin-left: 4px; }
+    .nav-tooltip { display: none; } /* sem espaço horizontal pra tooltip lateral no mobile */
+}
